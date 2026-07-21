@@ -36,9 +36,10 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
       es = new EventSource(`/api/admin/sessions/${id}/stream`);
       es.onmessage = (e) => {
         try {
-          const { messages, mode } = JSON.parse(e.data);
-          setMessages(messages);
-          setMode(mode);
+          const data = JSON.parse(e.data);
+          if (data.typing) return;
+          setMessages(data.messages);
+          setMode(data.mode);
         } catch {}
       };
       es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
