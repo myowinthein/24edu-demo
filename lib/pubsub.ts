@@ -26,5 +26,9 @@ export async function publishSessions() {
 }
 
 export function createSubscriber(): Redis {
-  return new Redis(process.env.REDIS_URL!);
+  const redisUrl = process.env.REDIS_URL;
+  if (!redisUrl) {
+    throw new Error('Missing REDIS_URL env var required for ioredis pub/sub');
+  }
+  return new Redis(redisUrl);
 }
