@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { toolbarBtnStyle, popoverItemStyle } from '@/lib/ui-styles';
 
@@ -176,7 +177,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
               </div>
               {msg.role === 'ai' ? (
                 <div className="md-body">
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
                 </div>
               ) : msg.text}
             </div>
