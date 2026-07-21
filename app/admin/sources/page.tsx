@@ -9,43 +9,147 @@ function formatRows(n: number) {
   return n.toLocaleString();
 }
 
+const PAGE_SIZE = 20;
+
 function SourceModal({ src, onClose }: { src: SourceEntry; onClose: () => void }) {
+  const [headers, setHeaders] = useState<string[]>([]);
+  const [rows, setRows] = useState<string[][]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    setLoading(true);
+    setError('');
+    fetch(`/api/sources/${src.id}/rows`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) { setError(data.error); return; }
+        setHeaders(data.headers);
+        setRows(data.rows);
+      })
+      .catch(() => setError('Failed to load rows.'))
+      .finally(() => setLoading(false));
+  }, [src.id]);
+
+  const totalPages = Math.ceil(rows.length / PAGE_SIZE);
+  const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
   return (
     <div
       onClick={onClose}
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50,
+        padding: 24,
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: '#fff', borderRadius: 12, padding: 28, width: 400,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', gap: 16,
+          background: '#fff', borderRadius: 12, width: '100%', maxWidth: 1100,
+          maxHeight: '90vh', boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: 15, fontWeight: 600 }}>Source details</div>
+        {/* header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 600 }}>{src.filename}</div>
+            {!loading && !error && (
+              <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>
+                {formatRows(rows.length)} rows · {headers.length} columns
+              </div>
+            )}
+          </div>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 20, lineHeight: 1 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 22, lineHeight: 1, padding: '0 4px' }}
           >×</button>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
-          {([
-            ['Filename', src.filename],
-            ['Upload date', formatDate(src.uploadedAt, { year: 'numeric', month: 'short', day: 'numeric' })],
-            ['Rows', formatRows(src.rowCount)],
-            ['Vector chunks', src.chunkCount.toLocaleString()],
-            ['ID', src.id],
-          ] as [string, string][]).map(([label, value]) => (
-            <div key={label} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 8 }}>
-              <div style={{ color: '#6b7280', fontWeight: 500 }}>{label}</div>
-              <div style={{ wordBreak: 'break-all' }}>{value}</div>
+
+        {/* body */}
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {loading ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 32, color: '#6b7280', fontSize: 14 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }}>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              </svg>
+              Loading rows…
             </div>
-          ))}
+          ) : error ? (
+            <div style={{ padding: 32, color: '#b91c1c', fontSize: 14 }}>{error}</div>
+          ) : rows.length === 0 ? (
+            <div style={{ padding: 32, color: '#6b7280', fontSize: 14 }}>No rows found.</div>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, tableLayout: 'fixed' }}>
+              <colgroup>
+                {headers.map((_, i) => (
+                  <col key={i} style={{ width: `${Math.max(120, Math.floor(100 / headers.length))}px`, minWidth: 120 }} />
+                ))}
+              </colgroup>
+              <thead>
+                <tr>
+                  {headers.map((h, i) => (
+                    <th
+                      key={i}
+                      title={h}
+                      style={{
+                        position: 'sticky', top: 0, background: '#f7f7f8', zIndex: 1,
+                        padding: '9px 12px', textAlign: 'left', fontWeight: 600, fontSize: 12,
+                        color: '#374151', borderBottom: '1px solid #e5e7eb',
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {pageRows.map((row, ri) => (
+                  <tr key={ri} style={{ borderTop: '1px solid #f3f4f6', background: ri % 2 === 0 ? '#fff' : '#fafafa' }}>
+                    {headers.map((_, ci) => {
+                      const cell = row[ci] ?? '';
+                      return (
+                        <td
+                          key={ci}
+                          title={cell}
+                          style={{
+                            padding: '8px 12px', color: '#374151',
+                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                            maxWidth: 0,
+                          }}
+                        >
+                          {cell}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
+
+        {/* pagination */}
+        {!loading && !error && totalPages > 1 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid #e5e7eb', flexShrink: 0, fontSize: 13 }}>
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #d1d5db', background: '#fff', cursor: page === 0 ? 'not-allowed' : 'pointer', color: page === 0 ? '#9ca3af' : '#374151' }}
+            >← Prev</button>
+            <span style={{ color: '#6b7280', flex: 1, textAlign: 'center' }}>
+              Page {page + 1} of {totalPages} &nbsp;·&nbsp; rows {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, rows.length)} of {formatRows(rows.length)}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #d1d5db', background: '#fff', cursor: page === totalPages - 1 ? 'not-allowed' : 'pointer', color: page === totalPages - 1 ? '#9ca3af' : '#374151' }}
+            >Next →</button>
+          </div>
+        )}
       </div>
     </div>
   );
