@@ -1,20 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, sessionModeKey, sessionMessagesKey } from '@/lib/redis';
 import { verifyAdminToken } from '@/lib/admin-auth';
-import { publishSession, publishSessions } from '@/lib/pubsub';
-import type { SessionMessage } from '@/lib/types';
+import { setSessionMode } from '@/lib/session-actions';
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   if (!(await verifyAdminToken(req))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const [, messages] = await Promise.all([
-    redis.set(sessionModeKey(params.id), 'ai'),
-    redis.get<SessionMessage[]>(sessionMessagesKey(params.id)),
-  ]);
-  await Promise.all([publishSession(params.id, { messages: messages ?? [], mode: 'ai' }), publishSessions()]);
+  await setSessionMode(params.id, 'ai');
   return NextResponse.json({ ok: true });
 }
