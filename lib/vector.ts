@@ -12,6 +12,25 @@ export const VECTOR_MIN_SCORE = 0.4;
 const CHUNK_SIZE = VECTOR_CHUNK_SIZE;
 
 export function chunkCsv(csv: string, filename: string): string[] {
+  // Multi-section format produced by xlsxToCSV for Excel files
+  if (csv.startsWith('# Sheet:') || csv.includes('\n# Sheet:')) {
+    const chunks: string[] = [];
+    const sections = csv.split(/(?=^# Sheet: )/m).filter((s) => s.trim());
+    for (const section of sections) {
+      const lines = section.split('\n').filter((l) => l.trim());
+      if (lines.length < 3) continue;
+      const sheetName = lines[0].replace(/^# Sheet: /, '').trim();
+      const header = lines[1];
+      const dataRows = lines.slice(2);
+      for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
+        const rows = dataRows.slice(i, i + CHUNK_SIZE);
+        chunks.push(`File: ${filename}\nSheet: ${sheetName}\n${header}\n${rows.join('\n')}`);
+      }
+    }
+    return chunks;
+  }
+
+  // Flat CSV format (direct .csv uploads)
   const lines = csv.split('\n').filter((l) => l.trim());
   if (lines.length < 2) return [];
   const header = lines[0];

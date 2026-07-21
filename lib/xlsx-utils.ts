@@ -7,6 +7,8 @@ function toCSVRow(cells: string[]): string {
   return cells.map(toCSVCell).join(',');
 }
 
+// Output: multi-section CSV, one "# Sheet: <name>" block per non-empty sheet.
+// chunkCsv() in lib/vector.ts knows how to parse this format.
 export function xlsxToCSV(XLSX: typeof import('xlsx'), workbook: import('xlsx').WorkBook): string {
   type Row = string[];
 
@@ -72,53 +74,29 @@ export function xlsxToCSV(XLSX: typeof import('xlsx'), workbook: import('xlsx').
     });
   };
 
-  const headersSimilar = (a: Row, b: Row): boolean => {
-    const len = Math.max(a.length, b.length);
-    if (len === 0) return false;
-    const matches = a.filter((v, i) => v && v === b[i]).length;
-    return matches / len >= 0.3;
-  };
+  const sections: string[] = [];
 
-  const sheets = workbook.SheetNames.map((name) => {
+  for (const name of workbook.SheetNames) {
     const rows = getRows(name);
     const nonEmptyRows = rows.filter((r) => countNonEmpty(r) > 0);
-    return { name, rows, dataRowCount: nonEmptyRows.length };
-  }).filter((s) => s.dataRowCount > 2);
+    if (nonEmptyRows.length <= 2) continue;
 
-  if (sheets.length === 0) return '';
+    const headerIdx = findHeaderIdx(rows);
+    const dataStart = findDataStart(rows, headerIdx);
+    const header = buildHeader(rows, headerIdx, dataStart);
 
-  const analyzed = sheets.map((s) => {
-    const headerIdx = findHeaderIdx(s.rows);
-    const dataStart = findDataStart(s.rows, headerIdx);
-    const header = buildHeader(s.rows, headerIdx, dataStart);
-    return { ...s, headerIdx, dataStart, header };
-  });
+    const keepIdx = header.reduce<number[]>((acc, h, i) => (h !== null ? [...acc, i] : acc), []);
+    const colHeaders = keepIdx.map((i) => header[i] as string);
 
-  const [first, ...rest] = analyzed;
-  const combinable = rest.filter((s) =>
-    headersSimilar(first.rows[first.headerIdx], s.rows[s.headerIdx])
-  );
-  const sheetsToMerge = combinable.length > 0 ? [first, ...combinable] : [first];
-  const addSheetCol = sheetsToMerge.length > 1;
-
-  const richest = sheetsToMerge.reduce((a, b) =>
-    a.header.filter(Boolean).length >= b.header.filter(Boolean).length ? a : b
-  );
-
-  const keepIdx = richest.header.reduce<number[]>(
-    (acc, h, i) => (h !== null ? [...acc, i] : acc),
-    []
-  );
-  const colHeaders = keepIdx.map((i) => richest.header[i] as string);
-  const finalHeaders = addSheetCol ? ['Sheet', ...colHeaders] : colHeaders;
-
-  const lines = [toCSVRow(finalHeaders)];
-  sheetsToMerge.forEach(({ name, rows, dataStart }) => {
+    const dataLines: string[] = [];
     rows.slice(dataStart).filter((r) => countNonEmpty(r) > 0).forEach((r) => {
-      const cells = keepIdx.map((i) => r[i] ?? '');
-      lines.push(toCSVRow(addSheetCol ? [name, ...cells] : cells));
+      dataLines.push(toCSVRow(keepIdx.map((i) => r[i] ?? '')));
     });
-  });
 
-  return lines.join('\n');
+    if (dataLines.length > 0) {
+      sections.push(`# Sheet: ${name}\n${toCSVRow(colHeaders)}\n${dataLines.join('\n')}`);
+    }
+  }
+
+  return sections.join('\n');
 }

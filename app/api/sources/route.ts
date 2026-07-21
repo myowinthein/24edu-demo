@@ -15,8 +15,18 @@ export async function POST(req: NextRequest) {
   }
   const { filename, csv } = await req.json();
 
-  const lines = (csv as string).split('\n').filter((l: string) => l.trim());
-  const rowCount = Math.max(0, lines.length - 1);
+  // Multi-section CSVs (Excel) have "# Sheet:" markers and one header per section.
+  const csvStr = csv as string;
+  let rowCount: number;
+  if (csvStr.startsWith('# Sheet:') || csvStr.includes('\n# Sheet:')) {
+    rowCount = csvStr.split(/(?=^# Sheet: )/m).filter((s) => s.trim()).reduce((sum, section) => {
+      const lines = section.split('\n').filter((l) => l.trim());
+      return sum + Math.max(0, lines.length - 2); // -1 sheet marker, -1 header
+    }, 0);
+  } else {
+    const lines = csvStr.split('\n').filter((l: string) => l.trim());
+    rowCount = Math.max(0, lines.length - 1);
+  }
   const id = crypto.randomUUID();
 
   const chunkCount = await indexSource(id, filename, csv);
