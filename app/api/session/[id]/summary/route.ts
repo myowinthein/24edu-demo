@@ -29,14 +29,19 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     })
     .join('\n');
 
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-2.5-flash',
-    systemInstruction:
-      'Summarize the following conversation in 3–5 concise bullet points. ' +
-      'Cover: what the user was asking about, what information was provided, and any unresolved questions or next steps. ' +
-      'Be brief and direct. Use plain bullet points (- item).',
-  });
+  try {
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.5-flash-lite',
+      systemInstruction:
+        'Summarize the following conversation in 3–5 concise bullet points. ' +
+        'Cover: what the user was asking about, what information was provided, and any unresolved questions or next steps. ' +
+        'Be brief and direct. Use plain bullet points (- item).',
+    });
 
-  const result = await model.generateContent(transcript);
-  return NextResponse.json({ summary: result.response.text() });
+    const result = await model.generateContent(transcript);
+    return NextResponse.json({ summary: result.response.text() });
+  } catch (err) {
+    console.error('[summary] Gemini error:', err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 }
