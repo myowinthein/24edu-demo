@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { formatRelativeTime, formatDate } from '@/lib/format';
+import { navLinkStyle } from '@/lib/ui-styles';
 import type { SessionMode } from '@/lib/types';
 
 interface AdminSession {
@@ -153,16 +154,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [sessions]);
 
   if (isLogin) return <>{children}</>;
-
-  const navLinkStyle = (active: boolean): React.CSSProperties => ({
-    padding: '7px 13px',
-    borderRadius: 6,
-    fontSize: 14,
-    color: active ? '#14151a' : '#6b7280',
-    background: active ? '#f1f1f3' : 'transparent',
-    textDecoration: 'none',
-    cursor: 'pointer',
-  });
 
   return (
     <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
