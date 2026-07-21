@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { SessionMessage, SessionMode } from '@/lib/types';
-import { toolbarBtnStyle, popoverItemStyle } from '@/lib/ui-styles';
+import { toolbarBtnStyle } from '@/lib/ui-styles';
 
 export default function AdminSessionPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -14,12 +14,10 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
   const [mode, setMode] = useState<SessionMode>('ai');
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
-  const [openPopover, setOpenPopover] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
   const lastTypingSentRef = useRef(0);
 
   const fetchSession = useCallback(async () => {
@@ -56,16 +54,6 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Close popover on outside click
-  useEffect(() => {
-    if (!openPopover) return;
-    const handler = (e: MouseEvent) => {
-      if (!actionsRef.current?.contains(e.target as Node)) setOpenPopover(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [openPopover]);
-
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
     const ta = e.target;
@@ -98,12 +86,10 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
   };
 
   const takeOver = async () => {
-    setOpenPopover(false);
     await fetch(`/api/admin/sessions/${id}/join`, { method: 'POST' });
   };
 
   const handBack = async () => {
-    setOpenPopover(false);
     await fetch(`/api/admin/sessions/${id}/leave`, { method: 'POST' });
   };
 
@@ -245,7 +231,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
           <textarea
             ref={textareaRef}
-            placeholder={mode === 'human' ? 'Reply as admin… (Enter to send)' : 'Observing — use Actions to take over'}
+            placeholder={mode === 'human' ? 'Reply as admin… (Enter to send)' : 'Observing — take over to reply'}
             value={inputText}
             onChange={handleTextareaChange}
             onKeyDown={(e) => {
@@ -304,42 +290,16 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
               </>
             )}
           </button>
-          <div ref={actionsRef} style={{ position: 'relative' }}>
-            {openPopover && (
-              <div
-                style={{
-                  position: 'absolute', bottom: 'calc(100% + 8px)', left: 0,
-                  background: '#ffffff', border: '1px solid #e3e3e6',
-                  borderRadius: 10, boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                  minWidth: 210, padding: 6, zIndex: 20,
-                }}
-              >
-                {(mode === 'ai' || mode === 'requested') && (
-                  <button onClick={takeOver} style={popoverItemStyle}>
-                    🎯 Take over chat
-                  </button>
-                )}
-                {mode === 'human' && (
-                  <button onClick={handBack} style={popoverItemStyle}>
-                    🤖 Hand back to AI
-                  </button>
-                )}
-              </div>
-            )}
-            <button
-              onClick={() => setOpenPopover((p) => !p)}
-              style={{
-                ...toolbarBtnStyle,
-                borderColor: openPopover ? '#6b7280' : '#d1d5db',
-                color: openPopover ? '#14151a' : '#6b7280',
-              }}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-              Actions
+          {(mode === 'ai' || mode === 'requested') && (
+            <button onClick={takeOver} style={toolbarBtnStyle}>
+              🎯 Take over chat
             </button>
-          </div>
+          )}
+          {mode === 'human' && (
+            <button onClick={handBack} style={toolbarBtnStyle}>
+              🤖 Hand back to AI
+            </button>
+          )}
         </div>
       </div>
     </div>
