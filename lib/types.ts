@@ -26,3 +26,15 @@ export interface SessionMessage {
   text: string;
   timestamp: string;
 }
+
+export interface LeadData {
+  guestId: string;
+  name: string;
+  email: string;
+  phone: string;
+  country: string;
+  educationLevel: string;
+  programOfInterest: string;
+  intendedIntake: string;
+  submittedAt: string;
+}

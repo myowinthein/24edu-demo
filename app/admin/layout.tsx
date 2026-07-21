@@ -57,6 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isLogin = pathname === '/admin/login';
   const isChats = pathname === '/admin' || pathname.startsWith('/admin/sessions');
   const isSources = pathname === '/admin/sources';
+  const isLeads = pathname === '/admin/leads';
   const isSettings = pathname === '/admin/settings';
   const activeSessionId = pathname.match(/^\/admin\/sessions\/([^/]+)/)?.[1] ?? null;
 
@@ -401,6 +402,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           }}
         >
           <Link href="/admin" style={navLinkStyle(isChats)}>💬 Chats</Link>
+          <Link href="/admin/leads" style={navLinkStyle(isLeads)}>🎯 Leads</Link>
           <Link href="/admin/sources" style={navLinkStyle(isSources)}>📂 Sources</Link>
           <Link href="/admin/settings" style={navLinkStyle(isSettings)}>⚙ Settings</Link>
           <div style={{ width: 1, height: 18, background: '#e3e3e6', margin: '0 8px' }} />
