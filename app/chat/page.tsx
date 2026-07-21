@@ -216,6 +216,11 @@ export default function ChatPage() {
     await fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' });
   };
 
+  const endChat = async () => {
+    if (!sessionId) return;
+    await fetch(`/api/session/${sessionId}/end`, { method: 'POST' });
+  };
+
   const summarize = async () => {
     if (!sessionId || summarizing) return;
     setSummarizing(true);
@@ -371,6 +376,8 @@ export default function ChatPage() {
               onSwitchToAI={switchToAI}
               onModelSelect={setSelectedModel}
               onSummarize={summarize}
+              onEnd={endChat}
+              onNewChat={newChat}
             />
           </>
         )}

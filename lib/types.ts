@@ -7,7 +7,7 @@ export interface SourceEntry {
 }
 
 
-export type SessionMode = 'ai' | 'requested' | 'human';
+export type SessionMode = 'ai' | 'requested' | 'human' | 'ended';
 
 export interface SessionMeta {
   title: string;

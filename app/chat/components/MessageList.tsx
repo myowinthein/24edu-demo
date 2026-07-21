@@ -52,6 +52,21 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
           You are now chatting with a support agent.
         </div>
       )}
+      {mode === 'ended' && (
+        <div
+          style={{
+            flexShrink: 0,
+            background: '#f9fafb',
+            borderBottom: '1px solid #e3e3e6',
+            padding: '8px 20px',
+            fontSize: 13,
+            color: '#9ca3af',
+            textAlign: 'center',
+          }}
+        >
+          This conversation has ended.
+        </div>
+      )}
 
       <div
         style={{
