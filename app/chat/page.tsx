@@ -125,7 +125,7 @@ export default function ChatPage() {
             setAdminTyping(false);
             if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
           }
-        } catch {}
+        } catch (e) { console.error('SSE parse error', e); }
       };
       es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
     };

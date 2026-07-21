@@ -41,7 +41,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
           if (data.typing) return;
           setMessages(data.messages);
           setMode(data.mode);
-        } catch {}
+        } catch (e) { console.error('SSE parse error', e); }
       };
       es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
     };
