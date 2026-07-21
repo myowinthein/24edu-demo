@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ChatSidebar } from '../components/ChatSidebar';
+import type { SessionRow } from '../constants';
 import type { LeadData } from '@/lib/types';
 
 // ── shared constants (mirrored from LeadForm) ────────────────────────────────
@@ -200,6 +203,7 @@ function border(hasErr: boolean) { return hasErr ? '#dc2626' : '#d1d5db'; }
 // ── page ─────────────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [status, setStatus] = useState<'loading' | 'no-data' | 'ready' | 'saved'>('loading');
   const [fields, setFields] = useState<FormFields>({
     name: '', email: '', phoneCountry: '+60', phoneNumber: '',
@@ -210,34 +214,35 @@ export default function ProfilePage() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
   const [guestId, setGuestId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sessions, setSessions] = useState<SessionRow[]>([]);
 
   useEffect(() => {
     const gid = getGuestId();
     if (!gid) { setStatus('no-data'); return; }
     setGuestId(gid);
-    fetch(`/api/guest/${gid}/lead`)
-      .then((r) => {
-        if (!r.ok) { setStatus('no-data'); return null; }
-        return r.json() as Promise<LeadData>;
-      })
-      .then((lead) => {
-        if (!lead) return;
-        const { phoneCountry, phoneNumber } = parsePhone(lead.phone);
-        const { intakeMonth, intakeYear } = parseIntake(lead.intendedIntake);
-        setFields({
-          name: lead.name,
-          email: lead.email,
-          phoneCountry,
-          phoneNumber,
-          country: lead.country,
-          educationLevel: lead.educationLevel,
-          programOfInterest: lead.programOfInterest,
-          intakeMonth,
-          intakeYear,
-        });
-        setStatus('ready');
-      })
-      .catch(() => setStatus('no-data'));
+
+    Promise.all([
+      fetch(`/api/guest/${gid}/lead`).then((r) => (r.ok ? r.json() as Promise<LeadData> : null)),
+      fetch(`/api/guest/${gid}/sessions`).then((r) => (r.ok ? r.json() as Promise<SessionRow[]> : [])),
+    ]).then(([lead, sessionList]) => {
+      if (Array.isArray(sessionList)) setSessions(sessionList);
+      if (!lead) { setStatus('no-data'); return; }
+      const { phoneCountry, phoneNumber } = parsePhone(lead.phone);
+      const { intakeMonth, intakeYear } = parseIntake(lead.intendedIntake);
+      setFields({
+        name: lead.name,
+        email: lead.email,
+        phoneCountry,
+        phoneNumber,
+        country: lead.country,
+        educationLevel: lead.educationLevel,
+        programOfInterest: lead.programOfInterest,
+        intakeMonth,
+        intakeYear,
+      });
+      setStatus('ready');
+    }).catch(() => setStatus('no-data'));
   }, []);
 
   const set = (key: FieldKey) =>
@@ -282,15 +287,25 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+    <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
+      <ChatSidebar
+        sidebarOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen((o) => !o)}
+        sessions={sessions}
+        sessionId={null}
+        onNewChat={() => router.push('/chat')}
+        onSwitchSession={(id) => router.push(`/chat?session=${id}`)}
+      />
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
       {/* top nav */}
       <div style={{ flexShrink: 0, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 20px', borderBottom: '1px solid #e3e3e6' }}>
         <div style={{ display: 'flex', gap: 4 }}>
           <Link href="/chat" style={{ padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#14151a', background: '#f1f1f3', textDecoration: 'none' }}>
             💬 Chat
           </Link>
-          <Link href="/profile" style={{ padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#ffffff', background: '#14151a', textDecoration: 'none' }}>
-            My Info
+          <Link href="/chat/profile" style={{ padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#ffffff', background: '#14151a', textDecoration: 'none' }}>
+            👤 Profile
           </Link>
         </div>
       </div>
@@ -335,7 +350,7 @@ export default function ProfilePage() {
           {status === 'ready' && (
             <>
               <div style={{ marginBottom: 24 }}>
-                <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>My Info</h2>
+                <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
                 <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
               </div>
 
@@ -419,6 +434,7 @@ export default function ProfilePage() {
           )}
 
         </div>
+      </div>
       </div>
     </div>
   );
