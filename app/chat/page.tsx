@@ -194,7 +194,11 @@ export default function ChatPage() {
 
   const requestHuman = async () => {
     if (!sessionId) return;
-    await fetch(`/api/session/${sessionId}/request-human`, { method: 'POST' });
+    await fetch(`/api/session/${sessionId}/request-human`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ guestId }),
+    });
   };
 
   const switchToAI = async () => {
