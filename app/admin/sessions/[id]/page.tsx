@@ -15,6 +15,8 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
+  const [summarizing, setSummarizing] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
@@ -105,6 +107,22 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
     await fetch(`/api/admin/sessions/${id}/leave`, { method: 'POST' });
   };
 
+  const summarize = async () => {
+    if (summarizing) return;
+    setSummarizing(true);
+    setSummary(null);
+    try {
+      const res = await fetch(`/api/session/${id}/summary`);
+      if (!res.ok) throw new Error('Failed');
+      const data = await res.json();
+      setSummary(data.summary);
+    } catch {
+      setSummary('Could not generate summary. Please try again.');
+    } finally {
+      setSummarizing(false);
+    }
+  };
+
   const roleLabel: Record<SessionMessage['role'], string> = {
     guest: 'Guest', ai: 'AI', admin: 'You',
   };
@@ -186,6 +204,35 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Summary panel */}
+      {summary !== null && (
+        <div
+          style={{
+            flexShrink: 0,
+            margin: '0 16px 4px',
+            background: '#f0f9ff',
+            border: '1px solid #bae6fd',
+            borderRadius: 10,
+            padding: '10px 14px 12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Conversation Summary
+            </span>
+            <button
+              onClick={() => setSummary(null)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
+            >
+              ×
+            </button>
+          </div>
+          <div className="md-body" style={{ fontSize: 13, color: '#0c4a6e' }}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
+          </div>
+        </div>
+      )}
+
       {/* Input area */}
       <div
         style={{
@@ -231,6 +278,32 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
 
         {/* Toolbar */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            onClick={summarize}
+            disabled={summarizing}
+            style={{ ...toolbarBtnStyle, opacity: summarizing ? 0.6 : 1, cursor: summarizing ? 'not-allowed' : 'pointer' }}
+          >
+            {summarizing ? (
+              <>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                Summarizing…
+              </>
+            ) : (
+              <>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="8" y1="6" x2="21" y2="6" />
+                  <line x1="8" y1="12" x2="21" y2="12" />
+                  <line x1="8" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="6" x2="3.01" y2="6" />
+                  <line x1="3" y1="12" x2="3.01" y2="12" />
+                  <line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+                Summary
+              </>
+            )}
+          </button>
           <div ref={actionsRef} style={{ position: 'relative' }}>
             {openPopover && (
               <div
