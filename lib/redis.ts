@@ -6,3 +6,10 @@ export const redis = new Redis({
 });
 
 export const SOURCES_KEY = 'sources:list';
+export const SESSIONS_ACTIVE_KEY = 'sessions:active';
+
+export const sessionMessagesKey = (id: string) => `session:${id}:messages`;
+export const sessionModeKey = (id: string) => `session:${id}:mode`;
+export const sessionMetaKey = (id: string) => `session:${id}:meta`;
+export const guestSessionsKey = (guestId: string) => `guest:${guestId}:sessions`;
+export const adminSessionKey = (token: string) => `admin:session:${token}`;
