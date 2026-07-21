@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis, SOURCES_KEY } from '@/lib/redis';
 import { indexSource } from '@/lib/vector';
+import { verifyAdminToken } from '@/lib/admin-auth';
 import type { SourceEntry } from '@/lib/types';
 
 export async function GET() {
@@ -9,6 +10,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await verifyAdminToken(req))) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const { filename, csv } = await req.json();
 
   const lines = (csv as string).split('\n').filter((l: string) => l.trim());
