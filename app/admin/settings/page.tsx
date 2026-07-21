@@ -1,44 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface SessionStats { total: number; ai: number; human: number; }
 interface SourceStats { total: number; }
 
+function useFetchStat<T>(url: string): [T | null, boolean, () => Promise<void>] {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(url);
+      if (res.ok) setData(await res.json());
+    } finally {
+      setLoading(false);
+    }
+  }, [url]);
+  useEffect(() => { load(); }, [load]);
+  return [data, loading, load];
+}
+
 export default function AdminSettingsPage() {
-  const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
-  const [sessionLoading, setSessionLoading] = useState(true);
+  const [sessionStats, sessionLoading, loadSessionStats] = useFetchStat<SessionStats>('/api/admin/sessions/clear');
+  const [sourceStats, sourceLoading, loadSourceStats] = useFetchStat<SourceStats>('/api/admin/sources/clear');
+
   const [sessionConfirming, setSessionConfirming] = useState(false);
   const [sessionClearing, setSessionClearing] = useState(false);
   const [sessionCleared, setSessionCleared] = useState<number | null>(null);
 
-  const [sourceStats, setSourceStats] = useState<SourceStats | null>(null);
-  const [sourceLoading, setSourceLoading] = useState(true);
   const [sourceConfirming, setSourceConfirming] = useState(false);
   const [sourceClearing, setSourceClearing] = useState(false);
   const [sourceCleared, setSourceCleared] = useState<number | null>(null);
-
-  const loadSessionStats = async () => {
-    setSessionLoading(true);
-    try {
-      const res = await fetch('/api/admin/sessions/clear');
-      if (res.ok) setSessionStats(await res.json());
-    } finally {
-      setSessionLoading(false);
-    }
-  };
-
-  const loadSourceStats = async () => {
-    setSourceLoading(true);
-    try {
-      const res = await fetch('/api/admin/sources/clear');
-      if (res.ok) setSourceStats(await res.json());
-    } finally {
-      setSourceLoading(false);
-    }
-  };
-
-  useEffect(() => { loadSessionStats(); loadSourceStats(); }, []);
 
   const handleClearSessions = async () => {
     setSessionClearing(true);
@@ -71,8 +64,6 @@ export default function AdminSettingsPage() {
       setSourceClearing(false);
     }
   };
-
-  const loading = sessionLoading;
 
   return (
     <div style={{ flex: 1, padding: 32, maxWidth: 600, display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -108,7 +99,7 @@ export default function AdminSettingsPage() {
             borderBottom: '1px solid #f0f0f1',
           }}
         >
-          {loading ? (
+          {sessionLoading ? (
             <>
               <SkeletonCard />
               <SkeletonCard />
