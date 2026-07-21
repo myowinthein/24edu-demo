@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, SESSIONS_ACTIVE_KEY, sessionModeKey, sessionMetaKey } from '@/lib/redis';
+import { redis, SESSIONS_ACTIVE_KEY, sessionModeKey, sessionMetaKey, leadKey } from '@/lib/redis';
 import { verifyAdminToken } from '@/lib/admin-auth';
-import type { SessionMode, SessionMeta } from '@/lib/types';
+import type { SessionMode, SessionMeta, LeadData } from '@/lib/types';
 
 export async function GET(req: NextRequest) {
   if (!(await verifyAdminToken(req))) {
@@ -32,14 +32,24 @@ export async function GET(req: NextRequest) {
       guestId: meta?.guestId ?? '',
       createdAt: meta?.createdAt ?? '',
       lastActiveAt: score ? new Date(score).toISOString() : '',
-      browser: meta?.browser ?? '',
-      browserVersion: meta?.browserVersion ?? '',
-      os: meta?.os ?? '',
-      osVersion: meta?.osVersion ?? '',
-      device: meta?.device ?? '',
-      timezone: meta?.timezone ?? '',
     };
   });
 
-  return NextResponse.json(sessions);
+  // Fetch lead info for each unique guestId
+  const uniqueGuestIds = [...new Set(sessions.map((s) => s.guestId).filter(Boolean))];
+  const leadPipeline = redis.pipeline();
+  for (const gid of uniqueGuestIds) leadPipeline.get<LeadData>(leadKey(gid));
+  const leadResults = await leadPipeline.exec();
+  const leadMap = new Map<string, { name: string; email: string; phone: string }>();
+  uniqueGuestIds.forEach((gid, i) => {
+    const lead = leadResults[i] as LeadData | null;
+    if (lead) leadMap.set(gid, { name: lead.name, email: lead.email, phone: lead.phone });
+  });
+
+  const enriched = sessions.map((s) => ({
+    ...s,
+    ...(leadMap.get(s.guestId) ?? { name: '', email: '', phone: '' }),
+  }));
+
+  return NextResponse.json(enriched);
 }
