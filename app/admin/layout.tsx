@@ -16,6 +16,8 @@ interface AdminSession {
   name: string;
   email: string;
   phone: string;
+  country: string;
+  intendedIntake: string;
 }
 
 interface GuestGroup {
@@ -23,6 +25,8 @@ interface GuestGroup {
   name: string;
   email: string;
   phone: string;
+  country: string;
+  intendedIntake: string;
   sessions: AdminSession[];
 }
 
@@ -47,6 +51,16 @@ const modeDot: Record<SessionMode, string> = {
   human:     '#10b981',
   ended:     '#e5e7eb',
 };
+
+function InfoCell({ label, value, span }: { label: string; value: string; span?: number }) {
+  if (!value) return <div style={{ gridColumn: span ? `span ${span}` : undefined }} />;
+  return (
+    <div style={{ gridColumn: span ? `span ${span}` : undefined, minWidth: 0 }}>
+      <div style={{ fontSize: 9, fontWeight: 600, color: '#d1d5db', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</div>
+      <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div>
+    </div>
+  );
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -132,10 +146,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     for (const s of sessions) {
       const gid = s.guestId || '__unknown__';
       if (!map.has(gid)) {
-        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, sessions: [] });
+        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, country: s.country, intendedIntake: s.intendedIntake, sessions: [] });
       }
       const group = map.get(gid)!;
-      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; }
+      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; group.country = s.country; group.intendedIntake = s.intendedIntake; }
       group.sessions.push(s);
     }
     return Array.from(map.values());
@@ -251,13 +265,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           )}
                         </div>
                         {group.email ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {group.email}
-                            </div>
-                            {group.phone && (
-                              <div style={{ fontSize: 11, color: '#6b7280' }}>{group.phone}</div>
-                            )}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 8px', marginTop: 2 }}>
+                            <InfoCell label="Email" value={group.email} span={2} />
+                            <InfoCell label="Phone" value={group.phone} />
+                            <InfoCell label="Country" value={group.country} />
+                            <InfoCell label="Intake" value={group.intendedIntake} />
                           </div>
                         ) : (
                           <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No lead info</div>
