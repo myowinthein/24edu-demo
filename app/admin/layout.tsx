@@ -31,18 +31,21 @@ const modeLabel: Record<SessionMode, string> = {
   ai: 'AI',
   requested: 'Requested',
   human: 'Live',
+  ended: 'Ended',
 };
 
 const modeBadgeStyle: Record<SessionMode, React.CSSProperties> = {
   ai:        { background: '#f3f4f6', color: '#6b7280' },
   requested: { background: '#fef3c7', color: '#b45309' },
   human:     { background: '#d1fae5', color: '#065f46' },
+  ended:     { background: '#f3f4f6', color: '#d1d5db' },
 };
 
 const modeDot: Record<SessionMode, string> = {
   ai:        '#9ca3af',
   requested: '#f59e0b',
   human:     '#10b981',
+  ended:     '#e5e7eb',
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

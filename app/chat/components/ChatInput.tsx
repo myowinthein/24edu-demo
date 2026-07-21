@@ -19,6 +19,8 @@ interface ChatInputProps {
   onSwitchToAI: () => void;
   onModelSelect: (model: ModelId) => void;
   onSummarize: () => void;
+  onEnd: () => void;
+  onNewChat: () => void;
 }
 
 export function ChatInput({
@@ -34,6 +36,8 @@ export function ChatInput({
   onSwitchToAI,
   onModelSelect,
   onSummarize,
+  onEnd,
+  onNewChat,
 }: ChatInputProps) {
   const [modelOpen, setModelOpen] = useState(false);
   const modelContainerRef = useRef<HTMLDivElement>(null);
@@ -53,6 +57,43 @@ export function ChatInput({
     ta.style.height = 'auto';
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
   };
+
+  if (mode === 'ended') {
+    return (
+      <div
+        style={{
+          flexShrink: 0,
+          borderTop: '1px solid #e3e3e6',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+          background: '#f9fafb',
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 13, color: '#9ca3af' }}>
+          You&apos;ve ended this conversation.
+        </p>
+        <button
+          onClick={onNewChat}
+          style={{
+            padding: '9px 20px',
+            fontSize: 14,
+            fontWeight: 500,
+            background: '#2563eb',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: 8,
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+          }}
+        >
+          Start new conversation →
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -155,6 +196,13 @@ export function ChatInput({
             🤖 Switch to AI
           </button>
         )}
+
+        <button
+          onClick={onEnd}
+          style={{ ...toolbarBtnStyle, color: '#ef4444', borderColor: '#fecaca' }}
+        >
+          End chat
+        </button>
 
         <div ref={modelContainerRef} style={{ position: 'relative' }}>
           {modelOpen && (
