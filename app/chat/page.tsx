@@ -157,6 +157,7 @@ export default function ChatPage() {
     setMode('ai');
     setInputText('');
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
+    setTimeout(() => textareaRef.current?.focus(), 0);
   };
 
   const switchSession = (id: string) => {
@@ -381,6 +382,7 @@ export default function ChatPage() {
               inputText={inputText}
               isLoading={isLoading}
               summarizing={summarizing}
+              hasMessages={messages.length > 0}
               selectedModel={selectedModel}
               mode={mode}
               textareaRef={textareaRef}
