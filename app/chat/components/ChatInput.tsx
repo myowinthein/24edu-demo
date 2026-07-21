@@ -10,6 +10,7 @@ interface ChatInputProps {
   inputText: string;
   isLoading: boolean;
   summarizing: boolean;
+  hasMessages: boolean;
   selectedModel: ModelId;
   mode: SessionMode;
   textareaRef: RefObject<HTMLTextAreaElement>;
@@ -27,6 +28,7 @@ export function ChatInput({
   inputText,
   isLoading,
   summarizing,
+  hasMessages,
   selectedModel,
   mode,
   textareaRef,
@@ -159,7 +161,7 @@ export function ChatInput({
       </div>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button
+        {hasMessages && <button
           onClick={onSummarize}
           disabled={summarizing}
           style={{ ...toolbarBtnStyle, opacity: summarizing ? 0.6 : 1, cursor: summarizing ? 'not-allowed' : 'pointer' }}
@@ -184,7 +186,7 @@ export function ChatInput({
               Summary
             </>
           )}
-        </button>
+        </button>}
 
         {mode === 'ai' && (
           <button onClick={onRequestHuman} style={toolbarBtnStyle}>
