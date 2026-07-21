@@ -156,13 +156,13 @@ export function ChatInput({
           </button>
         )}
 
-        <div ref={modelContainerRef} style={{ position: 'relative', marginLeft: 'auto' }}>
+        <div ref={modelContainerRef} style={{ position: 'relative' }}>
           {modelOpen && (
             <div
               style={{
                 position: 'absolute',
                 bottom: 'calc(100% + 8px)',
-                right: 0,
+                left: 0,
                 background: '#ffffff',
                 border: '1px solid #e3e3e6',
                 borderRadius: 10,
