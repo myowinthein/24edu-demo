@@ -9,11 +9,54 @@ function formatRows(n: number) {
   return n.toLocaleString();
 }
 
+function SourceModal({ src, onClose }: { src: SourceEntry; onClose: () => void }) {
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: '#fff', borderRadius: 12, padding: 28, width: 400,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', gap: 16,
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: 15, fontWeight: 600 }}>Source details</div>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 20, lineHeight: 1 }}
+          >×</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+          {([
+            ['Filename', src.filename],
+            ['Upload date', formatDate(src.uploadedAt, { year: 'numeric', month: 'short', day: 'numeric' })],
+            ['Rows', formatRows(src.rowCount)],
+            ['Vector chunks', src.chunkCount.toLocaleString()],
+            ['ID', src.id],
+          ] as [string, string][]).map(([label, value]) => (
+            <div key={label} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 8 }}>
+              <div style={{ color: '#6b7280', fontWeight: 500 }}>{label}</div>
+              <div style={{ wordBreak: 'break-all' }}>{value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 export default function SourcesPage() {
   const [sources, setSources] = useState<SourceEntry[]>([]);
   const [isLoadingSources, setIsLoadingSources] = useState(true);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'converting' | 'uploading'>('idle');
+  const [viewSource, setViewSource] = useState<SourceEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isUploading = uploadStatus !== 'idle';
@@ -79,6 +122,7 @@ export default function SourcesPage() {
 
   return (
     <>
+      {viewSource && <SourceModal src={viewSource} onClose={() => setViewSource(null)} />}
       <div
         style={{
           flex: 1, overflowY: 'auto', padding: 24,
@@ -129,6 +173,7 @@ export default function SourcesPage() {
                 <div style={{ color: '#6b7280' }}>{formatDate(src.uploadedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</div>
                 <div style={{ color: '#6b7280' }}>{formatRows(src.rowCount)}</div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <button onClick={() => setViewSource(src)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>View</button>
                   <button onClick={() => handleRemove(src.id, src.filename)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#b91c1c', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>Remove</button>
                 </div>
               </div>
