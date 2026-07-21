@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import type { SessionMessage, SessionMode } from '@/lib/types';
+import { toolbarBtnStyle, popoverItemStyle } from '@/lib/ui-styles';
 
 export default function AdminSessionPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -105,21 +106,6 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
 
   const roleLabel: Record<SessionMessage['role'], string> = {
     guest: 'Guest', ai: 'AI', admin: 'You',
-  };
-
-  const toolbarBtnStyle: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', gap: 5,
-    padding: '5px 11px', fontSize: 12,
-    background: 'transparent', border: '1px solid #d1d5db',
-    borderRadius: 20, cursor: 'pointer', color: '#6b7280',
-    fontFamily: 'inherit', whiteSpace: 'nowrap',
-  };
-
-  const popoverItemStyle: React.CSSProperties = {
-    display: 'block', width: '100%', textAlign: 'left',
-    padding: '9px 12px', fontSize: 13, border: 'none',
-    borderRadius: 7, background: 'transparent',
-    cursor: 'pointer', color: '#14151a', fontFamily: 'inherit',
   };
 
   return (
