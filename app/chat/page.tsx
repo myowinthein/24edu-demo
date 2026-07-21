@@ -234,6 +234,14 @@ export default function ChatPage() {
 
   const isReady = guestId !== null && sessionId !== null && hasSources !== null && leadSubmitted !== null;
 
+  if (isReady && !leadSubmitted) {
+    return (
+      <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
+        <LeadForm guestId={guestId!} onComplete={() => setLeadSubmitted(true)} />
+      </div>
+    );
+  }
+
   return (
     <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
       <ChatSidebar
@@ -282,8 +290,6 @@ export default function ChatPage() {
               Loading chat…
             </div>
           </div>
-        ) : !leadSubmitted ? (
-          <LeadForm guestId={guestId!} onComplete={() => setLeadSubmitted(true)} />
         ) : !hasSources && mode === 'ai' ? (
           <div
             style={{
