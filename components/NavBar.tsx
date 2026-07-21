@@ -5,22 +5,24 @@ import { usePathname } from 'next/navigation';
 
 export default function NavBar() {
   const pathname = usePathname();
+  const isAdmin = pathname.startsWith('/admin');
   const isChat = pathname.startsWith('/chat');
   const isSources = pathname.startsWith('/sources');
+
+  if (isAdmin || isChat) return null;
 
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         height: 56,
         flexShrink: 0,
         padding: '0 20px',
         borderBottom: '1px solid #e3e3e6',
       }}
     >
-      <div style={{ fontSize: 14, color: '#6b7280' }}>Internal Demo</div>
       <div style={{ display: 'flex', gap: 4 }}>
         <Link
           href="/chat"
@@ -34,7 +36,7 @@ export default function NavBar() {
             textDecoration: 'none',
           }}
         >
-          Chat
+          💬 Chat
         </Link>
         <Link
           href="/sources"
@@ -48,7 +50,7 @@ export default function NavBar() {
             textDecoration: 'none',
           }}
         >
-          Sources
+          📂 Sources
         </Link>
       </div>
     </div>

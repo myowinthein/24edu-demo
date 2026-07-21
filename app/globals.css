@@ -20,3 +20,17 @@ a {
 a:hover {
   color: #1d4ed8;
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* Markdown rendered in AI chat messages */
+.md-body p { margin: 0 0 8px; }
+.md-body p:last-child { margin-bottom: 0; }
+.md-body h1, .md-body h2, .md-body h3 { font-size: 14px; font-weight: 600; margin: 10px 0 4px; }
+.md-body h1:first-child, .md-body h2:first-child, .md-body h3:first-child { margin-top: 0; }
+.md-body ul, .md-body ol { margin: 4px 0 8px; padding-left: 20px; }
+.md-body li { margin-bottom: 4px; }
+.md-body strong { font-weight: 600; }
+.md-body code { background: #f1f1f3; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+.md-body hr { border: none; border-top: 1px solid #e3e3e6; margin: 10px 0; }
