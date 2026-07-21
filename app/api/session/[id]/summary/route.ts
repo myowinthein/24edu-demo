@@ -31,7 +31,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
+      model: 'gemini-3.1-flash-lite',
       systemInstruction:
         'Summarize the following conversation in 3–5 concise bullet points. ' +
         'Cover: what the user was asking about, what information was provided, and any unresolved questions or next steps. ' +
