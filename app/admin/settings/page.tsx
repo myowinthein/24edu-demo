@@ -12,7 +12,7 @@ function useFetchStat<T>(url: string): [T | null, boolean, () => Promise<void>] 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       if (res.ok) setData(await res.json());
     } finally {
       setLoading(false);
