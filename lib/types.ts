@@ -6,10 +6,6 @@ export interface SourceEntry {
   chunkCount: number;
 }
 
-export interface HistoryEntry {
-  role: 'user' | 'assistant';
-  text: string;
-}
 
 export type SessionMode = 'ai' | 'requested' | 'human';
 
