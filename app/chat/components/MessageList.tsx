@@ -2,6 +2,7 @@
 
 import type { RefObject } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 
 const roleLabel: Record<SessionMessage['role'], string> = {
@@ -90,7 +91,7 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
               </div>
               {msg.role === 'ai' || msg.role === 'admin' ? (
                 <div className="md-body">
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
                 </div>
               ) : (
                 msg.text
