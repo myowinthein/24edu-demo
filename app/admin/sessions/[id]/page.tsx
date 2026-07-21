@@ -88,7 +88,6 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
-      await fetchSession();
     } finally {
       setSending(false);
     }
@@ -97,13 +96,11 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
   const takeOver = async () => {
     setOpenPopover(false);
     await fetch(`/api/admin/sessions/${id}/join`, { method: 'POST' });
-    await fetchSession();
   };
 
   const handBack = async () => {
     setOpenPopover(false);
     await fetch(`/api/admin/sessions/${id}/leave`, { method: 'POST' });
-    await fetchSession();
   };
 
   const roleLabel: Record<SessionMessage['role'], string> = {
@@ -174,9 +171,9 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
           display: 'flex', flexDirection: 'column', gap: 10,
         }}
       >
-        {messages.map((msg, i) => (
+        {messages.map((msg) => (
           <div
-            key={i}
+            key={`${msg.timestamp}-${msg.role}`}
             style={{ display: 'flex', justifyContent: msg.role === 'guest' ? 'flex-start' : 'flex-end' }}
           >
             <div

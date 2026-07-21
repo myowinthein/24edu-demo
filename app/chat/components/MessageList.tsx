@@ -62,9 +62,9 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
           gap: 14,
         }}
       >
-        {messages.map((msg, i) => (
+        {messages.map((msg) => (
           <div
-            key={i}
+            key={`${msg.timestamp}-${msg.role}`}
             style={{ display: 'flex', justifyContent: msg.role === 'guest' ? 'flex-end' : 'flex-start' }}
           >
             <div
