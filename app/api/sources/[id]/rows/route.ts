@@ -39,20 +39,43 @@ export async function GET(
   const ids = Array.from({ length: source.chunkCount }, (_, i) => chunkVectorId(params.id, i));
   const fetched = await vectorIndex.fetch(ids, { includeMetadata: true });
 
-  let headers: string[] | null = null;
-  const rows: string[][] = [];
+  // Collect per-sheet data. Key = sheet name (empty string = flat CSV).
+  const sheetMap = new Map<string, { headers: string[]; rows: string[][] }>();
+  let isMultiSheet = false;
 
   for (const item of fetched) {
     if (!item) continue;
     const text = (item.metadata as { text?: string })?.text ?? '';
-    // chunk format: "File: <name>\n<header>\n<row>..."
     const lines = text.split('\n').filter((l) => l.trim());
-    if (lines.length < 2) continue;
-    if (!headers) headers = parseCSVLine(lines[1]);
-    for (let i = 2; i < lines.length; i++) {
-      rows.push(parseCSVLine(lines[i]));
+    if (lines.length < 3) continue;
+
+    // lines[0] = "File: ..."
+    // Multi-sheet: lines[1] = "Sheet: <name>", lines[2] = header, lines[3+] = data
+    // Flat CSV:    lines[1] = header, lines[2+] = data
+    if (lines[1].startsWith('Sheet:')) {
+      isMultiSheet = true;
+      const sheetName = lines[1].replace(/^Sheet:\s*/, '').trim();
+      const headers = parseCSVLine(lines[2]);
+      const dataRows = lines.slice(3).map(parseCSVLine);
+      if (!sheetMap.has(sheetName)) sheetMap.set(sheetName, { headers, rows: [] });
+      sheetMap.get(sheetName)!.rows.push(...dataRows);
+    } else {
+      const headers = parseCSVLine(lines[1]);
+      const dataRows = lines.slice(2).map(parseCSVLine);
+      if (!sheetMap.has('')) sheetMap.set('', { headers, rows: [] });
+      sheetMap.get('')!.rows.push(...dataRows);
     }
   }
 
-  return NextResponse.json({ headers: headers ?? [], rows });
+  if (isMultiSheet) {
+    const sheets = [...sheetMap.entries()].map(([name, { headers, rows }]) => ({
+      name,
+      headers,
+      rows,
+    }));
+    return NextResponse.json({ type: 'multi-sheet', sheets });
+  }
+
+  const flat = sheetMap.get('') ?? { headers: [], rows: [] };
+  return NextResponse.json({ type: 'flat', headers: flat.headers, rows: flat.rows });
 }
