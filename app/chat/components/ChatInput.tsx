@@ -118,17 +118,6 @@ export function ChatInput({
       </div>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        {mode === 'ai' && (
-          <button onClick={onRequestHuman} style={toolbarBtnStyle}>
-            💬 Talk to human
-          </button>
-        )}
-        {(mode === 'requested' || mode === 'human') && (
-          <button onClick={onSwitchToAI} style={toolbarBtnStyle}>
-            🤖 Switch to AI
-          </button>
-        )}
-
         <button
           onClick={onSummarize}
           disabled={summarizing}
@@ -155,6 +144,17 @@ export function ChatInput({
             </>
           )}
         </button>
+
+        {mode === 'ai' && (
+          <button onClick={onRequestHuman} style={toolbarBtnStyle}>
+            💬 Talk to human
+          </button>
+        )}
+        {(mode === 'requested' || mode === 'human') && (
+          <button onClick={onSwitchToAI} style={toolbarBtnStyle}>
+            🤖 Switch to AI
+          </button>
+        )}
 
         <div ref={modelContainerRef} style={{ position: 'relative', marginLeft: 'auto' }}>
           {modelOpen && (
