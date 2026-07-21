@@ -9,6 +9,7 @@ import { toolbarBtnStyle, popoverItemStyle } from '@/lib/ui-styles';
 interface ChatInputProps {
   inputText: string;
   isLoading: boolean;
+  summarizing: boolean;
   selectedModel: ModelId;
   mode: SessionMode;
   textareaRef: RefObject<HTMLTextAreaElement>;
@@ -17,12 +18,13 @@ interface ChatInputProps {
   onRequestHuman: () => void;
   onSwitchToAI: () => void;
   onModelSelect: (model: ModelId) => void;
+  onSummarize: () => void;
 }
-
 
 export function ChatInput({
   inputText,
   isLoading,
+  summarizing,
   selectedModel,
   mode,
   textareaRef,
@@ -31,41 +33,25 @@ export function ChatInput({
   onRequestHuman,
   onSwitchToAI,
   onModelSelect,
+  onSummarize,
 }: ChatInputProps) {
-  const [openPopover, setOpenPopover] = useState<'actions' | 'model' | null>(null);
-  const actionsContainerRef = useRef<HTMLDivElement>(null);
+  const [modelOpen, setModelOpen] = useState(false);
   const modelContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!openPopover) return;
+    if (!modelOpen) return;
     const handler = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (openPopover === 'actions' && !actionsContainerRef.current?.contains(target)) {
-        setOpenPopover(null);
-      }
-      if (openPopover === 'model' && !modelContainerRef.current?.contains(target)) {
-        setOpenPopover(null);
-      }
+      if (!modelContainerRef.current?.contains(e.target as Node)) setModelOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [openPopover]);
+  }, [modelOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onInputChange(e.target.value);
     const ta = e.target;
     ta.style.height = 'auto';
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-  };
-
-  const handleRequestHuman = () => {
-    setOpenPopover(null);
-    onRequestHuman();
-  };
-
-  const handleSwitchToAI = () => {
-    setOpenPopover(null);
-    onSwitchToAI();
   };
 
   return (
@@ -132,56 +118,51 @@ export function ChatInput({
       </div>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <div ref={actionsContainerRef} style={{ position: 'relative' }}>
-          {openPopover === 'actions' && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 'calc(100% + 8px)',
-                left: 0,
-                background: '#ffffff',
-                border: '1px solid #e3e3e6',
-                borderRadius: 10,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                minWidth: 210,
-                padding: 6,
-                zIndex: 20,
-              }}
-            >
-              {mode === 'ai' && (
-                <button onClick={handleRequestHuman} style={popoverItemStyle}>
-                  💬 Talk to a human
-                </button>
-              )}
-              {(mode === 'requested' || mode === 'human') && (
-                <button onClick={handleSwitchToAI} style={popoverItemStyle}>
-                  🤖 Switch back to AI
-                </button>
-              )}
-            </div>
-          )}
-          <button
-            onClick={() => setOpenPopover((p) => (p === 'actions' ? null : 'actions'))}
-            style={{
-              ...toolbarBtnStyle,
-              borderColor: openPopover === 'actions' ? '#6b7280' : '#d1d5db',
-              color: openPopover === 'actions' ? '#14151a' : '#6b7280',
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            Actions
+        {mode === 'ai' && (
+          <button onClick={onRequestHuman} style={toolbarBtnStyle}>
+            💬 Talk to human
           </button>
-        </div>
+        )}
+        {(mode === 'requested' || mode === 'human') && (
+          <button onClick={onSwitchToAI} style={toolbarBtnStyle}>
+            🤖 Switch to AI
+          </button>
+        )}
 
-        <div ref={modelContainerRef} style={{ position: 'relative' }}>
-          {openPopover === 'model' && (
+        <button
+          onClick={onSummarize}
+          disabled={summarizing}
+          style={{ ...toolbarBtnStyle, opacity: summarizing ? 0.6 : 1, cursor: summarizing ? 'not-allowed' : 'pointer' }}
+        >
+          {summarizing ? (
+            <>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              </svg>
+              Summarizing…
+            </>
+          ) : (
+            <>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="8" y1="6" x2="21" y2="6" />
+                <line x1="8" y1="12" x2="21" y2="12" />
+                <line x1="8" y1="18" x2="21" y2="18" />
+                <line x1="3" y1="6" x2="3.01" y2="6" />
+                <line x1="3" y1="12" x2="3.01" y2="12" />
+                <line x1="3" y1="18" x2="3.01" y2="18" />
+              </svg>
+              Summary
+            </>
+          )}
+        </button>
+
+        <div ref={modelContainerRef} style={{ position: 'relative', marginLeft: 'auto' }}>
+          {modelOpen && (
             <div
               style={{
                 position: 'absolute',
                 bottom: 'calc(100% + 8px)',
-                left: 0,
+                right: 0,
                 background: '#ffffff',
                 border: '1px solid #e3e3e6',
                 borderRadius: 10,
@@ -206,7 +187,7 @@ export function ChatInput({
               {MODELS.map((m) => (
                 <button
                   key={m}
-                  onClick={() => { onModelSelect(m); setOpenPopover(null); }}
+                  onClick={() => { onModelSelect(m); setModelOpen(false); }}
                   style={{
                     ...popoverItemStyle,
                     display: 'flex',
@@ -230,9 +211,7 @@ export function ChatInput({
                     }}
                   >
                     {m === selectedModel && (
-                      <span
-                        style={{ width: 5, height: 5, borderRadius: '50%', background: '#ffffff', display: 'block' }}
-                      />
+                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#ffffff', display: 'block' }} />
                     )}
                   </span>
                   {m}
@@ -241,11 +220,11 @@ export function ChatInput({
             </div>
           )}
           <button
-            onClick={() => setOpenPopover((p) => (p === 'model' ? null : 'model'))}
+            onClick={() => setModelOpen((p) => !p)}
             style={{
               ...toolbarBtnStyle,
-              borderColor: openPopover === 'model' ? '#6b7280' : '#d1d5db',
-              color: openPopover === 'model' ? '#14151a' : '#6b7280',
+              borderColor: modelOpen ? '#6b7280' : '#d1d5db',
+              color: modelOpen ? '#14151a' : '#6b7280',
             }}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
