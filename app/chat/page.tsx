@@ -277,8 +277,8 @@ export default function ChatPage() {
                 padding: '7px 13px',
                 borderRadius: 6,
                 fontSize: 14,
-                color: '#14151a',
-                background: '#f1f1f3',
+                color: '#ffffff',
+                background: '#14151a',
                 textDecoration: 'none',
               }}
             >
@@ -286,7 +286,7 @@ export default function ChatPage() {
             </Link>
             {leadSubmitted && (
               <Link
-                href="/chat/profile"
+                href="/profile"
                 style={{
                   padding: '7px 13px',
                   borderRadius: 6,

@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChatSidebar } from '../components/ChatSidebar';
-import type { SessionRow } from '../constants';
+import { ChatSidebar } from '../chat/components/ChatSidebar';
+import type { SessionRow } from '../chat/constants';
 import type { LeadData } from '@/lib/types';
 
 // ── shared constants (mirrored from LeadForm) ────────────────────────────────
@@ -200,6 +200,9 @@ function validate(f: FormFields): FormErrors {
 
 function border(hasErr: boolean) { return hasErr ? '#dc2626' : '#d1d5db'; }
 
+const navActive: React.CSSProperties = { padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#ffffff', background: '#14151a', textDecoration: 'none' };
+const navInactive: React.CSSProperties = { padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#14151a', background: '#f1f1f3', textDecoration: 'none' };
+
 // ── page ─────────────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
@@ -294,147 +297,143 @@ export default function ProfilePage() {
         sessions={sessions}
         sessionId={null}
         onNewChat={() => router.push('/chat')}
-        onSwitchSession={(id) => router.push(`/chat?session=${id}`)}
+        onSwitchSession={() => router.push('/chat')}
       />
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-      {/* top nav */}
-      <div style={{ flexShrink: 0, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 20px', borderBottom: '1px solid #e3e3e6' }}>
-        <div style={{ display: 'flex', gap: 4 }}>
-          <Link href="/chat" style={{ padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#14151a', background: '#f1f1f3', textDecoration: 'none' }}>
-            💬 Chat
-          </Link>
-          <Link href="/chat/profile" style={{ padding: '7px 13px', borderRadius: 6, fontSize: 14, color: '#ffffff', background: '#14151a', textDecoration: 'none' }}>
-            👤 Profile
-          </Link>
+        {/* top nav */}
+        <div style={{ flexShrink: 0, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 20px', borderBottom: '1px solid #e3e3e6' }}>
+          <div style={{ display: 'flex', gap: 4 }}>
+            <Link href="/chat" style={navInactive}>💬 Chat</Link>
+            <Link href="/profile" style={navActive}>👤 Profile</Link>
+          </div>
         </div>
-      </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '32px 16px', background: '#f9fafb' }}>
-        <div style={{ width: '100%', maxWidth: 500, background: '#ffffff', borderRadius: 14, border: '1px solid #e3e3e6', padding: '32px 32px 28px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '32px 16px', background: '#f9fafb' }}>
+          <div style={{ width: '100%', maxWidth: 500, background: '#ffffff', borderRadius: 14, border: '1px solid #e3e3e6', padding: '32px 32px 28px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
 
-          {status === 'loading' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, justifyContent: 'center', padding: '24px 0' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-              </svg>
-              Loading your info…
-            </div>
-          )}
+            {status === 'loading' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, justifyContent: 'center', padding: '24px 0' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                Loading your info…
+              </div>
+            )}
 
-          {status === 'no-data' && (
-            <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <p style={{ fontSize: 15, color: '#6b7280', margin: '0 0 16px' }}>No info found. Please start by chatting first.</p>
-              <Link href="/chat" style={{ display: 'inline-block', padding: '9px 20px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
-                Go to Chat
-              </Link>
-            </div>
-          )}
-
-          {status === 'saved' && (
-            <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <div style={{ fontSize: 36, marginBottom: 12 }}>✓</div>
-              <p style={{ fontSize: 16, fontWeight: 600, color: '#111827', margin: '0 0 6px' }}>Info updated!</p>
-              <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 20px' }}>Your details have been saved successfully.</p>
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-                <button onClick={() => setStatus('ready')} style={{ padding: '8px 16px', fontSize: 14, background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, cursor: 'pointer' }}>
-                  Edit again
-                </button>
-                <Link href="/chat" style={{ display: 'inline-block', padding: '8px 16px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
-                  Back to Chat
+            {status === 'no-data' && (
+              <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                <p style={{ fontSize: 15, color: '#6b7280', margin: '0 0 16px' }}>No info found. Please start by chatting first.</p>
+                <Link href="/chat" style={{ display: 'inline-block', padding: '9px 20px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
+                  Go to Chat
                 </Link>
               </div>
-            </div>
-          )}
+            )}
 
-          {status === 'ready' && (
-            <>
-              <div style={{ marginBottom: 24 }}>
-                <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
-                <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
+            {status === 'saved' && (
+              <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                <div style={{ fontSize: 36, marginBottom: 12 }}>✓</div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: '#111827', margin: '0 0 6px' }}>Info updated!</p>
+                <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 20px' }}>Your details have been saved successfully.</p>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+                  <button onClick={() => setStatus('ready')} style={{ padding: '8px 16px', fontSize: 14, background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, cursor: 'pointer' }}>
+                    Edit again
+                  </button>
+                  <Link href="/chat" style={{ display: 'inline-block', padding: '8px 16px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
+                    Back to Chat
+                  </Link>
+                </div>
               </div>
+            )}
 
-              <form onSubmit={handleSubmit} noValidate>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-                  <div>
-                    <label style={labelStyle}>Full name {req}</label>
-                    <input style={{ ...inputStyle, borderColor: border(!!errors.name) }} type="text" value={fields.name} onChange={set('name')} placeholder="e.g. Ahmad Firdaus" />
-                    {errors.name && <p style={errStyle}>{errors.name}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Email {req}</label>
-                    <input style={{ ...inputStyle, borderColor: border(!!errors.email) }} type="email" value={fields.email} onChange={set('email')} placeholder="you@example.com" />
-                    {errors.email && <p style={errStyle}>{errors.email}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Phone / WhatsApp {req}</label>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <select value={fields.phoneCountry} onChange={set('phoneCountry')} style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: 8, borderColor: border(!!errors.phoneCountry), cursor: 'pointer' }}>
-                        {COUNTRY_CODES.map((c) => (
-                          <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
-                        ))}
-                      </select>
-                      <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')} placeholder="12 345 6789" />
-                    </div>
-                    {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Nationality / Country {req}</label>
-                    <select value={fields.country} onChange={set('country')} style={{ ...inputStyle, borderColor: border(!!errors.country), cursor: 'pointer' }}>
-                      <option value="">Select…</option>
-                      {COUNTRIES.map((c) => <option key={c.name} value={c.name}>{c.flag} {c.name}</option>)}
-                    </select>
-                    {errors.country && <p style={errStyle}>{errors.country}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Highest education level {req}</label>
-                    <select value={fields.educationLevel} onChange={set('educationLevel')} style={{ ...inputStyle, borderColor: border(!!errors.educationLevel), cursor: 'pointer' }}>
-                      <option value="">Select…</option>
-                      {EDUCATION_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-                    </select>
-                    {errors.educationLevel && <p style={errStyle}>{errors.educationLevel}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Program of interest {req}</label>
-                    <input style={{ ...inputStyle, borderColor: border(!!errors.programOfInterest) }} type="text" value={fields.programOfInterest} onChange={set('programOfInterest')} placeholder="e.g. Computer Science, Business…" />
-                    {errors.programOfInterest && <p style={errStyle}>{errors.programOfInterest}</p>}
-                  </div>
-
-                  <div>
-                    <label style={labelStyle}>Intended intake {req}</label>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <select value={fields.intakeMonth} onChange={set('intakeMonth')} style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.intakeMonth), cursor: 'pointer' }}>
-                        <option value="">Month…</option>
-                        {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
-                      </select>
-                      <input style={{ ...inputStyle, width: 90, flexShrink: 0, borderColor: border(!!errors.intakeYear) }} type="number" value={fields.intakeYear} onChange={set('intakeYear')} placeholder={String(CURRENT_YEAR)} min={CURRENT_YEAR} max={CURRENT_YEAR + 6} />
-                    </div>
-                    {(errors.intakeMonth || errors.intakeYear) && <p style={errStyle}>{errors.intakeMonth ?? errors.intakeYear}</p>}
-                  </div>
-
+            {status === 'ready' && (
+              <>
+                <div style={{ marginBottom: 24 }}>
+                  <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
+                  <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
                 </div>
 
-                {serverError && <p style={{ ...errStyle, marginTop: 12, textAlign: 'center' }}>{serverError}</p>}
+                <form onSubmit={handleSubmit} noValidate>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{ marginTop: 24, width: '100%', padding: '12px', fontSize: 15, fontWeight: 600, background: submitting ? '#93c5fd' : '#2563eb', color: '#ffffff', border: 'none', borderRadius: 8, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
-                >
-                  {submitting ? 'Saving…' : 'Save changes'}
-                </button>
-              </form>
-            </>
-          )}
+                    <div>
+                      <label style={labelStyle}>Full name {req}</label>
+                      <input style={{ ...inputStyle, borderColor: border(!!errors.name) }} type="text" value={fields.name} onChange={set('name')} placeholder="e.g. Ahmad Firdaus" />
+                      {errors.name && <p style={errStyle}>{errors.name}</p>}
+                    </div>
 
+                    <div>
+                      <label style={labelStyle}>Email {req}</label>
+                      <input style={{ ...inputStyle, borderColor: border(!!errors.email) }} type="email" value={fields.email} onChange={set('email')} placeholder="you@example.com" />
+                      {errors.email && <p style={errStyle}>{errors.email}</p>}
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Phone / WhatsApp {req}</label>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <select value={fields.phoneCountry} onChange={set('phoneCountry')} style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: 8, borderColor: border(!!errors.phoneCountry), cursor: 'pointer' }}>
+                          {COUNTRY_CODES.map((c) => (
+                            <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
+                          ))}
+                        </select>
+                        <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')} placeholder="12 345 6789" />
+                      </div>
+                      {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Nationality / Country {req}</label>
+                      <select value={fields.country} onChange={set('country')} style={{ ...inputStyle, borderColor: border(!!errors.country), cursor: 'pointer' }}>
+                        <option value="">Select…</option>
+                        {COUNTRIES.map((c) => <option key={c.name} value={c.name}>{c.flag} {c.name}</option>)}
+                      </select>
+                      {errors.country && <p style={errStyle}>{errors.country}</p>}
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Highest education level {req}</label>
+                      <select value={fields.educationLevel} onChange={set('educationLevel')} style={{ ...inputStyle, borderColor: border(!!errors.educationLevel), cursor: 'pointer' }}>
+                        <option value="">Select…</option>
+                        {EDUCATION_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                      </select>
+                      {errors.educationLevel && <p style={errStyle}>{errors.educationLevel}</p>}
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Program of interest {req}</label>
+                      <input style={{ ...inputStyle, borderColor: border(!!errors.programOfInterest) }} type="text" value={fields.programOfInterest} onChange={set('programOfInterest')} placeholder="e.g. Computer Science, Business…" />
+                      {errors.programOfInterest && <p style={errStyle}>{errors.programOfInterest}</p>}
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Intended intake {req}</label>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <select value={fields.intakeMonth} onChange={set('intakeMonth')} style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.intakeMonth), cursor: 'pointer' }}>
+                          <option value="">Month…</option>
+                          {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                        <input style={{ ...inputStyle, width: 90, flexShrink: 0, borderColor: border(!!errors.intakeYear) }} type="number" value={fields.intakeYear} onChange={set('intakeYear')} placeholder={String(CURRENT_YEAR)} min={CURRENT_YEAR} max={CURRENT_YEAR + 6} />
+                      </div>
+                      {(errors.intakeMonth || errors.intakeYear) && <p style={errStyle}>{errors.intakeMonth ?? errors.intakeYear}</p>}
+                    </div>
+
+                  </div>
+
+                  {serverError && <p style={{ ...errStyle, marginTop: 12, textAlign: 'center' }}>{serverError}</p>}
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    style={{ marginTop: 24, width: '100%', padding: '12px', fontSize: 15, fontWeight: 600, background: submitting ? '#93c5fd' : '#2563eb', color: '#ffffff', border: 'none', borderRadius: 8, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
+                  >
+                    {submitting ? 'Saving…' : 'Save changes'}
+                  </button>
+                </form>
+              </>
+            )}
+
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
