@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import { formatRelativeTime, formatDate } from '@/lib/format';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 
 const LS_GUEST_ID = 'chat:guestId';
@@ -30,26 +31,6 @@ function getOrCreateGuestId(): string {
   }
 }
 
-function formatRelativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function getDeviceInfo(): Record<string, string> {
   const ua = navigator.userAgent;
@@ -481,7 +462,7 @@ export default function ChatPage() {
                       {s.title}
                     </span>
                     <span style={{ fontSize: 11, color: '#9ca3af' }}>
-                      {formatDate(s.createdAt)} · {formatRelativeTime(s.lastActiveAt)}
+                      {formatDate(s.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })} · {formatRelativeTime(s.lastActiveAt)}
                     </span>
                   </button>
                 );
