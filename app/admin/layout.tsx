@@ -13,22 +13,16 @@ interface AdminSession {
   guestId: string;
   createdAt: string;
   lastActiveAt: string;
-  browser: string;
-  browserVersion: string;
-  os: string;
-  osVersion: string;
-  device: string;
-  timezone: string;
+  name: string;
+  email: string;
+  phone: string;
 }
 
 interface GuestGroup {
   guestId: string;
-  browser: string;
-  browserVersion: string;
-  os: string;
-  osVersion: string;
-  device: string;
-  timezone: string;
+  name: string;
+  email: string;
+  phone: string;
   sessions: AdminSession[];
 }
 
@@ -135,20 +129,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     for (const s of sessions) {
       const gid = s.guestId || '__unknown__';
       if (!map.has(gid)) {
-        map.set(gid, {
-          guestId: gid,
-          browser: s.browser, browserVersion: s.browserVersion,
-          os: s.os, osVersion: s.osVersion,
-          device: s.device, timezone: s.timezone,
-          sessions: [],
-        });
+        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, sessions: [] });
       }
       const group = map.get(gid)!;
-      if (!group.browser && s.browser) {
-        group.browser = s.browser; group.browserVersion = s.browserVersion;
-        group.os = s.os; group.osVersion = s.osVersion;
-        group.device = s.device; group.timezone = s.timezone;
-      }
+      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; }
       group.sessions.push(s);
     }
     return Array.from(map.values());
@@ -236,10 +220,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
               ) : (
                 guestGroups.map((group) => {
-                  const browserStr = [group.browser, group.browserVersion].filter(Boolean).join(' ');
-                  const osStr = [group.os, group.osVersion].filter(Boolean).join(' ');
-                  const hasDeviceInfo = !!(browserStr || osStr || group.device || group.timezone);
-
                   return (
                     <div
                       key={group.guestId}
@@ -253,29 +233,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     >
                       {/* Guest header */}
                       <div style={{ padding: '9px 12px 8px', borderBottom: '1px solid #f0f0f1' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                           </svg>
-                          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#374151', fontWeight: 600 }}>
-                            #{group.guestId === '__unknown__' ? 'unknown' : group.guestId.slice(0, 12)}
-                          </span>
+                          {group.name ? (
+                            <span style={{ fontSize: 12, color: '#111827', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {group.name}
+                            </span>
+                          ) : (
+                            <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#374151', fontWeight: 600 }}>
+                              #{group.guestId === '__unknown__' ? 'unknown' : group.guestId.slice(0, 12)}
+                            </span>
+                          )}
                         </div>
-                        {hasDeviceInfo ? (
+                        {group.email ? (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {(browserStr || osStr) && (
-                              <div style={{ fontSize: 11, color: '#6b7280' }}>
-                                {[browserStr, osStr].filter(Boolean).join('  ·  ')}
-                              </div>
-                            )}
-                            {(group.device || group.timezone) && (
-                              <div style={{ fontSize: 11, color: '#6b7280' }}>
-                                {[group.device, group.timezone].filter(Boolean).join('  ·  ')}
-                              </div>
+                            <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {group.email}
+                            </div>
+                            {group.phone && (
+                              <div style={{ fontSize: 11, color: '#6b7280' }}>{group.phone}</div>
                             )}
                           </div>
                         ) : (
-                          <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No device info</div>
+                          <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No lead info</div>
                         )}
                       </div>
 
