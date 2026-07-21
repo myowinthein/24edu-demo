@@ -17,7 +17,9 @@ export async function GET(req: NextRequest) {
   }
 
   const ids = (await redis.zrange(SESSIONS_ACTIVE_KEY, 0, -1)) as string[];
-  const modes = await Promise.all(ids.map((id) => redis.get<SessionMode>(sessionModeKey(id))));
+  const p0 = redis.pipeline();
+  ids.forEach((id) => p0.get(sessionModeKey(id)));
+  const modes = (await p0.exec()) as (SessionMode | null)[];
 
   const ai = modes.filter((m) => !m || m === 'ai').length;
   const human = modes.filter((m) => m === 'requested' || m === 'human').length;
@@ -35,14 +37,10 @@ export async function POST(req: NextRequest) {
 
   const metas = await Promise.all(ids.map((id) => redis.get<SessionMeta>(sessionMetaKey(id))));
 
-  // Collect guestIds to clean up their session lists
-  const guestToSessions = new Map<string, string[]>();
-  ids.forEach((id, i) => {
+  const guestIds = new Set<string>();
+  ids.forEach((_, i) => {
     const guestId = metas[i]?.guestId;
-    if (guestId) {
-      if (!guestToSessions.has(guestId)) guestToSessions.set(guestId, []);
-      guestToSessions.get(guestId)!.push(id);
-    }
+    if (guestId) guestIds.add(guestId);
   });
 
   const p = redis.pipeline();
@@ -52,7 +50,7 @@ export async function POST(req: NextRequest) {
     p.del(sessionMetaKey(id));
   }
   p.del(SESSIONS_ACTIVE_KEY);
-  for (const [guestId] of guestToSessions) {
+  for (const guestId of guestIds) {
     p.del(guestSessionsKey(guestId));
   }
   await p.exec();
