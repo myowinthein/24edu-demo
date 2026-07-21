@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import NavBar from '@/components/NavBar';
 
 export const metadata: Metadata = {
   title: 'Internal Demo',
@@ -19,7 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             color: '#14151a',
           }}
         >
-          <NavBar />
           {children}
         </div>
       </body>
