@@ -94,11 +94,11 @@
       "file": "app/api/admin/login/route.ts",
       "line": 18,
       "description": "Password is hashed with plain SHA-256 (no salt), vulnerable to rainbow-table attacks if the hash leaks. Migrate to bcrypt/scrypt. Also no brute-force protection — add a per-IP attempt counter in Redis with lockout.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
       "resolved_commit": null,
-      "resolved_date": null
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-007",
@@ -123,14 +123,14 @@
       "risk": "safe",
       "cluster_id": "c-001",
       "depends_on": [],
-      "file": "app/chat/page.tsx",
-      "line": 33,
-      "description": "formatRelativeTime and formatDate are duplicated verbatim in app/chat/page.tsx and app/admin/layout.tsx. Extract both to lib/format.ts and import from there.",
-      "status": "open",
+      "file": "lib/format.ts",
+      "line": 1,
+      "description": "formatRelativeTime and formatDate extracted to lib/format.ts and imported in all consumers.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "f553f89",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-009",
@@ -139,14 +139,14 @@
       "risk": "safe",
       "cluster_id": "c-002",
       "depends_on": [],
-      "file": "app/admin/sources/page.tsx",
-      "line": 27,
-      "description": "xlsxToCSV is a 115-line pure utility function defined inside a page component. Move to lib/xlsx-utils.ts and import it. This keeps the page file focused on UI logic.",
-      "status": "open",
+      "file": "lib/xlsx-utils.ts",
+      "line": 1,
+      "description": "xlsxToCSV extracted to lib/xlsx-utils.ts.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0c26074",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-010",
@@ -155,14 +155,14 @@
       "risk": "safe",
       "cluster_id": "c-003",
       "depends_on": [],
-      "file": "app/chat/page.tsx",
-      "line": 54,
-      "description": "getDeviceInfo is a 44-line UA-parsing utility defined inside the page component. Move to lib/device-info.ts.",
-      "status": "open",
+      "file": "lib/device-info.ts",
+      "line": 1,
+      "description": "getDeviceInfo extracted to lib/device-info.ts.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "78a5fc0",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-011",
@@ -173,12 +173,12 @@
       "depends_on": [],
       "file": "components/NavBar.tsx",
       "line": 1,
-      "description": "NavBar component is dead code — returns null for /admin and /chat routes, and app/sources/page.tsx redirects to /admin/sources. NavBar never renders. Remove the component and its import from app/layout.tsx. Also remove the 3-line redirect app/sources/page.tsx and handle it in middleware.ts instead.",
-      "status": "open",
+      "description": "Dead NavBar component removed; sources redirect moved to middleware.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a491021",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-012",
@@ -187,14 +187,14 @@
       "risk": "safe",
       "cluster_id": "c-013",
       "depends_on": [],
-      "file": "app/api/session/[id]/stream/route.ts",
+      "file": "lib/sse.ts",
       "line": 1,
-      "description": "Guest SSE stream and admin SSE stream (app/api/admin/sessions/[id]/stream/route.ts) are 90% identical — same ReadableStream setup, same headers, same ioredis subscriber lifecycle. Extract a shared createSessionSSE(channel, req) helper in lib/sse.ts returning a Response.",
-      "status": "open",
+      "description": "Shared createChannelSSE helper extracted to lib/sse.ts; both stream routes simplified.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "393e327",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-013",
@@ -205,12 +205,12 @@
       "depends_on": [],
       "file": "app/chat/page.tsx",
       "line": 123,
-      "description": "ChatPage is ~890 lines and handles sidebar, SSE, model picker, popover state, and message rendering in one component. Consider splitting into ChatSidebar, MessageList, and ChatInput sub-components to improve maintainability.",
-      "status": "open",
+      "description": "ChatPage split into ChatSidebar, MessageList, ChatInput sub-components in app/chat/components/.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4eeb35e",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-014",
@@ -347,9 +347,9 @@
       "risk": "safe",
       "cluster_id": "c-010",
       "depends_on": [],
-      "file": "app/chat/page.tsx",
-      "line": 598,
-      "description": "Messages use array index as React key (key={i}) in both app/chat/page.tsx and app/admin/sessions/[id]/page.tsx. Use a stable composite key like `${msg.timestamp}-${msg.role}` to avoid reconciliation bugs on re-render.",
+      "file": "app/chat/components/MessageList.tsx",
+      "line": 45,
+      "description": "Messages use array index as React key (key={i}) in MessageList and app/admin/sessions/[id]/page.tsx. Use a stable composite key like `${msg.timestamp}-${msg.role}` to avoid reconciliation bugs on re-render.",
       "status": "open",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
@@ -397,12 +397,12 @@
       "depends_on": [],
       "file": "app/chat/page.tsx",
       "line": 126,
-      "description": "const isChat = pathname.startsWith('/chat') is always true inside ChatPage (it IS the /chat route). Remove the variable and replace its use with a literal true, or inline the active style directly.",
-      "status": "open",
+      "description": "const isChat = pathname.startsWith('/chat') — always-true variable removed during ChatPage split (f-013).",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4eeb35e",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-026",
