@@ -286,7 +286,7 @@ export default function ChatPage() {
             </Link>
             {leadSubmitted && (
               <Link
-                href="/profile"
+                href="/chat/profile"
                 style={{
                   padding: '7px 13px',
                   borderRadius: 6,
@@ -296,7 +296,7 @@ export default function ChatPage() {
                   textDecoration: 'none',
                 }}
               >
-                My Info
+                👤 Profile
               </Link>
             )}
           </div>
