@@ -63,25 +63,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [readAt, setReadAt] = useState<Record<string, number>>({});
   const prevModesRef = useRef<Record<string, SessionMode>>({});
+  const isRefetchingRef = useRef(false);
 
   const fetchSessions = useCallback(async () => {
-    const res = await fetch('/api/admin/sessions');
-    if (res.status === 401) { router.push('/admin/login'); return; }
-    if (!res.ok) return;
-    const data = (await res.json()) as AdminSession[];
+    if (isRefetchingRef.current) return;
+    isRefetchingRef.current = true;
+    try {
+      const res = await fetch('/api/admin/sessions');
+      if (res.status === 401) { router.push('/admin/login'); return; }
+      if (!res.ok) return;
+      const data = (await res.json()) as AdminSession[];
 
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      data.forEach((s) => {
-        if (s.mode === 'requested' && prevModesRef.current[s.id] !== 'requested') {
-          new Notification('Support requested', {
-            body: `Guest #${s.guestId.slice(0, 8)} needs a human agent`,
-            icon: '/favicon.ico',
-          });
-        }
-      });
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        data.forEach((s) => {
+          if (s.mode === 'requested' && prevModesRef.current[s.id] !== 'requested') {
+            new Notification('Support requested', {
+              body: `Guest #${s.guestId.slice(0, 8)} needs a human agent`,
+              icon: '/favicon.ico',
+            });
+          }
+        });
+      }
+      prevModesRef.current = Object.fromEntries(data.map((s) => [s.id, s.mode]));
+      setSessions(data);
+    } finally {
+      isRefetchingRef.current = false;
     }
-    prevModesRef.current = Object.fromEntries(data.map((s) => [s.id, s.mode]));
-    setSessions(data);
   }, [router]);
 
   useEffect(() => {
