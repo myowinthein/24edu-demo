@@ -12,6 +12,13 @@ import { publishSession, publishSessions } from '@/lib/pubsub';
 import { queryRelevantChunks } from '@/lib/vector';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 
+const genAI = process.env.GEMINI_API_KEY
+  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+  : null;
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAX_MESSAGE_LENGTH = 4000;
+
 export async function POST(req: NextRequest) {
   const { message, sessionId, guestId, model, deviceInfo } = (await req.json()) as {
     message: string;
@@ -20,6 +27,16 @@ export async function POST(req: NextRequest) {
     model?: string;
     deviceInfo?: Record<string, string>;
   };
+
+  if (!message || typeof message !== 'string' || message.length > MAX_MESSAGE_LENGTH) {
+    return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
+  }
+  if (!UUID_RE.test(sessionId)) {
+    return NextResponse.json({ error: 'Invalid sessionId' }, { status: 400 });
+  }
+  if (guestId && !UUID_RE.test(guestId)) {
+    return NextResponse.json({ error: 'Invalid guestId' }, { status: 400 });
+  }
 
   const now = Date.now();
   const [stored, storedMode] = await Promise.all([
@@ -30,6 +47,10 @@ export async function POST(req: NextRequest) {
   const messages = stored ?? [];
   const mode = storedMode ?? 'ai';
   const isFirstMessage = messages.length === 0;
+
+  if (mode === 'ai' && !genAI) {
+    return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
+  }
 
   messages.push({ role: 'guest', text: message, timestamp: new Date().toISOString() });
 
@@ -62,10 +83,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ waiting: true });
   }
 
-  if (!process.env.GEMINI_API_KEY) {
-    return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
-  }
-
   const relevantChunks = await queryRelevantChunks(message);
 
   let systemInstruction =
@@ -80,9 +97,8 @@ export async function POST(req: NextRequest) {
       'No data sources are currently loaded. Let the user know they should upload a CSV or Excel file in the Sources section.';
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const modelName = model ?? 'gemini-3.1-flash-lite';
-  const geminiModel = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+  const geminiModel = genAI!.getGenerativeModel({ model: modelName, systemInstruction });
 
   // Build Gemini history from stored messages (exclude the message just sent)
   const geminiHistory = messages
