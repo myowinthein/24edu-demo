@@ -11,6 +11,7 @@ import { DEFAULT_MODEL, type ModelId, type SessionRow } from './constants';
 import { ChatSidebar } from './components/ChatSidebar';
 import { MessageList } from './components/MessageList';
 import { ChatInput } from './components/ChatInput';
+import { LeadForm } from './components/LeadForm';
 
 const LS_GUEST_ID = 'chat:guestId';
 
@@ -59,14 +60,19 @@ export default function ChatPage() {
   const [adminTyping, setAdminTyping] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
+  const [leadSubmitted, setLeadSubmitted] = useState<boolean | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    setGuestId(getOrCreateGuestId());
+    const gid = getOrCreateGuestId();
+    setGuestId(gid);
     setDeviceInfo(getDeviceInfo());
+    fetch(`/api/guest/${gid}/lead`)
+      .then((r) => setLeadSubmitted(r.ok))
+      .catch(() => setLeadSubmitted(false));
   }, []);
 
   useEffect(() => {
@@ -226,7 +232,7 @@ export default function ChatPage() {
     }
   };
 
-  const isReady = guestId !== null && sessionId !== null && hasSources !== null;
+  const isReady = guestId !== null && sessionId !== null && hasSources !== null && leadSubmitted !== null;
 
   return (
     <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
@@ -276,6 +282,8 @@ export default function ChatPage() {
               Loading chat…
             </div>
           </div>
+        ) : !leadSubmitted ? (
+          <LeadForm guestId={guestId!} onComplete={() => setLeadSubmitted(true)} />
         ) : !hasSources && mode === 'ai' ? (
           <div
             style={{

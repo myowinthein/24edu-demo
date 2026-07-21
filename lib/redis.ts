@@ -16,3 +16,6 @@ export const sessionModeKey = (id: string) => `session:${id}:mode`;
 export const sessionMetaKey = (id: string) => `session:${id}:meta`;
 export const guestSessionsKey = (guestId: string) => `guest:${guestId}:sessions`;
 export const adminSessionKey = (token: string) => `admin:session:${token}`;
+
+export const LEADS_ALL_KEY = 'leads:all';
+export const leadKey = (guestId: string) => `lead:${guestId}`;
