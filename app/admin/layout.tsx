@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { formatRelativeTime, formatDate } from '@/lib/format';
+import { formatRelativeTime } from '@/lib/format';
 import { navLinkStyle } from '@/lib/ui-styles';
 import type { SessionMode } from '@/lib/types';
 
@@ -17,6 +17,8 @@ interface AdminSession {
   email: string;
   phone: string;
   country: string;
+  educationLevel: string;
+  programOfInterest: string;
   intendedIntake: string;
 }
 
@@ -26,6 +28,8 @@ interface GuestGroup {
   email: string;
   phone: string;
   country: string;
+  educationLevel: string;
+  programOfInterest: string;
   intendedIntake: string;
   sessions: AdminSession[];
 }
@@ -52,12 +56,41 @@ const modeDot: Record<SessionMode, string> = {
   ended:     '#e5e7eb',
 };
 
-function InfoCell({ label, value, span }: { label: string; value: string; span?: number }) {
-  if (!value) return <div style={{ gridColumn: span ? `span ${span}` : undefined }} />;
+function GuestInfoDialog({ group, onClose }: { group: GuestGroup; onClose: () => void }) {
+  const rows: [string, string][] = [
+    ['Name',               group.name],
+    ['Email',              group.email],
+    ['Phone',              group.phone],
+    ['Country',            group.country],
+    ['Education level',    group.educationLevel],
+    ['Program of interest',group.programOfInterest],
+    ['Intended intake',    group.intendedIntake],
+    ['Guest ID',           group.guestId === '__unknown__' ? '—' : group.guestId],
+  ];
   return (
-    <div style={{ gridColumn: span ? `span ${span}` : undefined, minWidth: 0 }}>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#d1d5db', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</div>
-      <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</div>
+    <div
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 24 }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: '#fff', borderRadius: 12, padding: 28, width: 420, boxShadow: '0 8px 32px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', gap: 16 }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: 15, fontWeight: 600 }}>Guest info</div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 20, lineHeight: 1 }}>×</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
+          {rows.map(([label, value]) => (
+            <div key={label} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 8 }}>
+              <div style={{ color: '#9ca3af', fontSize: 12, fontWeight: 500, paddingTop: 1 }}>{label}</div>
+              <div style={{ color: value ? '#111827' : '#d1d5db', wordBreak: 'break-all', fontStyle: value ? 'normal' : 'italic' }}>
+                {value || '—'}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -75,6 +108,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sessions, setSessions] = useState<AdminSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [readAt, setReadAt] = useState<Record<string, number>>({});
+  const [viewGuest, setViewGuest] = useState<GuestGroup | null>(null);
   const prevModesRef = useRef<Record<string, SessionMode>>({});
   const isRefetchingRef = useRef(false);
 
@@ -146,10 +180,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     for (const s of sessions) {
       const gid = s.guestId || '__unknown__';
       if (!map.has(gid)) {
-        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, country: s.country, intendedIntake: s.intendedIntake, sessions: [] });
+        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, country: s.country, educationLevel: s.educationLevel, programOfInterest: s.programOfInterest, intendedIntake: s.intendedIntake, sessions: [] });
       }
       const group = map.get(gid)!;
-      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; group.country = s.country; group.intendedIntake = s.intendedIntake; }
+      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; group.country = s.country; group.educationLevel = s.educationLevel; group.programOfInterest = s.programOfInterest; group.intendedIntake = s.intendedIntake; }
       group.sessions.push(s);
     }
     return Array.from(map.values());
@@ -159,6 +193,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div style={{ flex: 1, display: 'flex', minHeight: 0, overflow: 'hidden' }}>
+      {viewGuest && <GuestInfoDialog group={viewGuest} onClose={() => setViewGuest(null)} />}
       {/* Sidebar — full window height */}
       <div
         style={{
@@ -248,33 +283,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         overflow: 'hidden',
                       }}
                     >
-                      {/* Guest header */}
-                      <div style={{ padding: '9px 12px 8px', borderBottom: '1px solid #f0f0f1' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                          </svg>
+                      {/* Guest header — click to view full info */}
+                      <button
+                        onClick={() => setViewGuest(group)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 7,
+                          width: '100%', padding: '9px 12px',
+                          borderBottom: '1px solid #f0f0f1',
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          textAlign: 'left',
+                        }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" style={{ flexShrink: 0 }}>
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                        </svg>
+                        <div style={{ flex: 1, minWidth: 0 }}>
                           {group.name ? (
-                            <span style={{ fontSize: 12, color: '#111827', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: 12, color: '#111827', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {group.name}
-                            </span>
+                            </div>
                           ) : (
-                            <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#374151', fontWeight: 600 }}>
+                            <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#374151', fontWeight: 600 }}>
                               #{group.guestId === '__unknown__' ? 'unknown' : group.guestId.slice(0, 12)}
-                            </span>
+                            </div>
+                          )}
+                          {group.email ? (
+                            <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
+                              {group.email}
+                            </div>
+                          ) : (
+                            <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No lead info</div>
                           )}
                         </div>
-                        {group.email ? (
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 8px', marginTop: 2 }}>
-                            <InfoCell label="Email" value={group.email} span={2} />
-                            <InfoCell label="Phone" value={group.phone} />
-                            <InfoCell label="Country" value={group.country} />
-                            <InfoCell label="Intake" value={group.intendedIntake} />
-                          </div>
-                        ) : (
-                          <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No lead info</div>
-                        )}
-                      </div>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                          <path d="M9 18l6-6-6-6" />
+                        </svg>
+                      </button>
 
                       {/* Sessions under this guest */}
                       <div style={{ padding: '4px 6px' }}>
@@ -334,17 +378,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 >
                                   #{s.id.slice(0, 8)}
                                 </span>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, flexShrink: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                                   {hasUnread && (
-                                    <span
-                                      style={{
-                                        width: 7, height: 7, borderRadius: '50%',
-                                        background: '#2563eb', flexShrink: 0,
-                                        marginBottom: 1,
-                                      }}
-                                    />
+                                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', flexShrink: 0 }} />
                                   )}
-                                  {s.createdAt && <span style={{ fontSize: 9, color: '#d1d5db' }}>{formatDate(s.createdAt)}</span>}
                                   {s.lastActiveAt && <span style={{ fontSize: 9, color: '#9ca3af' }}>{formatRelativeTime(s.lastActiveAt)}</span>}
                                 </div>
                               </Link>
