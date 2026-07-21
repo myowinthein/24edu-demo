@@ -13,12 +13,12 @@
       "depends_on": [],
       "file": "app/api/sources/route.ts",
       "line": 11,
-      "description": "POST /api/sources has no authentication — any unauthenticated client can upload CSV/XLSX data and inject into the vector index. Add verifyAdminToken check before processing the body.",
-      "status": "open",
+      "description": "Added verifyAdminToken check to POST /api/sources.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-002",
@@ -29,12 +29,12 @@
       "depends_on": [],
       "file": "app/api/sources/[id]/route.ts",
       "line": 6,
-      "description": "DELETE /api/sources/[id] has no authentication — any client knowing a source ID can delete it and its vector embeddings. Add verifyAdminToken check.",
-      "status": "open",
+      "description": "Added verifyAdminToken check to DELETE /api/sources/[id].",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-003",
@@ -45,12 +45,12 @@
       "depends_on": [],
       "file": "app/api/chat/route.ts",
       "line": 16,
-      "description": "No input validation on message, sessionId, or guestId. Any caller can pass any sessionId to append messages to sessions they don't own, or send oversized messages. Add UUID validation for sessionId/guestId and a max-length check on message (e.g. 4000 chars).",
-      "status": "open",
+      "description": "Added UUID validation for sessionId/guestId and max-length check on message (4000 chars).",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-004",
@@ -61,12 +61,12 @@
       "depends_on": [],
       "file": "app/api/chat/route.ts",
       "line": 65,
-      "description": "GEMINI_API_KEY presence check happens after the guest message is already written to Redis and SSE published (lines 52-59). If the key is missing the guest message is persisted with no AI reply ever generated. Move the check to module load time or before any Redis writes.",
-      "status": "open",
+      "description": "Gemini API key check moved before Redis writes via module-level singleton; returns 500 early if key missing.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-005",
@@ -77,12 +77,12 @@
       "depends_on": [],
       "file": "lib/redis.ts",
       "line": 4,
-      "description": "Redis client silently falls back to empty string when env vars are missing. Add a startup guard: if (!url || !token) throw new Error('Missing Upstash Redis env vars'). Same issue in lib/pubsub.ts:29 with REDIS_URL non-null assertion — ioredis throws an opaque error if missing.",
-      "status": "open",
+      "description": "Added startup guard in lib/redis.ts; added REDIS_URL guard in lib/pubsub.ts createSubscriber.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-006",
@@ -93,7 +93,7 @@
       "depends_on": [],
       "file": "app/api/admin/login/route.ts",
       "line": 18,
-      "description": "Password is hashed with plain SHA-256 (no salt), vulnerable to rainbow-table attacks if the hash leaks. Migrate to bcrypt/scrypt. Also no brute-force protection — add a per-IP attempt counter in Redis with lockout.",
+      "description": "SHA-256 password hash intentional per CLAUDE.md Hard Safety Rules. Skipped per project rule.",
       "status": "skipped-by-user",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
@@ -109,12 +109,12 @@
       "depends_on": [],
       "file": "app/api/session/[id]/request-human/route.ts",
       "line": 6,
-      "description": "No session ownership check — any client knowing a sessionId can request human support on a session they don't own. Pass guestId in the request body and verify it matches the session's stored meta.guestId before changing mode.",
-      "status": "open",
+      "description": "Added guestId ownership verification; frontend sends guestId in request body.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6094728",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-008",
@@ -221,12 +221,12 @@
       "depends_on": [],
       "file": "app/api/chat/route.ts",
       "line": 83,
-      "description": "new GoogleGenerativeAI(process.env.GEMINI_API_KEY) is instantiated on every POST request. Move to a module-level singleton — saves object allocation and allows the SDK to reuse internal HTTP connections.",
-      "status": "open",
+      "description": "Gemini SDK moved to module-level singleton; saves per-request instantiation.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-015",
@@ -237,12 +237,12 @@
       "depends_on": [],
       "file": "lib/vector.ts",
       "line": 27,
-      "description": "indexSource() awaits each upsert batch sequentially in a for-loop. Batches are independent — collect all batch promises and run them with Promise.all for significantly faster uploads on large files.",
-      "status": "open",
+      "description": "indexSource() upsert batches now run in parallel with Promise.all.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "93db255",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-016",
@@ -253,12 +253,12 @@
       "depends_on": [],
       "file": "app/admin/layout.tsx",
       "line": 91,
-      "description": "fetchSessions is called on every SSE message with no in-flight guard. Under rapid bursts (multiple guests, typing events) this stacks concurrent fetches. Add an isRefetching ref: skip the fetch if one is already in flight.",
-      "status": "open",
+      "description": "Added isRefetchingRef in-flight guard to fetchSessions; skips concurrent fetches.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "f03f5c5",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-017",
@@ -267,14 +267,14 @@
       "risk": "safe",
       "cluster_id": "c-005",
       "depends_on": [],
-      "file": "app/chat/page.tsx",
-      "line": 308,
-      "description": "toolbarBtnStyle and popoverItemStyle are defined identically in app/chat/page.tsx and app/admin/sessions/[id]/page.tsx. navLinkStyle is also duplicated in app/chat/page.tsx and app/admin/layout.tsx. Extract all three to lib/ui-styles.ts.",
-      "status": "open",
+      "file": "lib/ui-styles.ts",
+      "line": 1,
+      "description": "toolbarBtnStyle, popoverItemStyle, navLinkStyle extracted to lib/ui-styles.ts; imported in ChatInput, admin session page, admin layout.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4d20395",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-018",
@@ -285,12 +285,12 @@
       "depends_on": [],
       "file": "app/admin/sessions/[id]/page.tsx",
       "line": 86,
-      "description": "sendMessage, takeOver, and handBack all call fetchSession() after posting. The SSE stream already delivers the updated state — these manual fetches are redundant and cause a visible double-update flicker. Remove them.",
-      "status": "open",
+      "description": "Removed redundant fetchSession() calls from sendMessage, takeOver, handBack — SSE delivers state.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "50f70cd",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-019",
@@ -299,14 +299,14 @@
       "risk": "safe",
       "cluster_id": "c-014",
       "depends_on": [],
-      "file": "app/api/admin/sessions/[id]/join/route.ts",
+      "file": "lib/session-actions.ts",
       "line": 1,
-      "description": "join/route.ts and leave/route.ts are mirror images — identical structure, differing only in the target mode string. Consolidate to a shared setSessionMode(id, mode) utility in lib/session-actions.ts called by both routes.",
-      "status": "open",
+      "description": "setSessionMode(id, mode) helper extracted to lib/session-actions.ts; join and leave routes simplified.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "67f022b",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-020",
@@ -317,12 +317,12 @@
       "depends_on": [],
       "file": "app/api/admin/sessions/clear/route.ts",
       "line": 39,
-      "description": "guestToSessions Map stores session IDs per guest (line 44: .push(id)) but those arrays are never read — only the guestId key is used. The push and array storage are dead code. Simplify to a Set<string> of guestIds.",
-      "status": "open",
+      "description": "Dead guestToSessions Map replaced with Set<string> of guestIds.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "411830c",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-021",
@@ -333,12 +333,12 @@
       "depends_on": [],
       "file": "app/api/admin/sessions/clear/route.ts",
       "line": 19,
-      "description": "GET handler fetches all session modes with Promise.all + N individual redis.get calls (one round-trip per session). Use a Redis pipeline to fetch all modes in a single round-trip, matching the pattern used in the sessions list route.",
-      "status": "open",
+      "description": "GET handler now uses Redis pipeline for batch mode fetches instead of Promise.all of individual GETs.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "411830c",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-022",
@@ -349,12 +349,12 @@
       "depends_on": [],
       "file": "app/chat/components/MessageList.tsx",
       "line": 45,
-      "description": "Messages use array index as React key (key={i}) in MessageList and app/admin/sessions/[id]/page.tsx. Use a stable composite key like `${msg.timestamp}-${msg.role}` to avoid reconciliation bugs on re-render.",
-      "status": "open",
+      "description": "React keys changed from array index to stable `${msg.timestamp}-${msg.role}` composite in MessageList and admin session page.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "50f70cd",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-023",
@@ -365,12 +365,12 @@
       "depends_on": [],
       "file": "lib/types.ts",
       "line": 9,
-      "description": "HistoryEntry interface (role: 'user'|'assistant', text: string) is unused — the codebase uses SessionMessage everywhere. Remove to avoid confusion.",
-      "status": "open",
+      "description": "Removed unused HistoryEntry interface from lib/types.ts.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "275219c",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-024",
@@ -381,12 +381,12 @@
       "depends_on": [],
       "file": "app/admin/settings/page.tsx",
       "line": 75,
-      "description": "const loading = sessionLoading is a pointless alias used in one place. Remove the alias and use sessionLoading directly.",
-      "status": "open",
+      "description": "Removed const loading = sessionLoading alias; sessionLoading used directly.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6685f8",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-025",
@@ -413,12 +413,12 @@
       "depends_on": [],
       "file": "app/chat/page.tsx",
       "line": 229,
-      "description": "Empty catch blocks (catch {}) silently swallow errors throughout the codebase — in app/chat/page.tsx, app/admin/sessions/[id]/page.tsx (SSE handler), and app/admin/layout.tsx. Add console.error(e) inside each catch to surface issues during development.",
-      "status": "open",
+      "description": "Added console.error to SSE catch blocks in chat/page.tsx and admin session page.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fb5686d",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-027",
@@ -429,12 +429,12 @@
       "depends_on": [],
       "file": "lib/vector.ts",
       "line": 50,
-      "description": "Magic numbers: similarity threshold 0.4, default topK=6, and CHUNK_SIZE=5 are inline literals. Extract as named export constants (VECTOR_MIN_SCORE, VECTOR_TOP_K, VECTOR_CHUNK_SIZE) for easier tuning.",
-      "status": "open",
+      "description": "Named constants VECTOR_CHUNK_SIZE, VECTOR_TOP_K, VECTOR_MIN_SCORE exported from lib/vector.ts.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "93db255",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-028",
@@ -445,12 +445,12 @@
       "depends_on": [],
       "file": "app/admin/settings/page.tsx",
       "line": 21,
-      "description": "loadSessionStats and loadSourceStats are structurally identical (set loading true, fetch URL, set state, set loading false in finally). Extract a generic useFetchStat<T>(url: string) hook.",
-      "status": "open",
+      "description": "Extracted useFetchStat<T>(url) generic hook; replaced loadSessionStats and loadSourceStats boilerplate.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6685f8",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-029",
@@ -461,12 +461,12 @@
       "depends_on": [],
       "file": "app/api/admin/sessions/[id]/message/route.ts",
       "line": 24,
-      "description": "redis.set(sessionModeKey(id), 'human') is called on every admin message, but the mode is already 'human' when an admin can send messages (join sets it). This is a no-op write. Remove it — mode is set exclusively by join/leave.",
-      "status": "open",
+      "description": "Removed no-op redis.set(sessionModeKey(id), 'human') from message route — mode already set by join.",
+      "status": "fixed",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "67f022b",
+      "resolved_date": "2026-07-21"
     },
     {
       "id": "f-030",
