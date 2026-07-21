@@ -83,4 +83,14 @@ ADMIN_PASSWORD_HASH                        # SHA-256 hex of the admin password
 - **Session messages stored as full arrays.** Each write to Redis replaces the entire message array for a session. Long sessions accumulate payload; consider trimming if this becomes a problem.
 - **Vector score threshold is 0.4** (in `queryRelevantChunks`). Results below this are silently dropped; low-quality data or off-topic questions return zero chunks and Gemini falls back to a "no data loaded" message.
 
+## Rules
+
+This project follows the rules shipped in claude-helm:
+- ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
+- ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
+
+At the start of every session, check whether the paths above exist on this machine.
+If either is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
+plugin is not installed on this machine. Install it with: /plugin install claude-helm"
+
 <!-- last-reviewed: 1dceb0d -->
