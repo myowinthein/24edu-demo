@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { getDeviceInfo } from '@/lib/device-info';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { DEFAULT_MODEL, type ModelId, type SessionRow } from './constants';
@@ -55,6 +57,8 @@ export default function ChatPage() {
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL);
   const [deviceInfo, setDeviceInfo] = useState<Record<string, string>>({});
   const [adminTyping, setAdminTyping] = useState(false);
+  const [summarizing, setSummarizing] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -206,6 +210,22 @@ export default function ChatPage() {
     await fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' });
   };
 
+  const summarize = async () => {
+    if (!sessionId || summarizing) return;
+    setSummarizing(true);
+    setSummary(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/summary`);
+      if (!res.ok) throw new Error('Failed');
+      const data = await res.json();
+      setSummary(data.summary);
+    } catch {
+      setSummary('Could not generate summary. Please try again.');
+    } finally {
+      setSummarizing(false);
+    }
+  };
+
   const isReady = guestId !== null && sessionId !== null && hasSources !== null;
 
   return (
@@ -297,9 +317,37 @@ export default function ChatPage() {
               adminTyping={adminTyping}
               messagesEndRef={messagesEndRef}
             />
+            {summary !== null && (
+              <div
+                style={{
+                  flexShrink: 0,
+                  margin: '0 16px 4px',
+                  background: '#f0f9ff',
+                  border: '1px solid #bae6fd',
+                  borderRadius: 10,
+                  padding: '10px 14px 12px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    Conversation Summary
+                  </span>
+                  <button
+                    onClick={() => setSummary(null)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="md-body" style={{ fontSize: 13, color: '#0c4a6e' }}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
+                </div>
+              </div>
+            )}
             <ChatInput
               inputText={inputText}
               isLoading={isLoading}
+              summarizing={summarizing}
               selectedModel={selectedModel}
               mode={mode}
               textareaRef={textareaRef}
@@ -308,6 +356,7 @@ export default function ChatPage() {
               onRequestHuman={requestHuman}
               onSwitchToAI={switchToAI}
               onModelSelect={setSelectedModel}
+              onSummarize={summarize}
             />
           </>
         )}
