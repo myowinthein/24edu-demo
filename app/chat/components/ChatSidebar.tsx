@@ -8,6 +8,7 @@ interface ChatSidebarProps {
   onToggle: () => void;
   sessions: SessionRow[];
   sessionId: string | null;
+  name?: string | null;
   onNewChat: () => void;
   onSwitchSession: (id: string) => void;
 }
@@ -17,6 +18,7 @@ export function ChatSidebar({
   onToggle,
   sessions,
   sessionId,
+  name,
   onNewChat,
   onSwitchSession,
 }: ChatSidebarProps) {
@@ -45,8 +47,8 @@ export function ChatSidebar({
         }}
       >
         {sidebarOpen && (
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap' }}>
-            Internal Demo
+          <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }}>
+            {name ?? 'Student'}
           </span>
         )}
         <button
