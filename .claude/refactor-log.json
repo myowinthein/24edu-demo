@@ -1,356 +1,1870 @@
 {
-  "last_scanned_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+  "last_scanned_commit": "ce49a20",
   "last_mode": "deep",
   "last_scan_date": "2026-07-23",
   "consecutive_quick_count": 0,
   "findings": [
     {
-      "id": "f-001", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-006", "depends_on": [], "file": "app/api/sources/route.ts", "line": 11, "description": "Added verifyAdminToken check to POST /api/sources.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "438c091", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-002", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-006", "depends_on": [], "file": "app/api/sources/[id]/route.ts", "line": 6, "description": "Added verifyAdminToken check to DELETE /api/sources/[id].", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "438c091", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-003", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-008", "depends_on": [], "file": "app/api/chat/route.ts", "line": 16, "description": "Added UUID validation for sessionId/guestId and max-length check on message (4000 chars).", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "fe5a318", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-004", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-008", "depends_on": [], "file": "app/api/chat/route.ts", "line": 65, "description": "Gemini API key check moved before Redis writes via module-level singleton; returns 500 early if key missing.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "fe5a318", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-005", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-007", "depends_on": [], "file": "lib/redis.ts", "line": 4, "description": "Added startup guard in lib/redis.ts; added REDIS_URL guard in lib/pubsub.ts createSubscriber.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "438c091", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-006", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-019", "depends_on": [], "file": "app/api/admin/login/route.ts", "line": 18, "description": "SHA-256 password hash intentional per CLAUDE.md Hard Safety Rules. Skipped per project rule.", "status": "skipped-by-user", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": null, "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-007", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-020", "depends_on": [], "file": "app/api/session/[id]/request-human/route.ts", "line": 6, "description": "Added guestId ownership verification; frontend sends guestId in request body.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "6094728", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-008", "category": "architecture", "priority": "high", "risk": "safe", "cluster_id": "c-001", "depends_on": [], "file": "lib/format.ts", "line": 1, "description": "formatRelativeTime and formatDate extracted to lib/format.ts and imported in all consumers.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "f553f89", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-009", "category": "architecture", "priority": "high", "risk": "safe", "cluster_id": "c-002", "depends_on": [], "file": "lib/xlsx-utils.ts", "line": 1, "description": "xlsxToCSV extracted to lib/xlsx-utils.ts.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "0c26074", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-010", "category": "architecture", "priority": "high", "risk": "safe", "cluster_id": "c-003", "depends_on": [], "file": "lib/device-info.ts", "line": 1, "description": "getDeviceInfo extracted to lib/device-info.ts.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "78a5fc0", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-011", "category": "architecture", "priority": "medium", "risk": "safe", "cluster_id": "c-004", "depends_on": [], "file": "components/NavBar.tsx", "line": 1, "description": "Dead NavBar component removed; sources redirect moved to middleware.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "a491021", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-012", "category": "architecture", "priority": "medium", "risk": "safe", "cluster_id": "c-013", "depends_on": [], "file": "lib/sse.ts", "line": 1, "description": "Shared createChannelSSE helper extracted to lib/sse.ts; both stream routes simplified.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "393e327", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-013", "category": "architecture", "priority": "medium", "risk": "needs-review", "cluster_id": "c-018", "depends_on": [], "file": "app/chat/page.tsx", "line": 123, "description": "ChatPage split into ChatSidebar, MessageList, ChatInput sub-components in app/chat/components/.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "4eeb35e", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-014", "category": "performance", "priority": "high", "risk": "safe", "cluster_id": "c-008", "depends_on": [], "file": "app/api/chat/route.ts", "line": 83, "description": "Gemini SDK moved to module-level singleton; saves per-request instantiation.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "fe5a318", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-015", "category": "performance", "priority": "medium", "risk": "safe", "cluster_id": "c-009", "depends_on": [], "file": "lib/vector.ts", "line": 27, "description": "indexSource() upsert batches now run in parallel with Promise.all.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "93db255", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-016", "category": "performance", "priority": "medium", "risk": "needs-review", "cluster_id": "c-015", "depends_on": [], "file": "app/admin/layout.tsx", "line": 91, "description": "Added isRefetchingRef in-flight guard to fetchSessions; skips concurrent fetches.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "f03f5c5", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-017", "category": "code_quality", "priority": "high", "risk": "safe", "cluster_id": "c-005", "depends_on": [], "file": "lib/ui-styles.ts", "line": 1, "description": "toolbarBtnStyle, popoverItemStyle, navLinkStyle extracted to lib/ui-styles.ts; imported in ChatInput, admin session page, admin layout.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "4d20395", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-018", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-010", "depends_on": [], "file": "app/admin/sessions/[id]/page.tsx", "line": 86, "description": "Removed redundant fetchSession() calls from sendMessage, takeOver, handBack — SSE delivers state.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "50f70cd", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-019", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-014", "depends_on": [], "file": "lib/session-actions.ts", "line": 1, "description": "setSessionMode(id, mode) helper extracted to lib/session-actions.ts; join and leave routes simplified.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "67f022b", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-020", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-012", "depends_on": [], "file": "app/api/admin/sessions/clear/route.ts", "line": 39, "description": "Dead guestToSessions Map replaced with Set<string> of guestIds.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "411830c", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-021", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-012", "depends_on": [], "file": "app/api/admin/sessions/clear/route.ts", "line": 19, "description": "GET handler now uses Redis pipeline for batch mode fetches instead of Promise.all of individual GETs.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "411830c", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-022", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-010", "depends_on": [], "file": "app/chat/components/MessageList.tsx", "line": 45, "description": "React keys changed from array index to stable `${msg.timestamp}-${msg.role}` composite in MessageList and admin session page.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "50f70cd", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-023", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-016", "depends_on": [], "file": "lib/types.ts", "line": 9, "description": "Removed unused HistoryEntry interface from lib/types.ts.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "275219c", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-024", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-011", "depends_on": [], "file": "app/admin/settings/page.tsx", "line": 75, "description": "Removed const loading = sessionLoading alias; sessionLoading used directly.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "a6685f8", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-025", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-010", "depends_on": [], "file": "app/chat/page.tsx", "line": 126, "description": "const isChat = pathname.startsWith('/chat') — always-true variable removed during ChatPage split (f-013).", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "4eeb35e", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-026", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-017", "depends_on": [], "file": "app/chat/page.tsx", "line": 229, "description": "Added console.error to SSE catch blocks in chat/page.tsx and admin session page.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "fb5686d", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-027", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-009", "depends_on": [], "file": "lib/vector.ts", "line": 50, "description": "Named constants VECTOR_CHUNK_SIZE, VECTOR_TOP_K, VECTOR_MIN_SCORE exported from lib/vector.ts.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "93db255", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-028", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-011", "depends_on": [], "file": "app/admin/settings/page.tsx", "line": 21, "description": "Extracted useFetchStat<T>(url) generic hook; replaced loadSessionStats and loadSourceStats boilerplate.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "a6685f8", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-029", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-014", "depends_on": [], "file": "app/api/admin/sessions/[id]/message/route.ts", "line": 24, "description": "Removed no-op redis.set(sessionModeKey(id), 'human') from message route — mode already set by join.", "status": "fixed", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": "67f022b", "resolved_date": "2026-07-21"
-    },
-    {
-      "id": "f-030", "category": "dependencies", "priority": "medium", "risk": "needs-review", "cluster_id": "c-021", "depends_on": [], "file": "package.json", "line": 19, "description": "xlsx (SheetJS Community Edition ^0.18.5) has known security advisories and has been effectively abandoned since 2023. Consider replacing with exceljs or adding lockfile audit to CI.", "status": "skipped-by-user", "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc", "first_found_date": "2026-07-21", "resolved_commit": null, "resolved_date": "2026-07-22"
-    },
-    {
-      "id": "f-031", "category": "architecture", "priority": "high", "risk": "safe", "cluster_id": "c-031", "depends_on": [], "file": "app/api/admin/sessions/stream/route.ts", "line": 14, "description": "Admin global sessions SSE stream duplicates createChannelSSE factory inline instead of calling lib/sse.ts; also ignores message payload and always sends 'data: update\\n\\n'.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-032", "category": "architecture", "priority": "medium", "risk": "safe", "cluster_id": "c-032", "depends_on": [], "file": "app/api/sources/route.ts", "line": 36, "description": "Sources POST has a read-then-write race: sources list fetched before indexing and again after — concurrent uploads can see stale state.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-033", "category": "architecture", "priority": "medium", "risk": "needs-review", "cluster_id": "c-033", "depends_on": [], "file": "middleware.ts", "line": 25, "description": "Middleware matcher doesn't cover /api/sources* routes; POST/DELETE are auth-guarded within handlers but not at middleware level — verify intentional.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-034", "category": "architecture", "priority": "medium", "risk": "needs-review", "cluster_id": "c-034", "depends_on": [], "file": "app/api/chat/route.ts", "line": 168, "description": "Unhandled Gemini API errors: chat.sendMessage() rejections propagate as unhandled promise rejections with no JSON body — wrap in try/catch as already done in summary/route.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-035", "category": "architecture", "priority": "low", "risk": "safe", "cluster_id": "c-035", "depends_on": [], "file": "lib/sse.ts", "line": 21, "description": "SSE abort handler: sub.unsubscribe().then(() => sub.disconnect()) has no .catch(); unsubscribe errors surface as unhandled rejections on Vercel.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-036", "category": "architecture", "priority": "low", "risk": "safe", "cluster_id": "c-036", "depends_on": [], "file": "app/chat/constants.ts", "line": 1, "description": "SessionRow type is defined in constants.ts (a UI file) but is a data shape — belongs in lib/types.ts alongside SessionMeta, SessionMessage, LeadData.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-037", "category": "architecture", "priority": "low", "risk": "safe", "cluster_id": "c-037", "depends_on": [], "file": "app/admin/settings/page.tsx", "line": 26, "description": "useFetchStat fetches stats via GET /api/admin/sessions/clear, /leads/clear, /sources/clear — stats display is tightly coupled to destructive-action routes.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-038", "category": "architecture", "priority": "low", "risk": "needs-review", "cluster_id": "c-038", "depends_on": [], "file": "vercel.json", "line": 1, "description": "No Vercel region or function config — SSE routes share a TCP connection to a fixed Upstash Redis endpoint; pinning to one region reduces latency.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-039", "category": "architecture", "priority": "low", "risk": "needs-review", "cluster_id": "c-039", "depends_on": [], "file": "app/(user-area)/layout.tsx", "line": 20, "description": "isChat/isProfile use exact pathname match — adding a new user-area route requires updating this component; use startsWith or a route config array.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-040", "category": "security", "priority": "high", "risk": "safe", "cluster_id": "c-040", "depends_on": [], "file": "next.config.js", "line": 2, "description": "No HTTP security headers configured — add X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS, and CSP via next.config.js headers().", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-041", "category": "security", "priority": "high", "risk": "needs-review", "cluster_id": "c-041", "depends_on": [], "file": "app/api/chat/route.ts", "line": 140, "description": "User-supplied model string passed directly to Gemini's getGenerativeModel() without validating against MODELS allowlist in app/chat/constants.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-042", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-042", "depends_on": [], "file": "app/api/session/[id]/end/route.ts", "line": 6, "description": "/api/session/[id]/end accepts POST from any caller — add guestId ownership check matching the pattern in request-human/route.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-043", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-043", "depends_on": [], "file": "app/api/session/[id]/switch-ai/route.ts", "line": 6, "description": "/api/session/[id]/switch-ai accepts POST from any caller — add verifyAdminToken since switching a session back to AI is an admin operation.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-044", "category": "security", "priority": "medium", "risk": "safe", "cluster_id": "c-032", "depends_on": [], "file": "app/api/sources/route.ts", "line": 7, "description": "GET /api/sources returns full list of source filenames, IDs, and chunk counts with no auth — add verifyAdminToken to GET handler.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-045", "category": "security", "priority": "medium", "risk": "safe", "cluster_id": "c-044", "depends_on": [], "file": "lib/vector.ts", "line": 3, "description": "UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN use non-null assertion (!) with no startup guard — add explicit guard matching the pattern in lib/redis.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-046", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-045", "depends_on": [], "file": "app/api/admin/sessions/[id]/message/route.ts", "line": 16, "description": "Admin message text field not validated for presence, type, or length before being stored in Redis.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-047", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-046", "depends_on": [], "file": "app/api/admin/leads/route.ts", "line": 14, "description": "Sort query param used as a key into LeadData objects without allowlisting valid field names.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-048", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-047", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 209, "description": "requestHuman and switchToAI are fire-and-forget — a failed fetch silently leaves session mode desynced from the server with no user feedback.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-049", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-047", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 221, "description": "endChat is fire-and-forget — a network failure leaves the session open on the server while the UI does nothing.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-050", "category": "security", "priority": "medium", "risk": "needs-review", "cluster_id": "c-033", "depends_on": [], "file": "middleware.ts", "line": 14, "description": "Token presence (cookie exists) but not validity checked in middleware — stale/forged admin_token passes the gate; only caught inside individual API route handlers.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-051", "category": "security", "priority": "medium", "risk": "safe", "cluster_id": "c-040", "depends_on": ["f-040"], "file": "vercel.json", "line": 1, "description": "vercel.json has no security headers — paired with f-040: one of next.config.js or vercel.json must define them.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-052", "category": "security", "priority": "low", "risk": "needs-review", "cluster_id": "c-048", "depends_on": [], "file": "app/api/admin/logout/route.ts", "line": 4, "description": "Logout route performs no auth check before clearing the cookie — harmless but inconsistent with the rest of the admin surface.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-053", "category": "security", "priority": "low", "risk": "needs-review", "cluster_id": "c-049", "depends_on": [], "file": "app/admin/layout.tsx", "line": 123, "description": "s.guestId.slice(0,8) appears in browser notification body — partial internal identifier exposed to OS notification center logs.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-054", "category": "security", "priority": "low", "risk": "needs-review", "cluster_id": "c-033", "depends_on": [], "file": "middleware.ts", "line": 10, "description": "/admin/login bypass uses exact string match — /admin/login/ with trailing slash would still be blocked; use pathname.split('?')[0] === '/admin/login'.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-055", "category": "code_quality", "priority": "high", "risk": "safe", "cluster_id": "c-050", "depends_on": [], "file": "app/chat/components/LeadForm.tsx", "line": 4, "description": "COUNTRY_CODES, COUNTRIES, EDUCATION_LEVELS, MONTHS, validate(), and border helpers fully duplicated between LeadForm.tsx and app/(user-area)/profile/page.tsx — extract to a shared module.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-056", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-051", "depends_on": [], "file": "lib/types.ts", "line": 12, "description": "SessionMeta type missing lastActiveAt field — set and read in at least 3 call-sites but defined ad-hoc in layout files rather than the canonical type.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-057", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-044", "depends_on": [], "file": "lib/vector.ts", "line": 12, "description": "CHUNK_SIZE is a redundant local alias for VECTOR_CHUNK_SIZE defined two lines above — remove and use VECTOR_CHUNK_SIZE directly.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-058", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-031", "depends_on": ["f-031"], "file": "app/api/admin/sessions/stream/route.ts", "line": 18, "description": "SSE stream ignores message payload and always sends 'data: update\\n\\n' — fixed as part of refactoring to use createChannelSSE (f-031).", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-059", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-045", "depends_on": [], "file": "app/api/admin/sessions/[id]/message/route.ts", "line": 18, "description": "Admin message route hardcodes mode:'human' in publishSession call — if session is in 'requested' or 'ai' mode the published event incorrectly signals 'human'.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-060", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-052", "depends_on": [], "file": "app/api/session/[id]/summary/route.ts", "line": 34, "description": "Hardcoded 'gemini-3.1-flash-lite' string literal — should reference DEFAULT_MODEL from app/chat/constants.ts to avoid drift.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-061", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-052", "depends_on": [], "file": "app/api/chat/route.ts", "line": 140, "description": "Fallback model hardcoded as string literal instead of importing DEFAULT_MODEL from app/chat/constants.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-062", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-053", "depends_on": [], "file": "app/admin/sources/page.tsx", "line": 193, "description": "Upload response not checked for !resp.ok before resp.json() — a 400/500 silently calls resp.json() on an error body.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-063", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-053", "depends_on": [], "file": "app/admin/sources/page.tsx", "line": 208, "description": "Remove response not checked for !resp.ok before resp.json() — same bug as the upload path.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-064", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-054", "depends_on": [], "file": "app/admin/leads/page.tsx", "line": 36, "description": "fetchLeads missing try/finally to clear loading state — if the fetch throws, setLoading(false) is never called and the spinner hangs.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-065", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-055", "depends_on": [], "file": "app/admin/sessions/[id]/page.tsx", "line": 32, "description": "First useEffect omits fetchSession from its dependency array — fetchSession is a useCallback depending on [id, router]; stale closure risk if router identity changes.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-066", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-056", "depends_on": [], "file": "package.json", "line": 5, "description": "No lint or type-check scripts — add 'lint': 'next lint' and 'type-check': 'tsc --noEmit'.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-067", "category": "code_quality", "priority": "medium", "risk": "safe", "cluster_id": "c-047", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 147, "description": "Catch clause `catch (e)` shadows the outer variable `e` in the SSE onmessage handler — rename to err or parseErr.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-068", "category": "code_quality", "priority": "medium", "risk": "needs-review", "cluster_id": "c-057", "depends_on": [], "file": "lib/device-info.ts", "line": 25, "description": "Mac OS X branch fires before iPhone/iPad branches — all iPhone/iPad UAs include 'like Mac OS X', making iOS/iPadOS branches unreachable; fix branch order.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-069", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-054", "depends_on": [], "file": "app/admin/leads/page.tsx", "line": 19, "description": "Local formatDate uses en-MY locale — if intentional, rename to formatDateLocale; if not, consolidate into lib/format.ts with an optional locale param.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-070", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-054", "depends_on": [], "file": "app/admin/leads/page.tsx", "line": 104, "description": "Local btnStyle constant duplicates toolbarBtnStyle from lib/ui-styles.ts — import and use the shared constant.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-071", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-049", "depends_on": [], "file": "app/admin/layout.tsx", "line": 172, "description": "handleAccept and handleLogout fire-and-forget fetch calls with no error handling — a failed join or logout leaves the UI in inconsistent state.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-072", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-053", "depends_on": [], "file": "app/admin/sources/page.tsx", "line": 174, "description": "alert() and confirm() used for duplicate detection and removal confirmation — blocks main thread, inaccessible; replace with inline state-driven confirmation UI.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-073", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-053", "depends_on": [], "file": "app/admin/sources/page.tsx", "line": 200, "description": "Upload error has no user-visible feedback — only console.error is called; button silently resets to idle on failure.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-074", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-058", "depends_on": [], "file": "app/api/admin/sessions/route.ts", "line": 43, "description": "Inline type annotation repeats all seven LeadData fields — use Pick<LeadData, ...> or LeadData directly to avoid duplication with lib/types.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-075", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-059", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 15, "description": "SpinnerIcon SVG defined inline in chat/page.tsx and duplicated in profile/page.tsx — extract to a shared Spinner component in app/chat/components/.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-076", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-050", "depends_on": [], "file": "app/(user-area)/profile/page.tsx", "line": 134, "description": "CURRENT_YEAR computed at module load time in both LeadForm.tsx and profile/page.tsx — move inside validate() or the shared data module to avoid year-boundary caching issue.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-077", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-060", "depends_on": [], "file": "app/api/guest/[guestId]/sessions/route.ts", "line": 9, "description": "guestId param not validated against UUID_RE before use in Redis key — inconsistent with app/api/guest/[guestId]/lead/route.ts which validates.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-078", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-042", "depends_on": [], "file": "app/api/session/[id]/end/route.ts", "line": 9, "description": "id param not validated against UUID pattern before use in Redis key helpers — add UUID guard consistent with summary/route.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-079", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-043", "depends_on": [], "file": "app/api/session/[id]/switch-ai/route.ts", "line": 9, "description": "id param not validated against UUID pattern — add UUID guard consistent with summary/route.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-080", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-061", "depends_on": [], "file": "app/api/session/[id]/route.ts", "line": 5, "description": "id param not validated against UUID pattern — add UUID guard consistent with summary/route.ts.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-081", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-062", "depends_on": [], "file": "app/api/admin/sessions/[id]/stream/route.ts", "line": 8, "description": "401 response returned as plain Response (not JSON) — inconsistent with non-SSE admin routes that return NextResponse.json; at minimum return a consistent error body.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-082", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-056", "depends_on": [], "file": "package.json", "line": 25, "description": "Missing eslint and eslint-config-next in devDependencies — next lint will fail without eslint-config-next.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-083", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-063", "depends_on": [], "file": "vitest.config.ts", "line": 9, "description": "include patterns don't cover .tsx test files — add '**/*.test.tsx' and '**/*.spec.tsx' so future component tests are not silently ignored.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-084", "category": "code_quality", "priority": "low", "risk": "safe", "cluster_id": "c-059", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 5, "description": "ReactMarkdown imported in both ChatPage (for summary panel) and MessageList.tsx (for message rendering) — two independent markdown instances; extracting the summary panel to a component would consolidate.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-085", "category": "performance", "priority": "medium", "risk": "safe", "cluster_id": "c-047", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 63, "description": "Sources fetch uncancelled on unmount — setHasSources called on unmounted component if fetch resolves late; add AbortController matching the SSE effect pattern at line 127.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-086", "category": "performance", "priority": "medium", "risk": "safe", "cluster_id": "c-064", "depends_on": [], "file": "app/(user-area)/UserAreaContext.tsx", "line": 56, "description": "Two fetch calls in UserAreaProvider run serially and are uncancelled — wrap in Promise.all and add AbortController cleanup.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-087", "category": "performance", "priority": "medium", "risk": "safe", "cluster_id": "c-047", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 159, "description": "Scroll-to-bottom effect depends on both messages and isLoading — triggers DOM read when isLoading toggles with no new messages; scope to messages.length.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-088", "category": "performance", "priority": "medium", "risk": "needs-review", "cluster_id": "c-046", "depends_on": [], "file": "app/api/admin/leads/route.ts", "line": 19, "description": "All lead records fetched from Redis and sorted in-process on every request — O(n) amplification; Redis sorted sets would enable server-side pagination at scale.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-089", "category": "performance", "priority": "medium", "risk": "safe", "cluster_id": "c-042", "depends_on": [], "file": "app/api/session/[id]/end/route.ts", "line": 10, "description": "sessionModeKey written before checking if session exists — mode key written even when messages is null (session not found); add existence guard before write.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-090", "category": "performance", "priority": "low", "risk": "safe", "cluster_id": "c-065", "depends_on": [], "file": "app/api/admin/sessions/clear/route.ts", "line": 38, "description": "Meta records fetched with Promise.all of individual redis.get calls — replace with a pipeline to reduce round-trips.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-091", "category": "performance", "priority": "low", "risk": "needs-review", "cluster_id": "c-066", "depends_on": [], "file": "app/api/sources/[id]/rows/route.ts", "line": 39, "description": "All chunks fetched from vector index in one call with no pagination — large sources produce large payloads; add page/limit if this becomes a problem.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-092", "category": "performance", "priority": "low", "risk": "needs-review", "cluster_id": "c-044", "depends_on": [], "file": "lib/vector.ts", "line": 84, "description": "Vector score filter uses strict > instead of >= — a score exactly equal to VECTOR_MIN_SCORE (0.4) is silently dropped; clarify intent or change to >= and update constant name.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-093", "category": "performance", "priority": "low", "risk": "needs-review", "cluster_id": "c-049", "depends_on": [], "file": "app/admin/layout.tsx", "line": 437, "description": "Admin nav links to sessions[0].id in unsorted array — may not be the most recently active session; sort by lastActiveAt desc before using index 0.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-094", "category": "tests", "priority": "high", "risk": "safe", "cluster_id": "c-067", "depends_on": [], "file": "tests/api/chat.test.ts", "line": 71, "description": "Happy-path response body never asserted — a regression changing { text } to { reply } would pass all tests; add assertion for response body shape.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-095", "category": "tests", "priority": "high", "risk": "safe", "cluster_id": "c-067", "depends_on": [], "file": "tests/api/chat.test.ts", "line": 58, "description": "GEMINI_API_KEY-missing 500 path has zero coverage — vitest.setup.ts always provides the key; add a test that clears the env var for the genAI-null guard branch.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-096", "category": "tests", "priority": "high", "risk": "safe", "cluster_id": "c-068", "depends_on": [], "file": "tests/api/admin/", "line": 1, "description": "Zero tests for 6 admin session sub-routes: join, leave, message, typing, GET /sessions/[id], GET /sessions — including auth-guarded paths and mode changes.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-097", "category": "tests", "priority": "high", "risk": "safe", "cluster_id": "c-069", "depends_on": [], "file": "tests/api/session/", "line": 1, "description": "No tests for /api/session/[id]/end or /api/session/[id]/switch-ai — two session-control routes that write mode to Redis and publish events are completely uncovered.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-098", "category": "tests", "priority": "high", "risk": "safe", "cluster_id": "c-070", "depends_on": [], "file": "tests/api/admin/", "line": 1, "description": "No tests for /api/admin/leads/clear or /api/admin/sources/clear — clear-all mutations are completely untested.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-099", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-071", "depends_on": [], "file": "tests/api/admin/sessions-clear.test.ts", "line": 99, "description": "SESSIONS_ACTIVE_KEY delete not asserted in POST clear test — the production pipeline del(SESSIONS_ACTIVE_KEY) step is not verified.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-100", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-072", "depends_on": [], "file": "tests/api/admin/leads.test.ts", "line": 5, "description": "verifyAdminToken always mocked true — no 401 path tested; auth guard could be removed without any test failure.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-101", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-073", "depends_on": [], "file": "tests/api/sources.test.ts", "line": 5, "description": "Same auth mock problem — no 401 path tested for POST /api/sources or GET /api/sources/[id]/rows.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-102", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-074", "depends_on": [], "file": "tests/lib/vector.test.ts", "line": 1, "description": "indexSource, deleteSourceVectors, and queryRelevantChunks not tested — only chunkCsv and chunkVectorId covered; score filtering at VECTOR_MIN_SCORE has zero coverage.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-103", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-075", "depends_on": [], "file": "tests/lib/pubsub.test.ts", "line": 9, "description": "createSubscriber not tested — missing REDIS_URL error throw and happy-path subscriber instantiation are uncovered.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-104", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-076", "depends_on": [], "file": "tests/api/session/request-human.test.ts", "line": 44, "description": "Promise.all mock ordering is fragile — sequential mockResolvedValueOnce values are positional; reordering Promise.all arguments produces wrong test results with no failure.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-105", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-067", "depends_on": [], "file": "tests/api/chat.test.ts", "line": 104, "description": "Same Promise.all ordering assumption — hardcoded [messages, mode] order in mock setup; a comment documents the risk but no guard exists.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-106", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-077", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 1, "description": "ChatPage has no unit or integration tests — sendMessage optimistic update, pendingSession state machine, and SSE reconnect are complex uncovered paths.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-107", "category": "tests", "priority": "medium", "risk": "safe", "cluster_id": "c-078", "depends_on": [], "file": "tests/lib/session-actions.test.ts", "line": 30, "description": "session-actions test doesn't verify concurrent execution — asserts calls happened but not that redis.set and redis.get were initiated concurrently via Promise.all.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-108", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-079", "depends_on": [], "file": "tests/api/guest/sessions.test.ts", "line": 28, "description": "Non-UUID guestId ('g-0001') used in tests — if UUID validation is added, tests silently return 400 without an obvious explanation; use a real UUID constant.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-109", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-073", "depends_on": [], "file": "tests/api/sources.test.ts", "line": 86, "description": "rowCount only asserted to be typeof 'number' in multi-sheet test — not a concrete value; doesn't verify counting logic.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-110", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-080", "depends_on": [], "file": "tests/lib/format.test.ts", "line": 1, "description": "Invalid date strings untested — error-handling paths of formatRelativeTime and formatDate for invalid input are uncovered.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-111", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-081", "depends_on": [], "file": "tests/api/admin/login.test.ts", "line": 46, "description": "Login success test doesn't assert SameSite or Path cookie attributes — a regression removing SameSite=Strict would go undetected.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-112", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-082", "depends_on": [], "file": "tests/middleware.test.ts", "line": 1, "description": "/api/admin/logout not explicitly tested in middleware tests — intentionally works without auth, but no test documents this decision.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-113", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-069", "depends_on": [], "file": "tests/api/session/", "line": 1, "description": "No test for switch-ai idempotency or non-existent session — given the missing auth gap (f-043), the security-test gap doubles the risk.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-114", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-050", "depends_on": ["f-055"], "file": "app/chat/components/LeadForm.tsx", "line": 172, "description": "LeadForm validate() is unexported and untested — extracting to the shared data module (f-055) would enable direct testing.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-115", "category": "tests", "priority": "low", "risk": "safe", "cluster_id": "c-083", "depends_on": [], "file": "app/admin/leads/page.tsx", "line": 66, "description": "exportCSV, exportJSON, exportExcel untested — manipulate the DOM and have the silent page-limit bug (current-page only); add tests that mock URL.createObjectURL.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
-    },
-    {
-      "id": "f-116", "category": "dependencies", "priority": "low", "risk": "safe", "cluster_id": "c-059", "depends_on": [], "file": "app/(user-area)/chat/page.tsx", "line": 5, "description": "react-markdown loaded eagerly in ChatPage solely for the conditionally-rendered summary panel — consider next/dynamic to defer bundle weight if summary is rarely used.", "status": "open", "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c", "first_found_date": "2026-07-23", "resolved_commit": null, "resolved_date": null
+      "id": "f-001",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-006",
+      "depends_on": [],
+      "file": "app/api/sources/route.ts",
+      "line": 11,
+      "description": "Added verifyAdminToken check to POST /api/sources.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-002",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-006",
+      "depends_on": [],
+      "file": "app/api/sources/[id]/route.ts",
+      "line": 6,
+      "description": "Added verifyAdminToken check to DELETE /api/sources/[id].",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-003",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-008",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 16,
+      "description": "Added UUID validation for sessionId/guestId and max-length check on message (4000 chars).",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-004",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-008",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 65,
+      "description": "Gemini API key check moved before Redis writes via module-level singleton; returns 500 early if key missing.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-005",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-007",
+      "depends_on": [],
+      "file": "lib/redis.ts",
+      "line": 4,
+      "description": "Added startup guard in lib/redis.ts; added REDIS_URL guard in lib/pubsub.ts createSubscriber.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "438c091",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-006",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-019",
+      "depends_on": [],
+      "file": "app/api/admin/login/route.ts",
+      "line": 18,
+      "description": "SHA-256 password hash intentional per CLAUDE.md Hard Safety Rules. Skipped per project rule.",
+      "status": "skipped-by-user",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": null,
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-007",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-020",
+      "depends_on": [],
+      "file": "app/api/session/[id]/request-human/route.ts",
+      "line": 6,
+      "description": "Added guestId ownership verification; frontend sends guestId in request body.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "6094728",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-008",
+      "category": "architecture",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-001",
+      "depends_on": [],
+      "file": "lib/format.ts",
+      "line": 1,
+      "description": "formatRelativeTime and formatDate extracted to lib/format.ts and imported in all consumers.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "f553f89",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-009",
+      "category": "architecture",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-002",
+      "depends_on": [],
+      "file": "lib/xlsx-utils.ts",
+      "line": 1,
+      "description": "xlsxToCSV extracted to lib/xlsx-utils.ts.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "0c26074",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-010",
+      "category": "architecture",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-003",
+      "depends_on": [],
+      "file": "lib/device-info.ts",
+      "line": 1,
+      "description": "getDeviceInfo extracted to lib/device-info.ts.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "78a5fc0",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-011",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-004",
+      "depends_on": [],
+      "file": "components/NavBar.tsx",
+      "line": 1,
+      "description": "Dead NavBar component removed; sources redirect moved to middleware.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "a491021",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-012",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-013",
+      "depends_on": [],
+      "file": "lib/sse.ts",
+      "line": 1,
+      "description": "Shared createChannelSSE helper extracted to lib/sse.ts; both stream routes simplified.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "393e327",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-013",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-018",
+      "depends_on": [],
+      "file": "app/chat/page.tsx",
+      "line": 123,
+      "description": "ChatPage split into ChatSidebar, MessageList, ChatInput sub-components in app/chat/components/.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "4eeb35e",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-014",
+      "category": "performance",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-008",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 83,
+      "description": "Gemini SDK moved to module-level singleton; saves per-request instantiation.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "fe5a318",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-015",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-009",
+      "depends_on": [],
+      "file": "lib/vector.ts",
+      "line": 27,
+      "description": "indexSource() upsert batches now run in parallel with Promise.all.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "93db255",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-016",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-015",
+      "depends_on": [],
+      "file": "app/admin/layout.tsx",
+      "line": 91,
+      "description": "Added isRefetchingRef in-flight guard to fetchSessions; skips concurrent fetches.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "f03f5c5",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-017",
+      "category": "code_quality",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-005",
+      "depends_on": [],
+      "file": "lib/ui-styles.ts",
+      "line": 1,
+      "description": "toolbarBtnStyle, popoverItemStyle, navLinkStyle extracted to lib/ui-styles.ts; imported in ChatInput, admin session page, admin layout.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "4d20395",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-018",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-010",
+      "depends_on": [],
+      "file": "app/admin/sessions/[id]/page.tsx",
+      "line": 86,
+      "description": "Removed redundant fetchSession() calls from sendMessage, takeOver, handBack \u2014 SSE delivers state.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "50f70cd",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-019",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-014",
+      "depends_on": [],
+      "file": "lib/session-actions.ts",
+      "line": 1,
+      "description": "setSessionMode(id, mode) helper extracted to lib/session-actions.ts; join and leave routes simplified.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "67f022b",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-020",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-012",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/clear/route.ts",
+      "line": 39,
+      "description": "Dead guestToSessions Map replaced with Set<string> of guestIds.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "411830c",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-021",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-012",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/clear/route.ts",
+      "line": 19,
+      "description": "GET handler now uses Redis pipeline for batch mode fetches instead of Promise.all of individual GETs.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "411830c",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-022",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-010",
+      "depends_on": [],
+      "file": "app/chat/components/MessageList.tsx",
+      "line": 45,
+      "description": "React keys changed from array index to stable `${msg.timestamp}-${msg.role}` composite in MessageList and admin session page.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "50f70cd",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-023",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-016",
+      "depends_on": [],
+      "file": "lib/types.ts",
+      "line": 9,
+      "description": "Removed unused HistoryEntry interface from lib/types.ts.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "275219c",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-024",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-011",
+      "depends_on": [],
+      "file": "app/admin/settings/page.tsx",
+      "line": 75,
+      "description": "Removed const loading = sessionLoading alias; sessionLoading used directly.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "a6685f8",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-025",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-010",
+      "depends_on": [],
+      "file": "app/chat/page.tsx",
+      "line": 126,
+      "description": "const isChat = pathname.startsWith('/chat') \u2014 always-true variable removed during ChatPage split (f-013).",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "4eeb35e",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-026",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-017",
+      "depends_on": [],
+      "file": "app/chat/page.tsx",
+      "line": 229,
+      "description": "Added console.error to SSE catch blocks in chat/page.tsx and admin session page.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "fb5686d",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-027",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-009",
+      "depends_on": [],
+      "file": "lib/vector.ts",
+      "line": 50,
+      "description": "Named constants VECTOR_CHUNK_SIZE, VECTOR_TOP_K, VECTOR_MIN_SCORE exported from lib/vector.ts.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "93db255",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-028",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-011",
+      "depends_on": [],
+      "file": "app/admin/settings/page.tsx",
+      "line": 21,
+      "description": "Extracted useFetchStat<T>(url) generic hook; replaced loadSessionStats and loadSourceStats boilerplate.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "a6685f8",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-029",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-014",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/[id]/message/route.ts",
+      "line": 24,
+      "description": "Removed no-op redis.set(sessionModeKey(id), 'human') from message route \u2014 mode already set by join.",
+      "status": "fixed",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": "67f022b",
+      "resolved_date": "2026-07-21"
+    },
+    {
+      "id": "f-030",
+      "category": "dependencies",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-021",
+      "depends_on": [],
+      "file": "package.json",
+      "line": 19,
+      "description": "xlsx (SheetJS Community Edition ^0.18.5) has known security advisories and has been effectively abandoned since 2023. Consider replacing with exceljs or adding lockfile audit to CI.",
+      "status": "skipped-by-user",
+      "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
+      "first_found_date": "2026-07-21",
+      "resolved_commit": null,
+      "resolved_date": "2026-07-22"
+    },
+    {
+      "id": "f-031",
+      "category": "architecture",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-031",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/stream/route.ts",
+      "line": 14,
+      "description": "Admin global sessions SSE stream duplicates createChannelSSE factory inline instead of calling lib/sse.ts; also ignores message payload and always sends 'data: update\\n\\n'.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-032",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-032",
+      "depends_on": [],
+      "file": "app/api/sources/route.ts",
+      "line": 36,
+      "description": "Sources POST has a read-then-write race: sources list fetched before indexing and again after \u2014 concurrent uploads can see stale state.",
+      "status": "skipped-by-user",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-033",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-033",
+      "depends_on": [],
+      "file": "middleware.ts",
+      "line": 25,
+      "description": "Middleware matcher doesn't cover /api/sources* routes; POST/DELETE are auth-guarded within handlers but not at middleware level \u2014 verify intentional.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-034",
+      "category": "architecture",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-034",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 168,
+      "description": "Unhandled Gemini API errors: chat.sendMessage() rejections propagate as unhandled promise rejections with no JSON body \u2014 wrap in try/catch as already done in summary/route.ts.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-035",
+      "category": "architecture",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-035",
+      "depends_on": [],
+      "file": "lib/sse.ts",
+      "line": 21,
+      "description": "SSE abort handler: sub.unsubscribe().then(() => sub.disconnect()) has no .catch(); unsubscribe errors surface as unhandled rejections on Vercel.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-036",
+      "category": "architecture",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-036",
+      "depends_on": [],
+      "file": "app/chat/constants.ts",
+      "line": 1,
+      "description": "SessionRow type is defined in constants.ts (a UI file) but is a data shape \u2014 belongs in lib/types.ts alongside SessionMeta, SessionMessage, LeadData.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-037",
+      "category": "architecture",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-037",
+      "depends_on": [],
+      "file": "app/admin/settings/page.tsx",
+      "line": 26,
+      "description": "useFetchStat fetches stats via GET /api/admin/sessions/clear, /leads/clear, /sources/clear \u2014 stats display is tightly coupled to destructive-action routes.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-038",
+      "category": "architecture",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-038",
+      "depends_on": [],
+      "file": "vercel.json",
+      "line": 1,
+      "description": "No Vercel region or function config \u2014 SSE routes share a TCP connection to a fixed Upstash Redis endpoint; pinning to one region reduces latency.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-039",
+      "category": "architecture",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-039",
+      "depends_on": [],
+      "file": "app/(user-area)/layout.tsx",
+      "line": 20,
+      "description": "isChat/isProfile use exact pathname match \u2014 adding a new user-area route requires updating this component; use startsWith or a route config array.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-040",
+      "category": "security",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-040",
+      "depends_on": [],
+      "file": "next.config.js",
+      "line": 2,
+      "description": "No HTTP security headers configured \u2014 add X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS, and CSP via next.config.js headers().",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-041",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-041",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 140,
+      "description": "User-supplied model string passed directly to Gemini's getGenerativeModel() without validating against MODELS allowlist in app/chat/constants.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-042",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-042",
+      "depends_on": [],
+      "file": "app/api/session/[id]/end/route.ts",
+      "line": 6,
+      "description": "/api/session/[id]/end accepts POST from any caller \u2014 add guestId ownership check matching the pattern in request-human/route.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-043",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-043",
+      "depends_on": [],
+      "file": "app/api/session/[id]/switch-ai/route.ts",
+      "line": 6,
+      "description": "/api/session/[id]/switch-ai accepts POST from any caller \u2014 add verifyAdminToken since switching a session back to AI is an admin operation.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-044",
+      "category": "security",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-032",
+      "depends_on": [],
+      "file": "app/api/sources/route.ts",
+      "line": 7,
+      "description": "GET /api/sources returns full list of source filenames, IDs, and chunk counts with no auth \u2014 add verifyAdminToken to GET handler.",
+      "status": "skipped-by-user",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-045",
+      "category": "security",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-044",
+      "depends_on": [],
+      "file": "lib/vector.ts",
+      "line": 3,
+      "description": "UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN use non-null assertion (!) with no startup guard \u2014 add explicit guard matching the pattern in lib/redis.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-046",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-045",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/[id]/message/route.ts",
+      "line": 16,
+      "description": "Admin message text field not validated for presence, type, or length before being stored in Redis.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-047",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-046",
+      "depends_on": [],
+      "file": "app/api/admin/leads/route.ts",
+      "line": 14,
+      "description": "Sort query param used as a key into LeadData objects without allowlisting valid field names.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-048",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-047",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 209,
+      "description": "requestHuman and switchToAI are fire-and-forget \u2014 a failed fetch silently leaves session mode desynced from the server with no user feedback.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-049",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-047",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 221,
+      "description": "endChat is fire-and-forget \u2014 a network failure leaves the session open on the server while the UI does nothing.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-050",
+      "category": "security",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-033",
+      "depends_on": [],
+      "file": "middleware.ts",
+      "line": 14,
+      "description": "Token presence (cookie exists) but not validity checked in middleware \u2014 stale/forged admin_token passes the gate; only caught inside individual API route handlers.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-051",
+      "category": "security",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-040",
+      "depends_on": [
+        "f-040"
+      ],
+      "file": "vercel.json",
+      "line": 1,
+      "description": "vercel.json has no security headers \u2014 paired with f-040: one of next.config.js or vercel.json must define them.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-052",
+      "category": "security",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-048",
+      "depends_on": [],
+      "file": "app/api/admin/logout/route.ts",
+      "line": 4,
+      "description": "Logout route performs no auth check before clearing the cookie \u2014 harmless but inconsistent with the rest of the admin surface.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-053",
+      "category": "security",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-049",
+      "depends_on": [],
+      "file": "app/admin/layout.tsx",
+      "line": 123,
+      "description": "s.guestId.slice(0,8) appears in browser notification body \u2014 partial internal identifier exposed to OS notification center logs.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-054",
+      "category": "security",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-033",
+      "depends_on": [],
+      "file": "middleware.ts",
+      "line": 10,
+      "description": "/admin/login bypass uses exact string match \u2014 /admin/login/ with trailing slash would still be blocked; use pathname.split('?')[0] === '/admin/login'.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-055",
+      "category": "code_quality",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-050",
+      "depends_on": [],
+      "file": "app/chat/components/LeadForm.tsx",
+      "line": 4,
+      "description": "COUNTRY_CODES, COUNTRIES, EDUCATION_LEVELS, MONTHS, validate(), and border helpers fully duplicated between LeadForm.tsx and app/(user-area)/profile/page.tsx \u2014 extract to a shared module.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-056",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-051",
+      "depends_on": [],
+      "file": "lib/types.ts",
+      "line": 12,
+      "description": "SessionMeta type missing lastActiveAt field \u2014 set and read in at least 3 call-sites but defined ad-hoc in layout files rather than the canonical type.",
+      "status": "skipped-by-user",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-057",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-044",
+      "depends_on": [],
+      "file": "lib/vector.ts",
+      "line": 12,
+      "description": "CHUNK_SIZE is a redundant local alias for VECTOR_CHUNK_SIZE defined two lines above \u2014 remove and use VECTOR_CHUNK_SIZE directly.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-058",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-031",
+      "depends_on": [
+        "f-031"
+      ],
+      "file": "app/api/admin/sessions/stream/route.ts",
+      "line": 18,
+      "description": "SSE stream ignores message payload and always sends 'data: update\\n\\n' \u2014 fixed as part of refactoring to use createChannelSSE (f-031).",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-059",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-045",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/[id]/message/route.ts",
+      "line": 18,
+      "description": "Admin message route hardcodes mode:'human' in publishSession call \u2014 if session is in 'requested' or 'ai' mode the published event incorrectly signals 'human'.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-060",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-052",
+      "depends_on": [],
+      "file": "app/api/session/[id]/summary/route.ts",
+      "line": 34,
+      "description": "Hardcoded 'gemini-3.1-flash-lite' string literal \u2014 should reference DEFAULT_MODEL from app/chat/constants.ts to avoid drift.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-061",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-052",
+      "depends_on": [],
+      "file": "app/api/chat/route.ts",
+      "line": 140,
+      "description": "Fallback model hardcoded as string literal instead of importing DEFAULT_MODEL from app/chat/constants.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-062",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-053",
+      "depends_on": [],
+      "file": "app/admin/sources/page.tsx",
+      "line": 193,
+      "description": "Upload response not checked for !resp.ok before resp.json() \u2014 a 400/500 silently calls resp.json() on an error body.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-063",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-053",
+      "depends_on": [],
+      "file": "app/admin/sources/page.tsx",
+      "line": 208,
+      "description": "Remove response not checked for !resp.ok before resp.json() \u2014 same bug as the upload path.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-064",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-054",
+      "depends_on": [],
+      "file": "app/admin/leads/page.tsx",
+      "line": 36,
+      "description": "fetchLeads missing try/finally to clear loading state \u2014 if the fetch throws, setLoading(false) is never called and the spinner hangs.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-065",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-055",
+      "depends_on": [],
+      "file": "app/admin/sessions/[id]/page.tsx",
+      "line": 32,
+      "description": "First useEffect omits fetchSession from its dependency array \u2014 fetchSession is a useCallback depending on [id, router]; stale closure risk if router identity changes.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-066",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-056",
+      "depends_on": [],
+      "file": "package.json",
+      "line": 5,
+      "description": "No lint or type-check scripts \u2014 add 'lint': 'next lint' and 'type-check': 'tsc --noEmit'.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-067",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-047",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 147,
+      "description": "Catch clause `catch (e)` shadows the outer variable `e` in the SSE onmessage handler \u2014 rename to err or parseErr.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "f6c83e9",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-068",
+      "category": "code_quality",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-057",
+      "depends_on": [],
+      "file": "lib/device-info.ts",
+      "line": 25,
+      "description": "Mac OS X branch fires before iPhone/iPad branches \u2014 all iPhone/iPad UAs include 'like Mac OS X', making iOS/iPadOS branches unreachable; fix branch order.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-069",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-054",
+      "depends_on": [],
+      "file": "app/admin/leads/page.tsx",
+      "line": 19,
+      "description": "Local formatDate uses en-MY locale \u2014 if intentional, rename to formatDateLocale; if not, consolidate into lib/format.ts with an optional locale param.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-070",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-054",
+      "depends_on": [],
+      "file": "app/admin/leads/page.tsx",
+      "line": 104,
+      "description": "Local btnStyle constant duplicates toolbarBtnStyle from lib/ui-styles.ts \u2014 import and use the shared constant.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-071",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-049",
+      "depends_on": [],
+      "file": "app/admin/layout.tsx",
+      "line": 172,
+      "description": "handleAccept and handleLogout fire-and-forget fetch calls with no error handling \u2014 a failed join or logout leaves the UI in inconsistent state.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-072",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-053",
+      "depends_on": [],
+      "file": "app/admin/sources/page.tsx",
+      "line": 174,
+      "description": "alert() and confirm() used for duplicate detection and removal confirmation \u2014 blocks main thread, inaccessible; replace with inline state-driven confirmation UI.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-073",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-053",
+      "depends_on": [],
+      "file": "app/admin/sources/page.tsx",
+      "line": 200,
+      "description": "Upload error has no user-visible feedback \u2014 only console.error is called; button silently resets to idle on failure.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-074",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-058",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/route.ts",
+      "line": 43,
+      "description": "Inline type annotation repeats all seven LeadData fields \u2014 use Pick<LeadData, ...> or LeadData directly to avoid duplication with lib/types.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-075",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-059",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 15,
+      "description": "SpinnerIcon SVG defined inline in chat/page.tsx and duplicated in profile/page.tsx \u2014 extract to a shared Spinner component in app/chat/components/.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-076",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-050",
+      "depends_on": [],
+      "file": "app/(user-area)/profile/page.tsx",
+      "line": 134,
+      "description": "CURRENT_YEAR computed at module load time in both LeadForm.tsx and profile/page.tsx \u2014 move inside validate() or the shared data module to avoid year-boundary caching issue.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-077",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-060",
+      "depends_on": [],
+      "file": "app/api/guest/[guestId]/sessions/route.ts",
+      "line": 9,
+      "description": "guestId param not validated against UUID_RE before use in Redis key \u2014 inconsistent with app/api/guest/[guestId]/lead/route.ts which validates.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-078",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-042",
+      "depends_on": [],
+      "file": "app/api/session/[id]/end/route.ts",
+      "line": 9,
+      "description": "id param not validated against UUID pattern before use in Redis key helpers \u2014 add UUID guard consistent with summary/route.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-079",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-043",
+      "depends_on": [],
+      "file": "app/api/session/[id]/switch-ai/route.ts",
+      "line": 9,
+      "description": "id param not validated against UUID pattern \u2014 add UUID guard consistent with summary/route.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-080",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-061",
+      "depends_on": [],
+      "file": "app/api/session/[id]/route.ts",
+      "line": 5,
+      "description": "id param not validated against UUID pattern \u2014 add UUID guard consistent with summary/route.ts.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-081",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-062",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/[id]/stream/route.ts",
+      "line": 8,
+      "description": "401 response returned as plain Response (not JSON) \u2014 inconsistent with non-SSE admin routes that return NextResponse.json; at minimum return a consistent error body.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-082",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-056",
+      "depends_on": [],
+      "file": "package.json",
+      "line": 25,
+      "description": "Missing eslint and eslint-config-next in devDependencies \u2014 next lint will fail without eslint-config-next.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-083",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-063",
+      "depends_on": [],
+      "file": "vitest.config.ts",
+      "line": 9,
+      "description": "include patterns don't cover .tsx test files \u2014 add '**/*.test.tsx' and '**/*.spec.tsx' so future component tests are not silently ignored.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-084",
+      "category": "code_quality",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-059",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 5,
+      "description": "ReactMarkdown imported in both ChatPage (for summary panel) and MessageList.tsx (for message rendering) \u2014 two independent markdown instances; extracting the summary panel to a component would consolidate.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-085",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-047",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 63,
+      "description": "Sources fetch uncancelled on unmount \u2014 setHasSources called on unmounted component if fetch resolves late; add AbortController matching the SSE effect pattern at line 127.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-086",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-064",
+      "depends_on": [],
+      "file": "app/(user-area)/UserAreaContext.tsx",
+      "line": 56,
+      "description": "Two fetch calls in UserAreaProvider run serially and are uncancelled \u2014 wrap in Promise.all and add AbortController cleanup.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-087",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-047",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 159,
+      "description": "Scroll-to-bottom effect depends on both messages and isLoading \u2014 triggers DOM read when isLoading toggles with no new messages; scope to messages.length.",
+      "status": "skipped-by-user",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-088",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "needs-review",
+      "cluster_id": "c-046",
+      "depends_on": [],
+      "file": "app/api/admin/leads/route.ts",
+      "line": 19,
+      "description": "All lead records fetched from Redis and sorted in-process on every request \u2014 O(n) amplification; Redis sorted sets would enable server-side pagination at scale.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-089",
+      "category": "performance",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-042",
+      "depends_on": [],
+      "file": "app/api/session/[id]/end/route.ts",
+      "line": 10,
+      "description": "sessionModeKey written before checking if session exists \u2014 mode key written even when messages is null (session not found); add existence guard before write.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-090",
+      "category": "performance",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-065",
+      "depends_on": [],
+      "file": "app/api/admin/sessions/clear/route.ts",
+      "line": 38,
+      "description": "Meta records fetched with Promise.all of individual redis.get calls \u2014 replace with a pipeline to reduce round-trips.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-091",
+      "category": "performance",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-066",
+      "depends_on": [],
+      "file": "app/api/sources/[id]/rows/route.ts",
+      "line": 39,
+      "description": "All chunks fetched from vector index in one call with no pagination \u2014 large sources produce large payloads; add page/limit if this becomes a problem.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-092",
+      "category": "performance",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-044",
+      "depends_on": [],
+      "file": "lib/vector.ts",
+      "line": 84,
+      "description": "Vector score filter uses strict > instead of >= \u2014 a score exactly equal to VECTOR_MIN_SCORE (0.4) is silently dropped; clarify intent or change to >= and update constant name.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-093",
+      "category": "performance",
+      "priority": "low",
+      "risk": "needs-review",
+      "cluster_id": "c-049",
+      "depends_on": [],
+      "file": "app/admin/layout.tsx",
+      "line": 437,
+      "description": "Admin nav links to sessions[0].id in unsorted array \u2014 may not be the most recently active session; sort by lastActiveAt desc before using index 0.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-094",
+      "category": "tests",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-067",
+      "depends_on": [],
+      "file": "tests/api/chat.test.ts",
+      "line": 71,
+      "description": "Happy-path response body never asserted \u2014 a regression changing { text } to { reply } would pass all tests; add assertion for response body shape.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-095",
+      "category": "tests",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-067",
+      "depends_on": [],
+      "file": "tests/api/chat.test.ts",
+      "line": 58,
+      "description": "GEMINI_API_KEY-missing 500 path has zero coverage \u2014 vitest.setup.ts always provides the key; add a test that clears the env var for the genAI-null guard branch.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-096",
+      "category": "tests",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-068",
+      "depends_on": [],
+      "file": "tests/api/admin/",
+      "line": 1,
+      "description": "Zero tests for 6 admin session sub-routes: join, leave, message, typing, GET /sessions/[id], GET /sessions \u2014 including auth-guarded paths and mode changes.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-097",
+      "category": "tests",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-069",
+      "depends_on": [],
+      "file": "tests/api/session/",
+      "line": 1,
+      "description": "No tests for /api/session/[id]/end or /api/session/[id]/switch-ai \u2014 two session-control routes that write mode to Redis and publish events are completely uncovered.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-098",
+      "category": "tests",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-070",
+      "depends_on": [],
+      "file": "tests/api/admin/",
+      "line": 1,
+      "description": "No tests for /api/admin/leads/clear or /api/admin/sources/clear \u2014 clear-all mutations are completely untested.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-099",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-071",
+      "depends_on": [],
+      "file": "tests/api/admin/sessions-clear.test.ts",
+      "line": 99,
+      "description": "SESSIONS_ACTIVE_KEY delete not asserted in POST clear test \u2014 the production pipeline del(SESSIONS_ACTIVE_KEY) step is not verified.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-100",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-072",
+      "depends_on": [],
+      "file": "tests/api/admin/leads.test.ts",
+      "line": 5,
+      "description": "verifyAdminToken always mocked true \u2014 no 401 path tested; auth guard could be removed without any test failure.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-101",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-073",
+      "depends_on": [],
+      "file": "tests/api/sources.test.ts",
+      "line": 5,
+      "description": "Same auth mock problem \u2014 no 401 path tested for POST /api/sources or GET /api/sources/[id]/rows.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-102",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-074",
+      "depends_on": [],
+      "file": "tests/lib/vector.test.ts",
+      "line": 1,
+      "description": "indexSource, deleteSourceVectors, and queryRelevantChunks not tested \u2014 only chunkCsv and chunkVectorId covered; score filtering at VECTOR_MIN_SCORE has zero coverage.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-103",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-075",
+      "depends_on": [],
+      "file": "tests/lib/pubsub.test.ts",
+      "line": 9,
+      "description": "createSubscriber not tested \u2014 missing REDIS_URL error throw and happy-path subscriber instantiation are uncovered.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-104",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-076",
+      "depends_on": [],
+      "file": "tests/api/session/request-human.test.ts",
+      "line": 44,
+      "description": "Promise.all mock ordering is fragile \u2014 sequential mockResolvedValueOnce values are positional; reordering Promise.all arguments produces wrong test results with no failure.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-105",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-067",
+      "depends_on": [],
+      "file": "tests/api/chat.test.ts",
+      "line": 104,
+      "description": "Same Promise.all ordering assumption \u2014 hardcoded [messages, mode] order in mock setup; a comment documents the risk but no guard exists.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-106",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-077",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 1,
+      "description": "ChatPage has no unit or integration tests \u2014 sendMessage optimistic update, pendingSession state machine, and SSE reconnect are complex uncovered paths.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-107",
+      "category": "tests",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-078",
+      "depends_on": [],
+      "file": "tests/lib/session-actions.test.ts",
+      "line": 30,
+      "description": "session-actions test doesn't verify concurrent execution \u2014 asserts calls happened but not that redis.set and redis.get were initiated concurrently via Promise.all.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-108",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-079",
+      "depends_on": [],
+      "file": "tests/api/guest/sessions.test.ts",
+      "line": 28,
+      "description": "Non-UUID guestId ('g-0001') used in tests \u2014 if UUID validation is added, tests silently return 400 without an obvious explanation; use a real UUID constant.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-109",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-073",
+      "depends_on": [],
+      "file": "tests/api/sources.test.ts",
+      "line": 86,
+      "description": "rowCount only asserted to be typeof 'number' in multi-sheet test \u2014 not a concrete value; doesn't verify counting logic.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-110",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-080",
+      "depends_on": [],
+      "file": "tests/lib/format.test.ts",
+      "line": 1,
+      "description": "Invalid date strings untested \u2014 error-handling paths of formatRelativeTime and formatDate for invalid input are uncovered.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-111",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-081",
+      "depends_on": [],
+      "file": "tests/api/admin/login.test.ts",
+      "line": 46,
+      "description": "Login success test doesn't assert SameSite or Path cookie attributes \u2014 a regression removing SameSite=Strict would go undetected.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-112",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-082",
+      "depends_on": [],
+      "file": "tests/middleware.test.ts",
+      "line": 1,
+      "description": "/api/admin/logout not explicitly tested in middleware tests \u2014 intentionally works without auth, but no test documents this decision.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-113",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-069",
+      "depends_on": [],
+      "file": "tests/api/session/",
+      "line": 1,
+      "description": "No test for switch-ai idempotency or non-existent session \u2014 given the missing auth gap (f-043), the security-test gap doubles the risk.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-114",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-050",
+      "depends_on": [
+        "f-055"
+      ],
+      "file": "app/chat/components/LeadForm.tsx",
+      "line": 172,
+      "description": "LeadForm validate() is unexported and untested \u2014 extracting to the shared data module (f-055) would enable direct testing.",
+      "status": "fixed",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": "ce49a20",
+      "resolved_date": "2026-07-23"
+    },
+    {
+      "id": "f-115",
+      "category": "tests",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-083",
+      "depends_on": [],
+      "file": "app/admin/leads/page.tsx",
+      "line": 66,
+      "description": "exportCSV, exportJSON, exportExcel untested \u2014 manipulate the DOM and have the silent page-limit bug (current-page only); add tests that mock URL.createObjectURL.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
+    },
+    {
+      "id": "f-116",
+      "category": "dependencies",
+      "priority": "low",
+      "risk": "safe",
+      "cluster_id": "c-059",
+      "depends_on": [],
+      "file": "app/(user-area)/chat/page.tsx",
+      "line": 5,
+      "description": "react-markdown loaded eagerly in ChatPage solely for the conditionally-rendered summary panel \u2014 consider next/dynamic to defer bundle weight if summary is rarely used.",
+      "status": "open",
+      "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
+      "first_found_date": "2026-07-23",
+      "resolved_commit": null,
+      "resolved_date": null
     }
   ]
 }
