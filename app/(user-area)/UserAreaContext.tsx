@@ -56,23 +56,27 @@ export function UserAreaProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const gid = getOrCreateGuestId();
     setGuestId(gid);
+    const ac = new AbortController();
+    const { signal } = ac;
 
-    fetch(`/api/guest/${gid}/lead`)
+    fetch(`/api/guest/${gid}/lead`, { signal })
       .then(async (r) => {
         if (!r.ok) { setLeadSubmitted(false); return; }
         setLeadSubmitted(true);
         const lead = await r.json() as { name?: string };
         if (lead?.name) setLeadName(lead.name);
       })
-      .catch(() => setLeadSubmitted(false));
+      .catch((err) => { if (err?.name !== 'AbortError') setLeadSubmitted(false); });
 
-    fetch(`/api/guest/${gid}/sessions`)
+    fetch(`/api/guest/${gid}/sessions`, { signal })
       .then((r) => (r.ok ? r.json() : []))
       .then((list: SessionRow[]) => {
         setSessions(Array.isArray(list) ? list : []);
         setSessionsLoaded(true);
       })
-      .catch(() => setSessionsLoaded(true));
+      .catch((err) => { if (err?.name !== 'AbortError') setSessionsLoaded(true); });
+
+    return () => ac.abort();
   }, []);
 
   return (

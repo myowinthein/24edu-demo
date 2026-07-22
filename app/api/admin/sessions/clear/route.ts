@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
   const ids = (await redis.zrange(SESSIONS_ACTIVE_KEY, 0, -1)) as string[];
   if (ids.length === 0) return NextResponse.json({ cleared: 0 });
 
-  const metas = await Promise.all(ids.map((id) => redis.get<SessionMeta>(sessionMetaKey(id))));
+  const metaPipeline = redis.pipeline();
+  ids.forEach((id) => metaPipeline.get<SessionMeta>(sessionMetaKey(id)));
+  const metas = (await metaPipeline.exec()) as (SessionMeta | null)[];
 
   const guestIds = new Set<string>();
   ids.forEach((_, i) => {
