@@ -1,6 +1,6 @@
 # 24edu-demo
 
-Internal demo: AI-powered data analyst chatbot with live admin monitoring and human takeover.
+AI-powered university chatbot with lead capture, live session monitoring, and human-agent takeover.
 
 ## Table of Contents
 
@@ -12,12 +12,15 @@ Internal demo: AI-powered data analyst chatbot with live admin monitoring and hu
 
 ## Background
 
-Upload CSV or Excel files as a knowledge base. Guests chat with a Gemini-powered AI that answers questions grounded in the uploaded data via vector search. Admins can watch sessions in real time, type alongside the AI, and take over the conversation entirely when needed — then hand it back.
+Upload CSV or Excel files as a knowledge base. Before chatting, each guest completes a lead form (name, email, phone, country, education level, intended program and intake). Gemini then answers their questions grounded in the uploaded data via vector search. When local data is thin, education-related questions fall back to Google Search grounding automatically.
 
-Two surfaces:
+Admins monitor all sessions in real time, can type alongside the AI without taking it offline, or switch to full human control and hand back when done. AI-generated session summaries are available on demand.
 
-- **`/chat`** — guest-facing chat interface with session history and browser notifications
-- **`/admin`** — password-protected panel for live session monitoring, human handoff, source management, and settings
+Three surfaces:
+
+- **`/chat`** — lead form gate → chat interface with session history and end-conversation
+- **`/profile`** — guests can update their lead details after initial submission
+- **`/admin`** — password-protected panel for live sessions, sources, leads, and settings
 
 ## Install
 
@@ -26,7 +29,7 @@ Two surfaces:
 ```bash
 npm install
 cp .env.local.example .env.local
-# fill in all variables — see below
+# fill in all variables (see below)
 npm run dev
 ```
 
@@ -34,37 +37,44 @@ npm run dev
 
 | Variable | Description |
 |---|---|
-| `GEMINI_API_KEY` | Google Gemini API key |
-| `KV_REST_API_URL` | Upstash Redis REST URL (from Vercel integration or dashboard) |
+| `ADMIN_USERNAME` | Admin login username |
+| `ADMIN_PASSWORD_HASH` | SHA-256 hex digest of the admin password |
+| `GEMINI_API_KEY` | Google AI Studio API key |
+| `KV_REST_API_URL` | Upstash Redis REST URL |
 | `KV_REST_API_TOKEN` | Upstash Redis REST token |
 | `REDIS_URL` | Upstash Redis TCP URL for pub/sub — `rediss://default:<token>@<host>:<port>` |
 | `UPSTASH_VECTOR_REST_URL` | Upstash Vector index REST URL |
 | `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector index REST token |
-| `ADMIN_USERNAME` | Admin login username |
-| `ADMIN_PASSWORD_HASH` | SHA-256 hex digest of the admin password |
 
 To generate `ADMIN_PASSWORD_HASH`:
 ```bash
 echo -n "yourpassword" | shasum -a 256
 ```
 
+All variables are required. The app throws on startup if any are missing.
+
 ## Usage
 
 **Guest chat**
 
-Open `/chat`. Messages are answered by Gemini using any uploaded data sources. If no sources are loaded, the AI prompts the guest to upload one. Guests can request a human agent at any time.
+Open `/chat`. Complete the lead form (name, contact details, study preferences), then start chatting. Gemini answers using uploaded data sources. Guests can request a human agent or end the conversation at any time. Previous sessions appear in the sidebar.
+
+**Profile**
+
+Open `/profile` (or use the sidebar link). Guests can update any lead details submitted during the initial form.
 
 **Admin panel**
 
 Go to `/admin` and log in. From there you can:
 
-- **Sessions** — watch active chats live, join a session to type alongside the AI, or take full control (`human` mode) and release it back to AI when done.
-- **Sources** — upload CSV or Excel files. Each file is chunked (5 rows/chunk) and indexed into Upstash Vector. Delete individual sources to remove their vectors.
-- **Settings** — configure the Gemini model and system prompt used for AI responses.
+- **Sessions** — monitor active chats live, join a session to type alongside the AI, or take full control (`human` mode) and release it back to AI when done. Generate an AI summary of any session.
+- **Sources** — upload CSV or Excel files. Each file is chunked and indexed into Upstash Vector. View rows in a paginated table, delete individual sources to remove their vectors. Multi-sheet Excel files are fully supported.
+- **Leads** — browse captured lead data with filtering, sorting, and pagination.
+- **Settings** — configure the Gemini model and system prompt. Clear sessions, leads, or sources independently.
 
 **Deployment**
 
-The project is linked to Vercel (`vercel deploy`). The Upstash Redis and Vector integrations can be provisioned directly from the Vercel dashboard.
+Deploy to Vercel (`vercel deploy`). Provision Upstash Redis and Vector directly from the Vercel dashboard.
 
 ## Contributing
 
@@ -74,4 +84,4 @@ Internal project — not open for external contributions.
 
 Private. All rights reserved.
 
-<!-- last-reviewed: 3c8e2068a839016deb50e46d14aa7a261a9dac85 -->
+<!-- last-reviewed: b4138bd83ea16e2e99b1f75291a8578a4ba407a4 -->
