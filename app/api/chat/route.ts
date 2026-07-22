@@ -10,6 +10,7 @@ import {
 } from '@/lib/redis';
 import { publishSession, publishSessions } from '@/lib/pubsub';
 import { queryRelevantChunks } from '@/lib/vector';
+import { MODELS, DEFAULT_MODEL } from '@/app/chat/constants';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 
 // ── Layer 1: topic gate ───────────────────────────────────────────────────────
@@ -137,7 +138,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const modelName = model ?? 'gemini-3.5-flash-lite';
+  const modelName = (typeof model === 'string' && (MODELS as readonly string[]).includes(model))
+    ? model
+    : DEFAULT_MODEL;
   const geminiModel = genAI!.getGenerativeModel({
     model: modelName,
     systemInstruction,

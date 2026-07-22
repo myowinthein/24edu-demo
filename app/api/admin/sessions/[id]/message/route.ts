@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, sessionMessagesKey, SESSIONS_ACTIVE_KEY } from '@/lib/redis';
+import { redis, sessionMessagesKey, sessionModeKey, SESSIONS_ACTIVE_KEY } from '@/lib/redis';
 import { verifyAdminToken } from '@/lib/admin-auth';
 import { publishSession, publishSessions } from '@/lib/pubsub';
-import type { SessionMessage } from '@/lib/types';
+import type { SessionMessage, SessionMode } from '@/lib/types';
 
 export async function POST(
   req: NextRequest,
@@ -13,17 +13,25 @@ export async function POST(
   }
 
   const { id } = params;
-  const { text } = (await req.json()) as { text: string };
+  const { text } = (await req.json()) as { text: unknown };
+  if (!text || typeof text !== 'string' || text.length > 4000) {
+    return NextResponse.json({ error: 'Invalid text' }, { status: 400 });
+  }
 
-  const messages = (await redis.get<SessionMessage[]>(sessionMessagesKey(id))) ?? [];
-  messages.push({ role: 'admin', text, timestamp: new Date().toISOString() });
+  const [messages, currentMode] = await Promise.all([
+    redis.get<SessionMessage[]>(sessionMessagesKey(id)),
+    redis.get<SessionMode>(sessionModeKey(id)),
+  ]);
 
+  const updated = [...(messages ?? []), { role: 'admin' as const, text, timestamp: new Date().toISOString() }];
+  const mode = currentMode ?? 'human';
   const now = Date.now();
+
   await Promise.all([
-    redis.set(sessionMessagesKey(id), messages),
+    redis.set(sessionMessagesKey(id), updated),
     redis.zadd(SESSIONS_ACTIVE_KEY, { score: now, member: id }),
   ]);
-  await Promise.all([publishSession(id, { messages, mode: 'human' }), publishSessions()]);
+  await Promise.all([publishSession(id, { messages: updated, mode }), publishSessions()]);
 
   return NextResponse.json({ ok: true });
 }
