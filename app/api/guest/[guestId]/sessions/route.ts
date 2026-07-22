@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redis, guestSessionsKey, sessionMetaKey } from '@/lib/redis';
 import type { SessionMeta } from '@/lib/types';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: { guestId: string } }
 ) {
+  if (!UUID_RE.test(params.guestId)) {
+    return NextResponse.json({ error: 'Invalid guest id' }, { status: 400 });
+  }
   const ids = (await redis.zrange(guestSessionsKey(params.guestId), 0, -1, {
     rev: true,
   })) as string[];
