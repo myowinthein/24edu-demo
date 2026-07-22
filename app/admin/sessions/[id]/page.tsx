@@ -171,8 +171,8 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
               style={{
                 maxWidth: 520, padding: '9px 13px', borderRadius: 10,
                 fontSize: 14, lineHeight: 1.5,
-                background: msg.role === 'guest' ? '#ffffff' : msg.role === 'ai' ? '#f0f4ff' : '#f1f1f3',
-                border: msg.role === 'guest' ? '1px solid #e3e3e6' : 'none',
+                background: msg.role === 'guest' ? '#f1f1f3' : msg.role === 'ai' ? '#ffffff' : '#eff6ff',
+                border: msg.role === 'guest' ? 'none' : msg.role === 'ai' ? '1px solid #e3e3e6' : '1px solid #bfdbfe',
                 color: '#14151a',
               }}
             >

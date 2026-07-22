@@ -152,47 +152,54 @@ export default function LeadsPage() {
       </form>
 
       {/* Table */}
-      <div style={{ flex: 1, overflowX: 'auto', border: '1px solid #e3e3e6', borderRadius: 10, minHeight: 0 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e3e3e6' }}>
-              {COLUMNS.map((col) => (
-                <th
-                  key={col.key}
-                  onClick={() => handleSort(col.key)}
-                  style={{
-                    padding: '10px 14px', textAlign: 'left', fontWeight: 600,
-                    color: '#374151', cursor: 'pointer', whiteSpace: 'nowrap',
-                    userSelect: 'none',
-                  }}
-                >
-                  {col.label}{sortIcon(col.key)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={COLUMNS.length} style={{ padding: '32px', textAlign: 'center', color: '#9ca3af' }}>Loading…</td></tr>
-            ) : leads.length === 0 ? (
-              <tr><td colSpan={COLUMNS.length} style={{ padding: '32px', textAlign: 'center', color: '#9ca3af' }}>
-                {search ? 'No leads match your search.' : 'No leads yet.'}
-              </td></tr>
-            ) : leads.map((lead, i) => (
-              <tr
-                key={lead.guestId}
-                style={{ borderBottom: '1px solid #f0f0f1', background: i % 2 === 0 ? '#ffffff' : '#fafafa' }}
-              >
+      {loading ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '24px 0', color: '#6b7280', fontSize: 14 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }}>
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+          </svg>
+          Loading leads…
+        </div>
+      ) : (
+        <div style={{ flex: 1, overflowX: 'auto', border: '1px solid #e3e3e6', borderRadius: 10, minHeight: 0 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e3e3e6' }}>
                 {COLUMNS.map((col) => (
-                  <td key={col.key} style={{ padding: '10px 14px', color: '#14151a', whiteSpace: col.key === 'submittedAt' ? 'nowrap' : 'normal' }}>
-                    {col.key === 'submittedAt' ? formatDate(lead[col.key]) : lead[col.key]}
-                  </td>
+                  <th
+                    key={col.key}
+                    onClick={() => handleSort(col.key)}
+                    style={{
+                      padding: '10px 14px', textAlign: 'left', fontWeight: 600,
+                      color: '#374151', cursor: 'pointer', whiteSpace: 'nowrap',
+                      userSelect: 'none',
+                    }}
+                  >
+                    {col.label}{sortIcon(col.key)}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {leads.length === 0 ? (
+                <tr><td colSpan={COLUMNS.length} style={{ padding: '32px', textAlign: 'center', color: '#9ca3af' }}>
+                  {search ? 'No leads match your search.' : 'No leads yet.'}
+                </td></tr>
+              ) : leads.map((lead, i) => (
+                <tr
+                  key={lead.guestId}
+                  style={{ borderBottom: '1px solid #f0f0f1', background: i % 2 === 0 ? '#ffffff' : '#fafafa' }}
+                >
+                  {COLUMNS.map((col) => (
+                    <td key={col.key} style={{ padding: '10px 14px', color: '#14151a', whiteSpace: col.key === 'submittedAt' ? 'nowrap' : 'normal' }}>
+                      {col.key === 'submittedAt' ? formatDate(lead[col.key]) : lead[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (

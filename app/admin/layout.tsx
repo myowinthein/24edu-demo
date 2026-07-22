@@ -65,7 +65,6 @@ function GuestInfoDialog({ group, onClose }: { group: GuestGroup; onClose: () =>
     ['Education level',    group.educationLevel],
     ['Program of interest',group.programOfInterest],
     ['Intended intake',    group.intendedIntake],
-    ['Guest ID',           group.guestId === '__unknown__' ? '—' : group.guestId],
   ];
   return (
     <div
@@ -435,7 +434,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             borderBottom: '1px solid #e3e3e6',
           }}
         >
-          <Link href="/admin" style={navLinkStyle(isChats)}>💬 Chats</Link>
+          <Link href={sessions.length > 0 ? `/admin/sessions/${sessions[0].id}` : '/admin'} style={navLinkStyle(isChats)}>💬 Chats</Link>
           <Link href="/admin/leads" style={navLinkStyle(isLeads)}>🎯 Leads</Link>
           <Link href="/admin/sources" style={navLinkStyle(isSources)}>📂 Sources</Link>
           <Link href="/admin/settings" style={navLinkStyle(isSettings)}>⚙ Settings</Link>
