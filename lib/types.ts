@@ -27,6 +27,13 @@ export interface SessionMessage {
   timestamp: string;
 }
 
+export interface SessionRow {
+  id: string;
+  title: string;
+  createdAt: string;
+  lastActiveAt: string;
+}
+
 export interface LeadData {
   guestId: string;
   name: string;
