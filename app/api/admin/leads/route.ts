@@ -11,7 +11,11 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20')));
-  const sort = searchParams.get('sort') ?? 'submittedAt';
+  const VALID_SORT_KEYS: (keyof LeadData)[] = ['name', 'email', 'country', 'programOfInterest', 'intendedIntake', 'submittedAt'];
+  const rawSort = searchParams.get('sort') ?? 'submittedAt';
+  const sort: keyof LeadData = VALID_SORT_KEYS.includes(rawSort as keyof LeadData)
+    ? (rawSort as keyof LeadData)
+    : 'submittedAt';
   const order = searchParams.get('order') ?? 'desc';
   const search = (searchParams.get('search') ?? '').trim().toLowerCase();
 
@@ -40,8 +44,8 @@ export async function GET(req: NextRequest) {
 
   // Sort
   leads.sort((a, b) => {
-    const av = (a as unknown as Record<string, string>)[sort] ?? '';
-    const bv = (b as unknown as Record<string, string>)[sort] ?? '';
+    const av = String(a[sort] ?? '');
+    const bv = String(b[sort] ?? '');
     return order === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
   });
 
