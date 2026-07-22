@@ -127,7 +127,7 @@ describe('POST /api/chat — session title truncation', () => {
     await POST(makeReq({ message: longMessage, sessionId: VALID_SESSION, guestId: VALID_GUEST }))
 
     const metaSetCall = redisMocks.set.mock.calls.find(
-      ([key]: [string]) => key.includes(':meta')
+      (args) => (args[0] as string).includes(':meta')
     )
     expect(metaSetCall).toBeDefined()
     const meta = metaSetCall![1] as { title: string }
@@ -139,7 +139,7 @@ describe('POST /api/chat — session title truncation', () => {
     await POST(makeReq({ message: shortMessage, sessionId: VALID_SESSION, guestId: VALID_GUEST }))
 
     const metaSetCall = redisMocks.set.mock.calls.find(
-      ([key]: [string]) => key.includes(':meta')
+      (args) => (args[0] as string).includes(':meta')
     )
     expect(metaSetCall).toBeDefined()
     const meta = metaSetCall![1] as { title: string }

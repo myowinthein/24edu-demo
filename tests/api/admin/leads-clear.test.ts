@@ -88,7 +88,7 @@ describe('POST /api/admin/leads/clear — clearing leads', () => {
     const res = await POST(makeReq())
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ cleared: 3 })
-    const delCalls = redisMocks.pipelineDel.mock.calls.map(([k]: [string]) => k)
+    const delCalls = redisMocks.pipelineDel.mock.calls.map((args) => args[0] as string)
     expect(delCalls).toContain('lead:g1')
     expect(delCalls).toContain('lead:g2')
     expect(delCalls).toContain('lead:g3')
