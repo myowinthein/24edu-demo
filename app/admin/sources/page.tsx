@@ -152,6 +152,8 @@ export default function SourcesPage() {
   const [sources, setSources] = useState<SourceEntry[]>([]);
   const [isLoadingSources, setIsLoadingSources] = useState(true);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'converting' | 'uploading'>('idle');
+  const [uploadError, setUploadError] = useState('');
+  const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const [viewSource, setViewSource] = useState<SourceEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -166,12 +168,13 @@ export default function SourcesPage() {
       .finally(() => setIsLoadingSources(false));
   }, []);
 
-   const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setUploadError('');
 
     if (sources.some((s) => s.filename === file.name)) {
-      alert(`"${file.name}" is already in your sources. Remove it first or rename the file before uploading.`);
+      setUploadError(`"${file.name}" is already in your sources. Remove it first or rename the file.`);
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
@@ -195,19 +198,23 @@ export default function SourcesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: file.name, csv }),
       });
+      if (!resp.ok) { setUploadError('Upload failed. Please try again.'); return; }
       const updated = await resp.json();
       if (Array.isArray(updated)) setSources(updated);
     } catch (err) {
       console.error('Upload error:', err);
+      setUploadError('Upload failed. Please try again.');
     } finally {
       setUploadStatus('idle');
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const handleRemove = async (id: string, filename: string) => {
-    if (!confirm(`Remove "${filename}"? This cannot be undone.`)) return;
+  const handleRemove = async (id: string) => {
+    if (pendingRemoveId !== id) { setPendingRemoveId(id); return; }
+    setPendingRemoveId(null);
     const resp = await fetch(`/api/sources/${id}`, { method: 'DELETE' });
+    if (!resp.ok) return;
     const updated = await resp.json();
     if (Array.isArray(updated)) setSources(updated);
   };
@@ -247,6 +254,11 @@ export default function SourcesPage() {
             />
           </label>
         </div>
+        {uploadError && (
+          <div style={{ fontSize: 13, color: '#b91c1c', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 7, padding: '8px 12px' }}>
+            {uploadError}
+          </div>
+        )}
 
         {isLoadingSources ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '24px 0', color: '#6b7280', fontSize: 14 }}>
@@ -270,7 +282,15 @@ export default function SourcesPage() {
                 <div style={{ color: '#6b7280' }}>{formatRows(src.rowCount)}</div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                   <button onClick={() => setViewSource(src)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>View</button>
-                  <button onClick={() => handleRemove(src.id, src.filename)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#b91c1c', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>Remove</button>
+                  {pendingRemoveId === src.id ? (
+                    <>
+                      <span style={{ fontSize: 12, color: '#6b7280', alignSelf: 'center' }}>Sure?</span>
+                      <button onClick={() => handleRemove(src.id)} style={{ padding: '6px 12px', fontSize: 13, background: '#b91c1c', color: '#ffffff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>Yes</button>
+                      <button onClick={() => setPendingRemoveId(null)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>No</button>
+                    </>
+                  ) : (
+                    <button onClick={() => handleRemove(src.id)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#b91c1c', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>Remove</button>
+                  )}
                 </div>
               </div>
             ))}
