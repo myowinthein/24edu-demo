@@ -1,15 +1,17 @@
 import { Index } from '@upstash/vector';
 
+if (!process.env.UPSTASH_VECTOR_REST_URL || !process.env.UPSTASH_VECTOR_REST_TOKEN) {
+  throw new Error('UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN must be set');
+}
+
 export const vectorIndex = new Index({
-  url: process.env.UPSTASH_VECTOR_REST_URL!,
-  token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
+  url: process.env.UPSTASH_VECTOR_REST_URL,
+  token: process.env.UPSTASH_VECTOR_REST_TOKEN,
 });
 
 export const VECTOR_CHUNK_SIZE = 5;
 export const VECTOR_TOP_K = 6;
 export const VECTOR_MIN_SCORE = 0.4;
-
-const CHUNK_SIZE = VECTOR_CHUNK_SIZE;
 
 export function chunkCsv(csv: string, filename: string): string[] {
   // Multi-section format produced by xlsxToCSV for Excel files
@@ -22,8 +24,8 @@ export function chunkCsv(csv: string, filename: string): string[] {
       const sheetName = lines[0].replace(/^# Sheet: /, '').trim();
       const header = lines[1];
       const dataRows = lines.slice(2);
-      for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
-        const rows = dataRows.slice(i, i + CHUNK_SIZE);
+      for (let i = 0; i < dataRows.length; i += VECTOR_CHUNK_SIZE) {
+        const rows = dataRows.slice(i, i + VECTOR_CHUNK_SIZE);
         chunks.push(`File: ${filename}\nSheet: ${sheetName}\n${header}\n${rows.join('\n')}`);
       }
     }
@@ -36,8 +38,8 @@ export function chunkCsv(csv: string, filename: string): string[] {
   const header = lines[0];
   const dataRows = lines.slice(1);
   const chunks: string[] = [];
-  for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
-    const rows = dataRows.slice(i, i + CHUNK_SIZE);
+  for (let i = 0; i < dataRows.length; i += VECTOR_CHUNK_SIZE) {
+    const rows = dataRows.slice(i, i + VECTOR_CHUNK_SIZE);
     chunks.push(`File: ${filename}\n${header}\n${rows.join('\n')}`);
   }
   return chunks;
