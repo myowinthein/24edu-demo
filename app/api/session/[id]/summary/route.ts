@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { redis, sessionMessagesKey } from '@/lib/redis';
+import { DEFAULT_MODEL } from '@/app/chat/constants';
 import type { SessionMessage } from '@/lib/types';
 
 const genAI = process.env.GEMINI_API_KEY
@@ -31,7 +32,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-3.1-flash-lite',
+      model: DEFAULT_MODEL,
       systemInstruction:
         'Summarize the following conversation in 3–5 concise bullet points. ' +
         'Cover: what the user was asking about, what information was provided, and any unresolved questions or next steps. ' +

@@ -22,14 +22,14 @@ export function getDeviceInfo(): Record<string, string> {
     const v = ua.match(/Windows NT ([\d.]+)/)?.[1] ?? '';
     const m: Record<string, string> = { '10.0': '10/11', '6.3': '8.1', '6.2': '8', '6.1': '7' };
     osVersion = m[v] ?? v;
-  } else if (/Mac OS X/.test(ua)) {
-    os = 'macOS'; osVersion = (ua.match(/Mac OS X ([\d_]+)/)?.[1] ?? '').replace(/_/g, '.');
-  } else if (/Android/.test(ua)) {
-    os = 'Android'; osVersion = ua.match(/Android ([\d.]+)/)?.[1] ?? '';
   } else if (/iPhone/.test(ua)) {
     os = 'iOS'; osVersion = (ua.match(/OS ([\d_]+)/)?.[1] ?? '').replace(/_/g, '.');
   } else if (/iPad/.test(ua)) {
     os = 'iPadOS'; osVersion = (ua.match(/OS ([\d_]+)/)?.[1] ?? '').replace(/_/g, '.');
+  } else if (/Android/.test(ua)) {
+    os = 'Android'; osVersion = ua.match(/Android ([\d.]+)/)?.[1] ?? '';
+  } else if (/Mac OS X/.test(ua)) {
+    os = 'macOS'; osVersion = (ua.match(/Mac OS X ([\d_]+)/)?.[1] ?? '').replace(/_/g, '.');
   } else if (/Linux/.test(ua)) {
     os = 'Linux';
   }

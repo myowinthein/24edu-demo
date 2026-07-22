@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
   const leadPipeline = redis.pipeline();
   for (const gid of uniqueGuestIds) leadPipeline.get<LeadData>(leadKey(gid));
   const leadResults = await leadPipeline.exec();
-  const leadMap = new Map<string, { name: string; email: string; phone: string; country: string; educationLevel: string; programOfInterest: string; intendedIntake: string }>();
+  const leadMap = new Map<string, Omit<LeadData, 'guestId' | 'submittedAt'>>();
   uniqueGuestIds.forEach((gid, i) => {
     const lead = leadResults[i] as LeadData | null;
     if (lead) leadMap.set(gid, { name: lead.name, email: lead.email, phone: lead.phone, country: lead.country, educationLevel: lead.educationLevel, programOfInterest: lead.programOfInterest, intendedIntake: lead.intendedIntake });
