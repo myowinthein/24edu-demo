@@ -48,7 +48,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
     };
     connect();
     return () => { active = false; es?.close(); };
-  }, [id]);
+  }, [id, fetchSession]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

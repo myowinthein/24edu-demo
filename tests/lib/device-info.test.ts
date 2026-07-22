@@ -87,22 +87,20 @@ describe('getDeviceInfo — OS detection', () => {
     expect(info.osVersion).toBe('14')
   })
 
-  // NOTE: iPhone and iPad UAs contain "like Mac OS X", which the current implementation
-  // matches before the iPhone/iPad branch. The code returns 'macOS' for these UAs.
-  // The /iPhone/ and /iPad/ OS branches in lib/device-info.ts are currently unreachable
-  // for real UA strings. Device type detection is still correct.
-  it('iPhone UA — OS is detected as macOS (Mac OS X check runs first)', () => {
+  it('iPhone UA detects iOS', () => {
     mockUA('Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1')
     const info = getDeviceInfo()
-    expect(info.os).toBe('macOS')
-    expect(info.device).toBe('Mobile') // device type is still correct
+    expect(info.os).toBe('iOS')
+    expect(info.osVersion).toBe('17.2')
+    expect(info.device).toBe('Mobile')
   })
 
-  it('iPad UA — OS is detected as macOS (Mac OS X check runs first)', () => {
+  it('iPad UA detects iPadOS', () => {
     mockUA('Mozilla/5.0 (iPad; CPU OS 17_2 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1')
     const info = getDeviceInfo()
-    expect(info.os).toBe('macOS')
-    expect(info.device).toBe('Tablet') // device type is still correct
+    expect(info.os).toBe('iPadOS')
+    expect(info.osVersion).toBe('17.2')
+    expect(info.device).toBe('Tablet')
   })
 
   it('detects Linux', () => {
