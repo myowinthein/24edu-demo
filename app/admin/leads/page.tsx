@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import * as XLSX from 'xlsx';
 import type { LeadData } from '@/lib/types';
+import { formatDate } from '@/lib/format';
 
 const COLUMNS: { key: keyof LeadData; label: string }[] = [
   { key: 'name',              label: 'Name' },
@@ -16,9 +17,11 @@ const COLUMNS: { key: keyof LeadData; label: string }[] = [
   { key: 'submittedAt',       label: 'Submitted' },
 ];
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-MY', { day: '2-digit', month: 'short', year: 'numeric' });
-}
+const btnStyle: React.CSSProperties = {
+  padding: '6px 13px', fontSize: 12, fontWeight: 500, border: '1px solid #d1d5db',
+  borderRadius: 6, cursor: 'pointer', background: '#ffffff', color: '#374151',
+  fontFamily: 'inherit', whiteSpace: 'nowrap',
+};
 
 export default function LeadsPage() {
   const router = useRouter();
@@ -35,18 +38,21 @@ export default function LeadsPage() {
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({
-      page: String(page), limit: String(limit),
-      sort, order, search,
-    });
-    const res = await fetch(`/api/admin/leads?${params}`);
-    if (res.status === 401) { router.push('/admin/login'); return; }
-    if (!res.ok) { setLoading(false); return; }
-    const data = await res.json();
-    setLeads(data.leads);
-    setTotal(data.total);
-    setTotalPages(data.totalPages);
-    setLoading(false);
+    try {
+      const params = new URLSearchParams({
+        page: String(page), limit: String(limit),
+        sort, order, search,
+      });
+      const res = await fetch(`/api/admin/leads?${params}`);
+      if (res.status === 401) { router.push('/admin/login'); return; }
+      if (!res.ok) return;
+      const data = await res.json();
+      setLeads(data.leads);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } finally {
+      setLoading(false);
+    }
   }, [page, sort, order, search, router]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
@@ -67,7 +73,7 @@ export default function LeadsPage() {
     const header = COLUMNS.map((c) => c.label).join(',');
     const rows = leads.map((l) =>
       COLUMNS.map((c) => {
-        const v = c.key === 'submittedAt' ? formatDate(l[c.key]) : l[c.key];
+        const v = c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key];
         return `"${String(v ?? '').replace(/"/g, '""')}"`;
       }).join(',')
     );
@@ -81,7 +87,7 @@ export default function LeadsPage() {
 
   const exportExcel = () => {
     const rows = leads.map((l) =>
-      Object.fromEntries(COLUMNS.map((c) => [c.label, c.key === 'submittedAt' ? formatDate(l[c.key]) : l[c.key]]))
+      Object.fromEntries(COLUMNS.map((c) => [c.label, c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key]]))
     );
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
@@ -99,12 +105,6 @@ export default function LeadsPage() {
   const sortIcon = (key: keyof LeadData) => {
     if (sort !== key) return <span style={{ color: '#d1d5db', marginLeft: 4 }}>↕</span>;
     return <span style={{ marginLeft: 4 }}>{order === 'asc' ? '↑' : '↓'}</span>;
-  };
-
-  const btnStyle: React.CSSProperties = {
-    padding: '6px 13px', fontSize: 12, fontWeight: 500, border: '1px solid #d1d5db',
-    borderRadius: 6, cursor: 'pointer', background: '#ffffff', color: '#374151',
-    fontFamily: 'inherit', whiteSpace: 'nowrap',
   };
 
   return (
@@ -191,7 +191,7 @@ export default function LeadsPage() {
                 >
                   {COLUMNS.map((col) => (
                     <td key={col.key} style={{ padding: '10px 14px', color: '#14151a', whiteSpace: col.key === 'submittedAt' ? 'nowrap' : 'normal' }}>
-                      {col.key === 'submittedAt' ? formatDate(lead[col.key]) : lead[col.key]}
+                      {col.key === 'submittedAt' ? formatDate(lead[col.key], { day: '2-digit', month: 'short', year: 'numeric' }) : lead[col.key]}
                     </td>
                   ))}
                 </tr>
