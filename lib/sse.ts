@@ -18,7 +18,7 @@ export function createChannelSSE(channel: string, req: NextRequest): Response {
         controller.enqueue(encoder.encode(`data: ${message}\n\n`));
       });
       req.signal.addEventListener('abort', () => {
-        sub.unsubscribe().then(() => sub.disconnect());
+        sub.unsubscribe().then(() => sub.disconnect()).catch(console.error);
         controller.close();
       });
     },

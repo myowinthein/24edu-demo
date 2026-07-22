@@ -106,9 +106,9 @@ describe('POST /api/admin/sessions/clear — session clearing', () => {
 
   it('returns the number of cleared sessions', async () => {
     mocks.zrange.mockResolvedValue(['s1', 's2'])
-    mocks.get
-      .mockResolvedValueOnce({ guestId: 'g1' })
-      .mockResolvedValueOnce({ guestId: 'g2' })
+    mocks.pipelineExec
+      .mockResolvedValueOnce([{ guestId: 'g1' }, { guestId: 'g2' }]) // meta pipeline
+      .mockResolvedValueOnce([]) // del pipeline
     const res = await POST(makeReq())
     const body = await res.json()
     expect(body.cleared).toBe(2)
@@ -116,10 +116,9 @@ describe('POST /api/admin/sessions/clear — session clearing', () => {
 
   it('deduplicates guestIds so each guest key is only deleted once', async () => {
     mocks.zrange.mockResolvedValue(['s1', 's2', 's3'])
-    mocks.get
-      .mockResolvedValueOnce({ guestId: 'g1' })
-      .mockResolvedValueOnce({ guestId: 'g1' }) // duplicate
-      .mockResolvedValueOnce({ guestId: 'g2' })
+    mocks.pipelineExec
+      .mockResolvedValueOnce([{ guestId: 'g1' }, { guestId: 'g1' }, { guestId: 'g2' }]) // meta pipeline
+      .mockResolvedValueOnce([]) // del pipeline
     await POST(makeReq())
     // publishSessions should fire once after clearing
     expect(mockPublishSessions).toHaveBeenCalledOnce()
