@@ -478,11 +478,11 @@
       "file": "package.json",
       "line": 19,
       "description": "xlsx (SheetJS Community Edition ^0.18.5) has known security advisories and has been effectively abandoned since 2023 (maintainers moved to a paid model). Consider replacing with exceljs (actively maintained, MIT licensed) or adding lockfile audit to CI.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "d8429fa337308e297bbb7e8adc765e1b359ec1dc",
       "first_found_date": "2026-07-21",
       "resolved_commit": null,
-      "resolved_date": null
+      "resolved_date": "2026-07-22"
     }
   ]
 }
