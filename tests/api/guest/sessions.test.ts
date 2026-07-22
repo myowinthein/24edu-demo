@@ -24,7 +24,7 @@ vi.mock('@/lib/redis', () => ({
 
 import { GET } from '@/app/api/guest/[guestId]/sessions/route'
 
-const GUEST = 'g-0001'
+const GUEST = '00000000-0000-0000-0000-000000000001'
 
 function makeReq(guestId = GUEST) {
   return new NextRequest(`http://localhost/api/guest/${guestId}/sessions`)
