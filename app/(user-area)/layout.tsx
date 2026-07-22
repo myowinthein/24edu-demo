@@ -9,6 +9,7 @@ import { navLinkStyle } from '@/lib/ui-styles';
 function Shell({ children }: { children: React.ReactNode }) {
   const {
     sessions,
+    sessionsLoaded,
     sidebarOpen, setSidebarOpen,
     activeSessionId,
     leadSubmitted, leadName,
@@ -36,6 +37,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         sessions={sessions}
         sessionId={isChat ? activeSessionId : null}
         name={leadName}
+        loading={!sessionsLoaded}
         onNewChat={() => {
           setPendingSession('new');
           if (!isChat) router.push('/chat');

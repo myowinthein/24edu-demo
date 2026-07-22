@@ -150,7 +150,9 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #d1d5db', borderRadius: 8, outline: 'none',
   fontFamily: 'inherit', color: '#14151a', background: '#ffffff', boxSizing: 'border-box',
 };
-const labelStyle: React.CSSProperties = { display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6 };
+const labelStyle: React.CSSProperties = {
+  display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6,
+};
 const errStyle: React.CSSProperties = { fontSize: 12, color: '#dc2626', marginTop: 4 };
 const req = <span style={{ color: '#dc2626' }}>*</span>;
 
@@ -167,19 +169,19 @@ const PHONE_NUM_RE = /^[\d\s\-(). ]{6,15}$/;
 
 function validate(f: FormFields): FormErrors {
   const e: FormErrors = {};
-  if (!f.name.trim() || f.name.trim().length < 2) e.name = 'Full name is required (min 2 characters)';
-  if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email address';
-  if (!f.phoneCountry) e.phoneCountry = 'Select a country code';
-  if (!f.phoneNumber.trim() || !PHONE_NUM_RE.test(f.phoneNumber.trim())) e.phoneNumber = 'Enter a valid phone number (6–15 digits)';
-  if (!f.country) e.country = 'Select your nationality / country';
-  if (!f.educationLevel) e.educationLevel = 'Select your highest education level';
-  if (!f.programOfInterest.trim() || f.programOfInterest.trim().length < 2) e.programOfInterest = 'Let us know what you want to study';
+  if (!f.name.trim() || f.name.trim().length < 2) e.name = 'Required (min 2 chars)';
+  if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email';
+  if (!f.phoneCountry) e.phoneCountry = 'Select country code';
+  if (!f.phoneNumber.trim() || !PHONE_NUM_RE.test(f.phoneNumber.trim())) e.phoneNumber = 'Enter a valid number (6–15 digits)';
+  if (!f.country) e.country = 'Select nationality / country';
+  if (!f.educationLevel) e.educationLevel = 'Select education level';
+  if (!f.programOfInterest.trim() || f.programOfInterest.trim().length < 2) e.programOfInterest = 'Required';
   if (!f.intakeMonth) e.intakeMonth = 'Select a month';
   if (!f.intakeYear.trim()) e.intakeYear = 'Enter a year';
   else {
     const yr = parseInt(f.intakeYear);
     if (!/^\d{4}$/.test(f.intakeYear) || yr < CURRENT_YEAR || yr > CURRENT_YEAR + 6)
-      e.intakeYear = `Enter a year between ${CURRENT_YEAR} and ${CURRENT_YEAR + 6}`;
+      e.intakeYear = `${CURRENT_YEAR}–${CURRENT_YEAR + 6}`;
   }
   return e;
 }
@@ -260,11 +262,16 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '32px 16px', background: '#f9fafb' }}>
-      <div style={{ width: '100%', maxWidth: 500, background: '#ffffff', borderRadius: 14, border: '1px solid #e3e3e6', padding: '32px 32px 28px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px', background: '#ffffff' }}>
+      <div style={{ maxWidth: 780 }}>
+
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ margin: '0 0 4px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
+          <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
+        </div>
 
         {status === 'loading' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, justifyContent: 'center', padding: '24px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, padding: '24px 0' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
               <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
             </svg>
@@ -273,7 +280,7 @@ export default function ProfilePage() {
         )}
 
         {status === 'no-data' && (
-          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+          <div style={{ padding: '24px 0' }}>
             <p style={{ fontSize: 15, color: '#6b7280', margin: '0 0 16px' }}>No info found. Please start by chatting first.</p>
             <Link href="/chat" style={{ display: 'inline-block', padding: '9px 20px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
               Go to Chat
@@ -282,12 +289,12 @@ export default function ProfilePage() {
         )}
 
         {status === 'saved' && (
-          <div style={{ textAlign: 'center', padding: '24px 0' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>✓</div>
-            <p style={{ fontSize: 16, fontWeight: 600, color: '#111827', margin: '0 0 6px' }}>Info updated!</p>
+          <div style={{ padding: '24px 0' }}>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
+            <p style={{ fontSize: 16, fontWeight: 600, color: '#111827', margin: '0 0 4px' }}>Info updated!</p>
             <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 20px' }}>Your details have been saved successfully.</p>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-              <button onClick={() => setStatus('ready')} style={{ padding: '8px 16px', fontSize: 14, background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, cursor: 'pointer' }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => setStatus('ready')} style={{ padding: '8px 16px', fontSize: 14, background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit' }}>
                 Edit again
               </button>
               <Link href="/chat" style={{ display: 'inline-block', padding: '8px 16px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
@@ -298,89 +305,90 @@ export default function ProfilePage() {
         )}
 
         {status === 'ready' && (
-          <>
-            <div style={{ marginBottom: 24 }}>
-              <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
-              <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Row 1: Name + Email */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', marginBottom: 16 }}>
+              <div>
+                <label style={labelStyle}>Full name {req}</label>
+                <input style={{ ...inputStyle, borderColor: border(!!errors.name) }} type="text" value={fields.name} onChange={set('name')} placeholder="e.g. Ahmad Firdaus" />
+                {errors.name && <p style={errStyle}>{errors.name}</p>}
+              </div>
+              <div>
+                <label style={labelStyle}>Email {req}</label>
+                <input style={{ ...inputStyle, borderColor: border(!!errors.email) }} type="email" value={fields.email} onChange={set('email')} placeholder="you@example.com" />
+                {errors.email && <p style={errStyle}>{errors.email}</p>}
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit} noValidate>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-                <div>
-                  <label style={labelStyle}>Full name {req}</label>
-                  <input style={{ ...inputStyle, borderColor: border(!!errors.name) }} type="text" value={fields.name} onChange={set('name')} placeholder="e.g. Ahmad Firdaus" />
-                  {errors.name && <p style={errStyle}>{errors.name}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Email {req}</label>
-                  <input style={{ ...inputStyle, borderColor: border(!!errors.email) }} type="email" value={fields.email} onChange={set('email')} placeholder="you@example.com" />
-                  {errors.email && <p style={errStyle}>{errors.email}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Phone / WhatsApp {req}</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <select value={fields.phoneCountry} onChange={set('phoneCountry')} style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: 8, borderColor: border(!!errors.phoneCountry), cursor: 'pointer' }}>
-                      {COUNTRY_CODES.map((c) => (
-                        <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
-                      ))}
-                    </select>
-                    <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')} placeholder="12 345 6789" />
-                  </div>
-                  {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Nationality / Country {req}</label>
-                  <select value={fields.country} onChange={set('country')} style={{ ...inputStyle, borderColor: border(!!errors.country), cursor: 'pointer' }}>
-                    <option value="">Select…</option>
-                    {COUNTRIES.map((c) => <option key={c.name} value={c.name}>{c.flag} {c.name}</option>)}
-                  </select>
-                  {errors.country && <p style={errStyle}>{errors.country}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Highest education level {req}</label>
-                  <select value={fields.educationLevel} onChange={set('educationLevel')} style={{ ...inputStyle, borderColor: border(!!errors.educationLevel), cursor: 'pointer' }}>
-                    <option value="">Select…</option>
-                    {EDUCATION_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-                  </select>
-                  {errors.educationLevel && <p style={errStyle}>{errors.educationLevel}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Program of interest {req}</label>
-                  <input style={{ ...inputStyle, borderColor: border(!!errors.programOfInterest) }} type="text" value={fields.programOfInterest} onChange={set('programOfInterest')} placeholder="e.g. Computer Science, Business…" />
-                  {errors.programOfInterest && <p style={errStyle}>{errors.programOfInterest}</p>}
-                </div>
-
-                <div>
-                  <label style={labelStyle}>Intended intake {req}</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <select value={fields.intakeMonth} onChange={set('intakeMonth')} style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.intakeMonth), cursor: 'pointer' }}>
-                      <option value="">Month…</option>
-                      {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
-                    </select>
-                    <input style={{ ...inputStyle, width: 90, flexShrink: 0, borderColor: border(!!errors.intakeYear) }} type="number" value={fields.intakeYear} onChange={set('intakeYear')} placeholder={String(CURRENT_YEAR)} min={CURRENT_YEAR} max={CURRENT_YEAR + 6} />
-                  </div>
-                  {(errors.intakeMonth || errors.intakeYear) && <p style={errStyle}>{errors.intakeMonth ?? errors.intakeYear}</p>}
-                </div>
-
+            {/* Row 2: Phone (full width) */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={labelStyle}>Phone / WhatsApp {req}</label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <select value={fields.phoneCountry} onChange={set('phoneCountry')} style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: 8, borderColor: border(!!errors.phoneCountry), cursor: 'pointer' }}>
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
+                  ))}
+                </select>
+                <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')} placeholder="12 345 6789" />
               </div>
+              {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
+            </div>
 
-              {serverError && <p style={{ ...errStyle, marginTop: 12, textAlign: 'center' }}>{serverError}</p>}
+            {/* Row 3: Country + Education */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', marginBottom: 16 }}>
+              <div>
+                <label style={labelStyle}>Nationality / Country {req}</label>
+                <select value={fields.country} onChange={set('country')} style={{ ...inputStyle, borderColor: border(!!errors.country), cursor: 'pointer' }}>
+                  <option value="">Select…</option>
+                  {COUNTRIES.map((c) => <option key={c.name} value={c.name}>{c.flag} {c.name}</option>)}
+                </select>
+                {errors.country && <p style={errStyle}>{errors.country}</p>}
+              </div>
+              <div>
+                <label style={labelStyle}>Highest education level {req}</label>
+                <select value={fields.educationLevel} onChange={set('educationLevel')} style={{ ...inputStyle, borderColor: border(!!errors.educationLevel), cursor: 'pointer' }}>
+                  <option value="">Select…</option>
+                  {EDUCATION_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                </select>
+                {errors.educationLevel && <p style={errStyle}>{errors.educationLevel}</p>}
+              </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={submitting}
-                style={{ marginTop: 24, width: '100%', padding: '12px', fontSize: 15, fontWeight: 600, background: submitting ? '#93c5fd' : '#2563eb', color: '#ffffff', border: 'none', borderRadius: 8, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
-              >
-                {submitting ? 'Saving…' : 'Save changes'}
-              </button>
-            </form>
-          </>
+            {/* Row 4: Program + Intake */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', marginBottom: 24 }}>
+              <div>
+                <label style={labelStyle}>Program of interest {req}</label>
+                <input style={{ ...inputStyle, borderColor: border(!!errors.programOfInterest) }} type="text" value={fields.programOfInterest} onChange={set('programOfInterest')} placeholder="e.g. Computer Science, Business…" />
+                {errors.programOfInterest && <p style={errStyle}>{errors.programOfInterest}</p>}
+              </div>
+              <div>
+                <label style={labelStyle}>Intended intake {req}</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select value={fields.intakeMonth} onChange={set('intakeMonth')} style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.intakeMonth), cursor: 'pointer' }}>
+                    <option value="">Month…</option>
+                    {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <input style={{ ...inputStyle, width: 88, flexShrink: 0, borderColor: border(!!errors.intakeYear) }} type="number" value={fields.intakeYear} onChange={set('intakeYear')} placeholder={String(CURRENT_YEAR)} min={CURRENT_YEAR} max={CURRENT_YEAR + 6} />
+                </div>
+                {(errors.intakeMonth || errors.intakeYear) && <p style={errStyle}>{errors.intakeMonth ?? errors.intakeYear}</p>}
+              </div>
+            </div>
+
+            {serverError && <p style={{ ...errStyle, marginBottom: 12 }}>{serverError}</p>}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                padding: '11px 28px', fontSize: 15, fontWeight: 600,
+                background: submitting ? '#93c5fd' : '#2563eb',
+                color: '#ffffff', border: 'none', borderRadius: 8,
+                cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {submitting ? 'Saving…' : 'Save changes'}
+            </button>
+          </form>
         )}
 
       </div>

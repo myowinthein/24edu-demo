@@ -178,6 +178,13 @@ export default function ChatPage() {
     setIsLoading(true);
 
     const isNewSession = !sessions.find((s) => s.id === sessionId);
+    if (isNewSession && sessionId) {
+      const now = new Date().toISOString();
+      setSessions((prev) => [
+        { id: sessionId, title: text.length > 50 ? text.slice(0, 47) + '…' : text, createdAt: now, lastActiveAt: now },
+        ...prev,
+      ]);
+    }
     try {
       const resp = await fetch('/api/chat', {
         method: 'POST',

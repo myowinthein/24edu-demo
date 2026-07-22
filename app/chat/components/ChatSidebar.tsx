@@ -9,8 +9,19 @@ interface ChatSidebarProps {
   sessions: SessionRow[];
   sessionId: string | null;
   name?: string | null;
+  loading?: boolean;
   onNewChat: () => void;
   onSwitchSession: (id: string) => void;
+}
+
+function SkeletonSession() {
+  return (
+    <div style={{ padding: '9px 10px', marginBottom: 3 }}>
+      <div style={{ width: 48, height: 9, borderRadius: 4, background: '#e5e7eb', marginBottom: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <div style={{ width: '80%', height: 12, borderRadius: 4, background: '#e5e7eb', marginBottom: 5, animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <div style={{ width: 72, height: 9, borderRadius: 4, background: '#f0f0f1', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    </div>
+  );
 }
 
 export function ChatSidebar({
@@ -19,6 +30,7 @@ export function ChatSidebar({
   sessions,
   sessionId,
   name,
+  loading = false,
   onNewChat,
   onSwitchSession,
 }: ChatSidebarProps) {
@@ -96,7 +108,13 @@ export function ChatSidebar({
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '4px 8px 8px' }}>
-            {sessions.map((s) => {
+            {loading && sessions.length === 0 ? (
+              <>
+                <SkeletonSession />
+                <SkeletonSession />
+                <SkeletonSession />
+              </>
+            ) : sessions.map((s, idx) => {
               const isActive = s.id === sessionId;
               return (
                 <button
@@ -115,6 +133,7 @@ export function ChatSidebar({
                     marginBottom: 3,
                     background: isActive ? '#ffffff' : 'transparent',
                     fontFamily: 'inherit',
+                    animation: idx === 0 ? 'fadeIn 0.18s ease' : undefined,
                   }}
                 >
                   <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af', letterSpacing: '0.03em' }}>
