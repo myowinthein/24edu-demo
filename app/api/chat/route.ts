@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const modelName = model ?? 'gemini-3.1-flash-lite';
+  const modelName = model ?? 'gemini-3.5-flash-lite';
   const geminiModel = genAI!.getGenerativeModel({
     model: modelName,
     systemInstruction,
