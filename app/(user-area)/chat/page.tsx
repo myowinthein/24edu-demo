@@ -109,8 +109,8 @@ export default function ChatPage() {
     setActiveSessionId(sessionId);
   }, [sessionId, setActiveSessionId]);
 
-  const fetchSession = useCallback(async (id: string) => {
-    const res = await fetch(`/api/session/${id}`);
+  const fetchSession = useCallback(async (id: string, signal?: AbortSignal) => {
+    const res = await fetch(`/api/session/${id}`, { signal });
     if (!res.ok) return;
     const data = (await res.json()) as { messages: SessionMessage[]; mode: SessionMode };
     setMessages(data.messages);
@@ -121,7 +121,9 @@ export default function ChatPage() {
     if (!sessionId) return;
     setMessages([]);
     setMode('ai');
-    fetchSession(sessionId);
+    const ac = new AbortController();
+    fetchSession(sessionId, ac.signal).catch(() => {});
+    return () => ac.abort();
   }, [sessionId, fetchSession]);
 
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function ChatPage() {
             setAdminTyping(false);
             if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
           }
-        } catch (e) { console.error('SSE parse error', e); }
+        } catch (err) { console.error('SSE parse error', err); }
       };
       es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
     };
@@ -193,7 +195,7 @@ export default function ChatPage() {
       });
       if (!resp.ok) throw new Error('API error');
       await resp.json();
-      if (isNewSession) fetchSessions();
+      if (isNewSession) fetchSessions().catch(console.error);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -204,23 +206,23 @@ export default function ChatPage() {
     }
   };
 
-  const requestHuman = async () => {
+  const requestHuman = () => {
     if (!sessionId) return;
-    await fetch(`/api/session/${sessionId}/request-human`, {
+    fetch(`/api/session/${sessionId}/request-human`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ guestId }),
-    });
+    }).catch(console.error);
   };
 
-  const switchToAI = async () => {
+  const switchToAI = () => {
     if (!sessionId) return;
-    await fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' });
+    fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' }).catch(console.error);
   };
 
-  const endChat = async () => {
+  const endChat = () => {
     if (!sessionId) return;
-    await fetch(`/api/session/${sessionId}/end`, { method: 'POST' });
+    fetch(`/api/session/${sessionId}/end`, { method: 'POST' }).catch(console.error);
   };
 
   const summarize = async () => {
