@@ -147,6 +147,16 @@ describe('POST /api/chat — session title truncation', () => {
   })
 })
 
+describe('POST /api/chat — happy path response shape', () => {
+  it('returns 200 with a reply field on success', async () => {
+    const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, guestId: VALID_GUEST }))
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body).toHaveProperty('text')
+    expect(typeof body.text).toBe('string')
+  })
+})
+
 describe('POST /api/chat — Google Search grounding', () => {
   it('uses googleSearchRetrieval tool for education-related queries with no local chunks', async () => {
     mockQueryRelevantChunks.mockResolvedValue([])
