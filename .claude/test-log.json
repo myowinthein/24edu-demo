@@ -1,5 +1,5 @@
 {
-  "last_test_run_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f",
+  "last_test_run_commit": "169b4a1",
   "last_full_scan_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f",
   "findings": [
     {
@@ -11,44 +11,200 @@
     }
   ],
   "full_scan_findings": [
-    { "file": "lib/format.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/redis.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/pubsub.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/vector.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/xlsx-utils.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/device-info.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/admin-auth.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/session-actions.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/ui-styles.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/types.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "lib/sse.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "middleware.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/login/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/logout/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/[id]/message/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/[id]/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/[id]/join/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/[id]/leave/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sessions/clear/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/leads/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/leads/clear/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/admin/sources/clear/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/chat/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/lead/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/guest/[guestId]/lead/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/guest/[guestId]/sessions/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/session/[id]/request-human/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/session/[id]/summary/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/session/[id]/route.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/session/[id]/end/route.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/session/[id]/switch-ai/route.ts", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/sources/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/sources/[id]/route.ts", "priority": "medium", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/api/sources/[id]/rows/route.ts", "priority": "high", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/(user-area)/UserAreaContext.tsx", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/(user-area)/layout.tsx", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/(user-area)/chat/page.tsx", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" },
-    { "file": "app/(user-area)/profile/page.tsx", "priority": "low", "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f" }
+    {
+      "file": "lib/format.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/redis.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/pubsub.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/vector.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/xlsx-utils.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/device-info.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/admin-auth.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/session-actions.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/ui-styles.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/types.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "lib/sse.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "middleware.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/login/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/logout/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/[id]/message/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/[id]/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/[id]/join/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/[id]/leave/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sessions/clear/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/leads/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/leads/clear/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/admin/sources/clear/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/chat/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/lead/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/guest/[guestId]/lead/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/guest/[guestId]/sessions/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/session/[id]/request-human/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/session/[id]/summary/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/session/[id]/route.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/session/[id]/end/route.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/session/[id]/switch-ai/route.ts",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/sources/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/sources/[id]/route.ts",
+      "priority": "medium",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/api/sources/[id]/rows/route.ts",
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/(user-area)/UserAreaContext.tsx",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/(user-area)/layout.tsx",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/(user-area)/chat/page.tsx",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
+    {
+      "file": "app/(user-area)/profile/page.tsx",
+      "priority": "low",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    }
   ]
 }
