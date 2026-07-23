@@ -298,18 +298,17 @@ function StatCard({ label, value, icon, iconColor, bg }: { label: string; value:
 
 function PromptBlock({ value }: { value: string }) {
   return (
-    <textarea
-      readOnly
-      value={value}
-      rows={4}
+    <div
       style={{
-        width: '100%', boxSizing: 'border-box', resize: 'vertical',
+        width: '100%', boxSizing: 'border-box',
         padding: '10px 12px', fontSize: 12, fontFamily: 'ui-monospace, monospace',
         lineHeight: 1.6, color: 'var(--text-2)', background: 'var(--bg-surface)',
-        border: '1px solid var(--border)', borderRadius: 7, outline: 'none',
-        cursor: 'default',
+        border: '1px solid var(--border)', borderRadius: 7,
+        whiteSpace: 'pre-wrap', wordBreak: 'break-word', userSelect: 'text',
       }}
-    />
+    >
+      {value}
+    </div>
   );
 }
 
