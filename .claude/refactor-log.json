@@ -1522,11 +1522,11 @@
       "file": "tests/api/chat.test.ts",
       "line": 58,
       "description": "GEMINI_API_KEY-missing 500 path has zero coverage \u2014 vitest.setup.ts always provides the key; add a test that clears the env var for the genAI-null guard branch.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-096",
@@ -1586,11 +1586,11 @@
       "file": "tests/api/admin/sessions-clear.test.ts",
       "line": 99,
       "description": "SESSIONS_ACTIVE_KEY delete not asserted in POST clear test \u2014 the production pipeline del(SESSIONS_ACTIVE_KEY) step is not verified.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-100",
@@ -1602,11 +1602,11 @@
       "file": "tests/api/admin/leads.test.ts",
       "line": 5,
       "description": "verifyAdminToken always mocked true \u2014 no 401 path tested; auth guard could be removed without any test failure.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-101",
@@ -1618,11 +1618,11 @@
       "file": "tests/api/sources.test.ts",
       "line": 5,
       "description": "Same auth mock problem \u2014 no 401 path tested for POST /api/sources or GET /api/sources/[id]/rows.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-102",
@@ -1634,11 +1634,11 @@
       "file": "tests/lib/vector.test.ts",
       "line": 1,
       "description": "indexSource, deleteSourceVectors, and queryRelevantChunks not tested \u2014 only chunkCsv and chunkVectorId covered; score filtering at VECTOR_MIN_SCORE has zero coverage.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-103",
@@ -1650,11 +1650,11 @@
       "file": "tests/lib/pubsub.test.ts",
       "line": 9,
       "description": "createSubscriber not tested \u2014 missing REDIS_URL error throw and happy-path subscriber instantiation are uncovered.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-104",
@@ -1666,11 +1666,11 @@
       "file": "tests/api/session/request-human.test.ts",
       "line": 44,
       "description": "Promise.all mock ordering is fragile \u2014 sequential mockResolvedValueOnce values are positional; reordering Promise.all arguments produces wrong test results with no failure.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-105",
@@ -1682,11 +1682,11 @@
       "file": "tests/api/chat.test.ts",
       "line": 104,
       "description": "Same Promise.all ordering assumption \u2014 hardcoded [messages, mode] order in mock setup; a comment documents the risk but no guard exists.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-106",
@@ -1698,11 +1698,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 1,
       "description": "ChatPage has no unit or integration tests \u2014 sendMessage optimistic update, pendingSession state machine, and SSE reconnect are complex uncovered paths.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-107",
@@ -1714,11 +1714,11 @@
       "file": "tests/lib/session-actions.test.ts",
       "line": 30,
       "description": "session-actions test doesn't verify concurrent execution \u2014 asserts calls happened but not that redis.set and redis.get were initiated concurrently via Promise.all.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-108",
@@ -1730,11 +1730,11 @@
       "file": "tests/api/guest/sessions.test.ts",
       "line": 28,
       "description": "Non-UUID guestId ('g-0001') used in tests \u2014 if UUID validation is added, tests silently return 400 without an obvious explanation; use a real UUID constant.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-109",
@@ -1746,11 +1746,11 @@
       "file": "tests/api/sources.test.ts",
       "line": 86,
       "description": "rowCount only asserted to be typeof 'number' in multi-sheet test \u2014 not a concrete value; doesn't verify counting logic.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-110",
@@ -1762,11 +1762,11 @@
       "file": "tests/lib/format.test.ts",
       "line": 1,
       "description": "Invalid date strings untested \u2014 error-handling paths of formatRelativeTime and formatDate for invalid input are uncovered.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-111",
@@ -1778,11 +1778,11 @@
       "file": "tests/api/admin/login.test.ts",
       "line": 46,
       "description": "Login success test doesn't assert SameSite or Path cookie attributes \u2014 a regression removing SameSite=Strict would go undetected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-112",
@@ -1794,11 +1794,11 @@
       "file": "tests/middleware.test.ts",
       "line": 1,
       "description": "/api/admin/logout not explicitly tested in middleware tests \u2014 intentionally works without auth, but no test documents this decision.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-113",
@@ -1810,11 +1810,11 @@
       "file": "tests/api/session/",
       "line": 1,
       "description": "No test for switch-ai idempotency or non-existent session \u2014 given the missing auth gap (f-043), the security-test gap doubles the risk.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-114",
@@ -1844,11 +1844,11 @@
       "file": "app/admin/leads/page.tsx",
       "line": 66,
       "description": "exportCSV, exportJSON, exportExcel untested \u2014 manipulate the DOM and have the silent page-limit bug (current-page only); add tests that mock URL.createObjectURL.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "31d6cfa",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-116",
