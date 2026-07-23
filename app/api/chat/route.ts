@@ -12,6 +12,13 @@ import { publishSession, publishSessions } from '@/lib/pubsub';
 import { queryRelevantChunks } from '@/lib/vector';
 import { MODELS, DEFAULT_MODEL } from '@/app/chat/constants';
 import type { SessionMessage, SessionMode } from '@/lib/types';
+import {
+  PROMPT_LOCAL_DATA,
+  PROMPT_LOCAL_DATA_SUFFIX_FOUND,
+  PROMPT_LOCAL_DATA_SUFFIX_EMPTY,
+  PROMPT_GROUNDING_ONLY,
+  PROMPT_GROUNDING_WITH_CONTEXT,
+} from '@/lib/prompts';
 
 // ── Layer 1: topic gate ───────────────────────────────────────────────────────
 // Grounding only triggers when chunks are empty AND the message is about education.
@@ -129,40 +136,21 @@ export async function POST(req: NextRequest) {
   if (useGrounding && relevantChunks.length > 0) {
     // Chunks found but user wants contact info: provide program context + web search.
     systemInstruction =
-      'You are a university program information assistant. ' +
-      'The data excerpts below describe programs at the university. ' +
-      'The user is asking for contact information (email, phone, website, etc.) that is not in the uploaded data. ' +
-      'Use your web search capability to find the requested contact details. ' +
-      'When citing web sources, include the source name in your response.\n\n' +
-      'Here are the relevant data excerpts for context:\n\n' +
+      PROMPT_GROUNDING_WITH_CONTEXT +
+      '\n\nHere are the relevant data excerpts for context:\n\n' +
       relevantChunks.join('\n\n');
   } else if (useGrounding) {
     // No local match: web search is the primary source.
     // Layer 2: system prompt restricts the grounded search to education topics only.
-    systemInstruction =
-      'You are a university and higher education information assistant. ' +
-      'Use your web search capability to find accurate, up-to-date information about universities, degree programs, tuition fees, scholarship opportunities, admission requirements, and intake dates. ' +
-      'STRICT RESTRICTION: You must ONLY answer questions related to higher education — universities, colleges, programs, degrees, tuition, scholarships, intakes, admissions, and directly related education topics. ' +
-      'If the user asks about anything unrelated to higher education (for example: stock prices, weather, news, sports, entertainment, recipes, or general knowledge), politely decline and explain that you can only assist with university and education-related inquiries. ' +
-      'When citing web sources, include the source name in your response.';
+    systemInstruction = PROMPT_GROUNDING_ONLY;
   } else {
-    systemInstruction =
-      'You are a university program information assistant. ' +
-      'You may ONLY answer questions using the data excerpts provided to you. ' +
-      'You must NOT use your own training knowledge to answer any question — not for general facts, geography, current events, time, weather, or anything else outside the provided data. ' +
-      'If a question is not answerable from the data excerpts, politely say the information is not available in the uploaded data and suggest the user contact the university directly.';
-
+    systemInstruction = PROMPT_LOCAL_DATA;
     if (relevantChunks.length > 0) {
       systemInstruction += '\n\nHere are the relevant data excerpts:\n\n';
       systemInstruction += relevantChunks.join('\n\n');
-      systemInstruction +=
-        '\n\nIMPORTANT: Only answer what is explicitly and directly stated in the excerpts above. ' +
-        'If the specific detail requested (e.g. a specific fee, intake date, or program name) is not clearly present in the excerpts, say that this specific information is not available in the current data — do not infer, guess, or substitute with similar-looking data from other programs.';
+      systemInstruction += PROMPT_LOCAL_DATA_SUFFIX_FOUND;
     } else {
-      systemInstruction +=
-        '\n\nNo relevant data was found for this query. ' +
-        'If the user is asking about a university topic, let them know it is not covered by the uploaded data and suggest they contact the university directly. ' +
-        'If the user is asking something unrelated to universities or education, politely explain that you can only assist with university and education program information.';
+      systemInstruction += PROMPT_LOCAL_DATA_SUFFIX_EMPTY;
     }
   }
 
