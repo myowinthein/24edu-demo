@@ -13,7 +13,7 @@ export const VECTOR_CHUNK_SIZE = 5;
 export const VECTOR_TOP_K = 6;
 export const VECTOR_MIN_SCORE = 0.4;
 
-export function chunkCsv(csv: string, filename: string): string[] {
+export function chunkCsv(csv: string, _filename: string): string[] {
   // Multi-section format produced by xlsxToCSV for Excel files
   if (csv.startsWith('# Sheet:') || csv.includes('\n# Sheet:')) {
     const chunks: string[] = [];
@@ -26,7 +26,7 @@ export function chunkCsv(csv: string, filename: string): string[] {
       const dataRows = lines.slice(2);
       for (let i = 0; i < dataRows.length; i += VECTOR_CHUNK_SIZE) {
         const rows = dataRows.slice(i, i + VECTOR_CHUNK_SIZE);
-        chunks.push(`File: ${filename}\nSheet: ${sheetName}\n${header}\n${rows.join('\n')}`);
+        chunks.push(`Sheet: ${sheetName}\n${header}\n${rows.join('\n')}`);
       }
     }
     return chunks;
@@ -40,7 +40,7 @@ export function chunkCsv(csv: string, filename: string): string[] {
   const chunks: string[] = [];
   for (let i = 0; i < dataRows.length; i += VECTOR_CHUNK_SIZE) {
     const rows = dataRows.slice(i, i + VECTOR_CHUNK_SIZE);
-    chunks.push(`File: ${filename}\n${header}\n${rows.join('\n')}`);
+    chunks.push(`${header}\n${rows.join('\n')}`);
   }
   return chunks;
 }
