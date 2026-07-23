@@ -168,7 +168,7 @@ export default function ChatPage() {
     if (isNewSession && sessionId) {
       const now = new Date().toISOString();
       setSessions((prev) => [
-        { id: sessionId, title: text.length > 50 ? text.slice(0, 47) + '…' : text, createdAt: now, lastActiveAt: now },
+        { id: sessionId, title: text.length > 50 ? text.slice(0, 47) + '…' : text, createdAt: now, lastActiveAt: now, mode: 'ai' },
         ...prev,
       ]);
     }
