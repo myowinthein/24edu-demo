@@ -200,8 +200,13 @@ export async function POST(req: NextRequest) {
   try {
     const result = await chat.sendMessage(message);
     text = result.response.text();
-  } catch {
-    return NextResponse.json({ error: 'AI temporarily unavailable, please try again' }, { status: 503 });
+  } catch (err) {
+    console.error('[chat] Gemini error:', err);
+    const isQuota = String(err).includes('429') || String(err).includes('quota');
+    const message = isQuota
+      ? 'Request limit reached. Please wait a moment and try again.'
+      : 'AI temporarily unavailable, please try again.';
+    return NextResponse.json({ error: message }, { status: 503 });
   }
 
   messages.push({ role: 'ai', text, timestamp: new Date().toISOString() });
