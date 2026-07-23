@@ -1,15 +1,25 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-vi.mock('@upstash/vector', () => ({
-  Index: class {
-    constructor() {}
-    upsert = vi.fn()
-    delete = vi.fn()
-    query = vi.fn()
-  },
+const vectorMocks = vi.hoisted(() => ({
+  upsert: vi.fn().mockResolvedValue(undefined),
+  delete: vi.fn().mockResolvedValue(undefined),
+  query:  vi.fn().mockResolvedValue([]),
 }))
 
-import { chunkCsv, chunkVectorId, VECTOR_CHUNK_SIZE } from '@/lib/vector'
+vi.mock('@upstash/vector', () => ({
+  Index: vi.fn().mockImplementation(function () { return vectorMocks; }),
+}))
+
+import {
+  chunkCsv, chunkVectorId, VECTOR_CHUNK_SIZE,
+  indexSource, deleteSourceVectors, queryRelevantChunks, VECTOR_MIN_SCORE,
+} from '@/lib/vector'
+
+beforeEach(() => {
+  vectorMocks.upsert.mockReset().mockResolvedValue(undefined)
+  vectorMocks.delete.mockReset().mockResolvedValue(undefined)
+  vectorMocks.query.mockReset().mockResolvedValue([])
+})
 
 describe('chunkVectorId', () => {
   it('produces a stable, predictable key', () => {
@@ -89,5 +99,85 @@ describe('chunkCsv — multi-sheet format', () => {
     expect(emptyChunks).toHaveLength(0)
     const realChunks = chunks.filter((c) => c.includes('Sheet: Real'))
     expect(realChunks.length).toBeGreaterThan(0)
+  })
+})
+
+describe('indexSource', () => {
+  it('returns 0 and does not call upsert for an empty CSV', async () => {
+    const count = await indexSource('src-1', 'empty.csv', '')
+    expect(count).toBe(0)
+    expect(vectorMocks.upsert).not.toHaveBeenCalled()
+  })
+
+  it('returns 0 for header-only CSV', async () => {
+    const count = await indexSource('src-2', 'hdr.csv', 'Name,Age')
+    expect(count).toBe(0)
+  })
+
+  it('calls upsert with the correct id/data/metadata for each chunk', async () => {
+    const csv = 'Name,Age\nAlice,30\nBob,25'
+    const count = await indexSource('src-3', 'data.csv', csv)
+    expect(count).toBe(1)
+    expect(vectorMocks.upsert).toHaveBeenCalledOnce()
+    const [items] = vectorMocks.upsert.mock.calls[0] as [Array<{ id: string; data: string; metadata: { sourceId: string; text: string } }>]
+    expect(items[0].id).toBe('src-3_chunk_0')
+    expect(items[0].metadata.sourceId).toBe('src-3')
+    expect(items[0].data).toContain('Name,Age')
+  })
+
+  it('returns the total chunk count', async () => {
+    const rows = Array.from({ length: VECTOR_CHUNK_SIZE + 1 }, (_, i) => `R${i},${i}`)
+    const csv = ['Name,Num', ...rows].join('\n')
+    const count = await indexSource('src-4', 'big.csv', csv)
+    expect(count).toBe(2)
+  })
+})
+
+describe('deleteSourceVectors', () => {
+  it('calls delete with the correct list of chunk ids', async () => {
+    await deleteSourceVectors('src-5', 3)
+    expect(vectorMocks.delete).toHaveBeenCalledOnce()
+    const [ids] = vectorMocks.delete.mock.calls[0] as [string[]]
+    expect(ids).toEqual(['src-5_chunk_0', 'src-5_chunk_1', 'src-5_chunk_2'])
+  })
+
+  it('calls delete with an empty array when chunkCount is 0', async () => {
+    await deleteSourceVectors('src-6', 0)
+    expect(vectorMocks.delete).toHaveBeenCalledWith([])
+  })
+})
+
+describe('queryRelevantChunks', () => {
+  it('returns empty array when query returns no results', async () => {
+    vectorMocks.query.mockResolvedValue([])
+    const result = await queryRelevantChunks('test question')
+    expect(result).toEqual([])
+  })
+
+  it('filters out results with score at or below VECTOR_MIN_SCORE', async () => {
+    vectorMocks.query.mockResolvedValue([
+      { score: VECTOR_MIN_SCORE, metadata: { text: 'low score' } },
+      { score: VECTOR_MIN_SCORE - 0.01, metadata: { text: 'below threshold' } },
+    ])
+    const result = await queryRelevantChunks('test')
+    expect(result).toHaveLength(0)
+  })
+
+  it('includes results with score above VECTOR_MIN_SCORE', async () => {
+    vectorMocks.query.mockResolvedValue([
+      { score: VECTOR_MIN_SCORE + 0.01, metadata: { text: 'relevant chunk' } },
+    ])
+    const result = await queryRelevantChunks('test')
+    expect(result).toEqual(['relevant chunk'])
+  })
+
+  it('extracts text from metadata and filters falsy values', async () => {
+    vectorMocks.query.mockResolvedValue([
+      { score: 0.9, metadata: { text: 'good data' } },
+      { score: 0.8, metadata: { text: '' } },
+      { score: 0.7, metadata: {} },
+    ])
+    const result = await queryRelevantChunks('test')
+    expect(result).toEqual(['good data'])
   })
 })
