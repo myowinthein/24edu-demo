@@ -164,7 +164,7 @@ export default function ProfilePage() {
                     <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
                   ))}
                 </select>
-                <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')} placeholder="12 345 6789" />
+                <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={e => { setFields(f => ({ ...f, phoneNumber: e.target.value.replace(/\D/g, '') })); if (errors.phoneNumber) setErrors(er => ({ ...er, phoneNumber: undefined })); }} placeholder="12 345 6789" />
               </div>
               {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
             </div>
