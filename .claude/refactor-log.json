@@ -526,11 +526,11 @@
       "file": "middleware.ts",
       "line": 25,
       "description": "Middleware matcher doesn't cover /api/sources* routes; POST/DELETE are auth-guarded within handlers but not at middleware level \u2014 verify intentional.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-034",
@@ -542,11 +542,11 @@
       "file": "app/api/chat/route.ts",
       "line": 168,
       "description": "Unhandled Gemini API errors: chat.sendMessage() rejections propagate as unhandled promise rejections with no JSON body \u2014 wrap in try/catch as already done in summary/route.ts.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-035",
@@ -590,11 +590,11 @@
       "file": "app/admin/settings/page.tsx",
       "line": 26,
       "description": "useFetchStat fetches stats via GET /api/admin/sessions/clear, /leads/clear, /sources/clear \u2014 stats display is tightly coupled to destructive-action routes.",
-      "status": "open",
+      "status": "auto-resolved",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-038",
@@ -606,11 +606,11 @@
       "file": "vercel.json",
       "line": 1,
       "description": "No Vercel region or function config \u2014 SSE routes share a TCP connection to a fixed Upstash Redis endpoint; pinning to one region reduces latency.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-039",
@@ -622,11 +622,11 @@
       "file": "app/(user-area)/layout.tsx",
       "line": 20,
       "description": "isChat/isProfile use exact pathname match \u2014 adding a new user-area route requires updating this component; use startsWith or a route config array.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-040",
@@ -798,11 +798,11 @@
       "file": "middleware.ts",
       "line": 14,
       "description": "Token presence (cookie exists) but not validity checked in middleware \u2014 stale/forged admin_token passes the gate; only caught inside individual API route handlers.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-051",
@@ -832,11 +832,11 @@
       "file": "app/api/admin/logout/route.ts",
       "line": 4,
       "description": "Logout route performs no auth check before clearing the cookie \u2014 harmless but inconsistent with the rest of the admin surface.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-053",
@@ -848,11 +848,11 @@
       "file": "app/admin/layout.tsx",
       "line": 123,
       "description": "s.guestId.slice(0,8) appears in browser notification body \u2014 partial internal identifier exposed to OS notification center logs.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-054",
@@ -864,11 +864,11 @@
       "file": "middleware.ts",
       "line": 10,
       "description": "/admin/login bypass uses exact string match \u2014 /admin/login/ with trailing slash would still be blocked; use pathname.split('?')[0] === '/admin/login'.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-055",
@@ -1138,11 +1138,11 @@
       "file": "app/admin/layout.tsx",
       "line": 172,
       "description": "handleAccept and handleLogout fire-and-forget fetch calls with no error handling \u2014 a failed join or logout leaves the UI in inconsistent state.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8d04c87",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-072",
@@ -1202,11 +1202,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 15,
       "description": "SpinnerIcon SVG defined inline in chat/page.tsx and duplicated in profile/page.tsx \u2014 extract to a shared Spinner component in app/chat/components/.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-076",
@@ -1346,11 +1346,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 5,
       "description": "ReactMarkdown imported in both ChatPage (for summary panel) and MessageList.tsx (for message rendering) \u2014 two independent markdown instances; extracting the summary panel to a component would consolidate.",
-      "status": "open",
+      "status": "auto-resolved",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-085",
@@ -1410,11 +1410,11 @@
       "file": "app/api/admin/leads/route.ts",
       "line": 19,
       "description": "All lead records fetched from Redis and sorted in-process on every request \u2014 O(n) amplification; Redis sorted sets would enable server-side pagination at scale.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-089",
@@ -1458,11 +1458,11 @@
       "file": "app/api/sources/[id]/rows/route.ts",
       "line": 39,
       "description": "All chunks fetched from vector index in one call with no pagination \u2014 large sources produce large payloads; add page/limit if this becomes a problem.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-092",
@@ -1474,11 +1474,11 @@
       "file": "lib/vector.ts",
       "line": 84,
       "description": "Vector score filter uses strict > instead of >= \u2014 a score exactly equal to VECTOR_MIN_SCORE (0.4) is silently dropped; clarify intent or change to >= and update constant name.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-093",
@@ -1490,11 +1490,11 @@
       "file": "app/admin/layout.tsx",
       "line": 437,
       "description": "Admin nav links to sessions[0].id in unsorted array \u2014 may not be the most recently active session; sort by lastActiveAt desc before using index 0.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     },
     {
       "id": "f-094",
@@ -1860,11 +1860,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 5,
       "description": "react-markdown loaded eagerly in ChatPage solely for the conditionally-rendered summary panel \u2014 consider next/dynamic to defer bundle weight if summary is rarely used.",
-      "status": "open",
+      "status": "auto-resolved",
       "first_found_commit": "a6babbafdb005ce8d97c9c42134768e63dc9b25c",
       "first_found_date": "2026-07-23",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "997fad6",
+      "resolved_date": "2026-07-23"
     }
   ]
 }
