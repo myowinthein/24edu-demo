@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { LeadData } from '@/lib/types';
 import { useUserArea } from '../UserAreaContext';
+import { SpinnerIcon } from '@/app/chat/components/SpinnerIcon';
 import {
   COUNTRY_CODES, COUNTRIES, EDUCATION_LEVELS, MONTHS, CURRENT_YEAR,
   validate, inputStyle, labelStyle, errStyle, border,
@@ -108,9 +109,7 @@ export default function ProfilePage() {
 
         {status === 'loading' && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, padding: '24px 0' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-            </svg>
+            <SpinnerIcon />
             Loading profile…
           </div>
         )}

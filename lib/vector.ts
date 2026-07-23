@@ -83,7 +83,7 @@ export async function queryRelevantChunks(question: string, topK = VECTOR_TOP_K)
     includeMetadata: true,
   });
   return results
-    .filter((r) => r.score > VECTOR_MIN_SCORE)
+    .filter((r) => r.score >= VECTOR_MIN_SCORE)
     .map((r) => (r.metadata as { text: string }).text)
     .filter(Boolean);
 }
