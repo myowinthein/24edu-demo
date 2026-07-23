@@ -152,7 +152,11 @@ export function LeadForm({ guestId, onComplete }: LeadFormProps) {
                 </select>
                 <input
                   style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }}
-                  type="tel" value={fields.phoneNumber} onChange={set('phoneNumber')}
+                  type="tel" value={fields.phoneNumber}
+                  onChange={e => {
+                    setFields(f => ({ ...f, phoneNumber: e.target.value.replace(/\D/g, '') }));
+                    if (errors.phoneNumber) setErrors(er => ({ ...er, phoneNumber: undefined }));
+                  }}
                   placeholder="12 345 6789"
                 />
               </div>
