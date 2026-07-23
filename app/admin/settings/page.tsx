@@ -208,7 +208,7 @@ export default function AdminSettingsPage() {
       {tab === 'Prompts' && (
         <div style={{ maxWidth: 900 }}>
           <SettingCard title="AI System Prompts" description="Read-only — prompts sent to Gemini depending on the query context">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16 }}>
               <PromptBlock
                 label="Local data (no web search)"
                 hint="Used when vector search returns results. Chunks are appended at runtime."
