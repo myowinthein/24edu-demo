@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
+vi.mock('@/lib/admin-auth', () => ({
+  verifyAdminToken: vi.fn().mockResolvedValue(true),
+}))
+import { verifyAdminToken } from '@/lib/admin-auth'
+const mockVerify = vi.mocked(verifyAdminToken)
+
 const mockDel = vi.hoisted(() => vi.fn().mockResolvedValue(1))
 
 vi.mock('@/lib/redis', () => ({
@@ -17,9 +23,19 @@ function makeReq(cookie?: string) {
   })
 }
 
-beforeEach(() => mockDel.mockClear())
+beforeEach(() => {
+  mockDel.mockClear()
+  mockVerify.mockResolvedValue(true)
+})
 
 describe('POST /api/admin/logout', () => {
+  it('returns 401 when not authenticated', async () => {
+    mockVerify.mockResolvedValue(false)
+    const res = await POST(makeReq('bad-token'))
+    expect(res.status).toBe(401)
+    expect(mockDel).not.toHaveBeenCalled()
+  })
+
   it('deletes the session token from Redis when cookie is present', async () => {
     const res = await POST(makeReq('my-token'))
     expect(res.status).toBe(200)
