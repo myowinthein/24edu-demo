@@ -4,6 +4,8 @@ import { NextRequest } from 'next/server'
 vi.mock('@/lib/admin-auth', () => ({
   verifyAdminToken: vi.fn().mockResolvedValue(true),
 }))
+import { verifyAdminToken } from '@/lib/admin-auth'
+const mockVerify = vi.mocked(verifyAdminToken)
 
 const mockIndexSource = vi.hoisted(() => vi.fn().mockResolvedValue(3))
 vi.mock('@/lib/vector', () => ({ indexSource: mockIndexSource }))
@@ -30,8 +32,17 @@ function makeReq(csv: string, filename = 'test.csv') {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockVerify.mockResolvedValue(true)
   sourceMocks.get.mockResolvedValue([])
   mockIndexSource.mockResolvedValue(3)
+})
+
+describe('POST /api/sources — auth guard', () => {
+  it('returns 401 when not authenticated', async () => {
+    mockVerify.mockResolvedValue(false)
+    const res = await POST(makeReq('Name,Age\nAlice,30'))
+    expect(res.status).toBe(401)
+  })
 })
 
 describe('POST /api/sources — rowCount for flat CSV', () => {
@@ -87,6 +98,7 @@ describe('POST /api/sources — rowCount for multi-sheet CSV', () => {
     const csv = 'Name\nAlice\n# Sheet: Extra\nProg\nMBA'
     await POST(makeReq(csv, 'file.xlsx'))
     const [, sources] = sourceMocks.set.mock.calls[0]
-    expect(typeof (sources as { rowCount: number }[])[0].rowCount).toBe('number')
+    // 'Name\nAlice' (2 lines <3, skipped) + '# Sheet: Extra\nProg\nMBA' (1 data row) → 1
+    expect((sources as { rowCount: number }[])[0].rowCount).toBe(1)
   })
 })

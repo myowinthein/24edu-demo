@@ -52,6 +52,8 @@ describe('POST /api/admin/login', () => {
     const setCookie = res.headers.get('set-cookie')
     expect(setCookie).toContain('admin_token=')
     expect(setCookie).toContain('HttpOnly')
+    expect(setCookie?.toLowerCase()).toContain('samesite=lax')
+    expect(setCookie).toContain('Path=/')
   })
 
   it('stores the token in Redis with 24h expiry on success', async () => {

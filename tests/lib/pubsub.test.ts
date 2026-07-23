@@ -18,6 +18,7 @@ import {
   publishSession,
   publishTyping,
   publishSessions,
+  createSubscriber,
 } from '@/lib/pubsub'
 
 beforeEach(() => {
@@ -73,5 +74,22 @@ describe('publishSessions', () => {
   it('publishes to the global admin sessions channel', async () => {
     await publishSessions()
     expect(mockPublish).toHaveBeenCalledWith(SESSIONS_CHANNEL, 'update')
+  })
+})
+
+describe('createSubscriber', () => {
+  it('throws when REDIS_URL is not set', () => {
+    const orig = process.env.REDIS_URL
+    delete process.env.REDIS_URL
+    try {
+      expect(() => createSubscriber()).toThrow('Missing REDIS_URL')
+    } finally {
+      process.env.REDIS_URL = orig
+    }
+  })
+
+  it('returns an ioredis instance when REDIS_URL is set', () => {
+    const sub = createSubscriber()
+    expect(sub).toBeDefined()
   })
 })

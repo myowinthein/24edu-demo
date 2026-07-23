@@ -120,4 +120,12 @@ describe('POST /api/session/[id]/switch-ai', () => {
     expect(mockPublish.publishSession).toHaveBeenCalledWith(SESSION, { messages: [], mode: 'ai' })
     expect(mockPublish.publishSessions).toHaveBeenCalledOnce()
   })
+
+  it('returns 200 when session has no stored messages (messages ?? [] fallback)', async () => {
+    redisMocks.get.mockResolvedValue(null)
+    const res = await switchAIPOST(makeSwitchReq(SESSION), makeSwitchParams())
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ ok: true })
+    expect(mockPublish.publishSession).toHaveBeenCalledWith(SESSION, { messages: [], mode: 'ai' })
+  })
 })

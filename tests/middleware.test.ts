@@ -50,4 +50,15 @@ describe('middleware', () => {
     expect(res.status).not.toBe(401)
     expect(res.headers.get('location')).toBeNull()
   })
+
+  it('returns 401 for /api/admin/logout without a token', () => {
+    const res = middleware(makeReq('/api/admin/logout'))
+    expect(res.status).toBe(401)
+  })
+
+  it('passes /api/admin/logout through when token cookie is present', () => {
+    const res = middleware(makeReq('/api/admin/logout', 'some-token'))
+    expect(res.status).not.toBe(401)
+    expect(res.headers.get('location')).toBeNull()
+  })
 })

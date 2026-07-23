@@ -122,8 +122,10 @@ describe('POST /api/admin/sessions/clear — session clearing', () => {
     await POST(makeReq())
     // publishSessions should fire once after clearing
     expect(mockPublishSessions).toHaveBeenCalledOnce()
-    // Two unique guestIds → 2 del calls for guestSessionsKey
     const delCalls = mocks.pipelineDel.mock.calls.map((args) => args[0] as string)
+    // SESSIONS_ACTIVE_KEY must be deleted
+    expect(delCalls).toContain('sessions:active')
+    // Two unique guestIds → 2 del calls for guestSessionsKey
     const guestDelCalls = delCalls.filter((k) => k.startsWith('guest:'))
     expect(guestDelCalls).toHaveLength(2)
   })
