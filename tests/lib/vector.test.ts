@@ -155,13 +155,20 @@ describe('queryRelevantChunks', () => {
     expect(result).toEqual([])
   })
 
-  it('filters out results with score at or below VECTOR_MIN_SCORE', async () => {
+  it('filters out results with score strictly below VECTOR_MIN_SCORE', async () => {
     vectorMocks.query.mockResolvedValue([
-      { score: VECTOR_MIN_SCORE, metadata: { text: 'low score' } },
       { score: VECTOR_MIN_SCORE - 0.01, metadata: { text: 'below threshold' } },
     ])
     const result = await queryRelevantChunks('test')
     expect(result).toHaveLength(0)
+  })
+
+  it('includes results with score exactly equal to VECTOR_MIN_SCORE (>= threshold)', async () => {
+    vectorMocks.query.mockResolvedValue([
+      { score: VECTOR_MIN_SCORE, metadata: { text: 'at threshold' } },
+    ])
+    const result = await queryRelevantChunks('test')
+    expect(result).toEqual(['at threshold'])
   })
 
   it('includes results with score above VECTOR_MIN_SCORE', async () => {

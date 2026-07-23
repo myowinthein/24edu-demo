@@ -190,6 +190,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return Array.from(map.values());
   }, [sessions]);
 
+  const latestSessionId = sessions.length > 0
+    ? [...sessions].sort((a, b) => new Date(b.lastActiveAt).getTime() - new Date(a.lastActiveAt).getTime())[0].id
+    : null;
+
   if (isLogin) return <>{children}</>;
 
   return (
@@ -436,7 +440,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             borderBottom: '1px solid #e3e3e6',
           }}
         >
-          <Link href={sessions.length > 0 ? `/admin/sessions/${sessions[0].id}` : '/admin'} style={navLinkStyle(isChats)}>💬 Chats</Link>
+          <Link href={latestSessionId ? `/admin/sessions/${latestSessionId}` : '/admin'} style={navLinkStyle(isChats)}>💬 Chats</Link>
           <Link href="/admin/leads" style={navLinkStyle(isLeads)}>🎯 Leads</Link>
           <Link href="/admin/sources" style={navLinkStyle(isSources)}>📂 Sources</Link>
           <Link href="/admin/settings" style={navLinkStyle(isSettings)}>⚙ Settings</Link>
