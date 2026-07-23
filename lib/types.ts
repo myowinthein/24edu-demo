@@ -32,6 +32,7 @@ export interface SessionRow {
   title: string;
   createdAt: string;
   lastActiveAt: string;
+  mode: SessionMode;
 }
 
 export interface LeadData {
