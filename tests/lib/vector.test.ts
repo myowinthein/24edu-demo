@@ -35,7 +35,6 @@ describe('chunkCsv — flat CSV', () => {
     const csv = 'Name,Age\nAlice,30\nBob,25'
     const chunks = chunkCsv(csv, 'data.csv')
     expect(chunks).toHaveLength(1)
-    expect(chunks[0]).toContain('File: data.csv')
     expect(chunks[0]).toContain('Name,Age')
     expect(chunks[0]).toContain('Alice,30')
     expect(chunks[0]).toContain('Bob,25')
@@ -50,10 +49,11 @@ describe('chunkCsv — flat CSV', () => {
     expect(chunks[1]).toContain('Name,Num')
   })
 
-  it('each flat chunk includes the filename prefix', () => {
+  it('each flat chunk starts directly with the header row', () => {
     const csv = 'A,B\n1,2'
     const [chunk] = chunkCsv(csv, 'my-file.csv')
-    expect(chunk.startsWith('File: my-file.csv\n')).toBe(true)
+    expect(chunk.startsWith('A,B\n')).toBe(true)
+    expect(chunk).not.toContain('File:')
   })
 })
 
@@ -74,11 +74,11 @@ describe('chunkCsv — multi-sheet format', () => {
     expect(chunks.length).toBeGreaterThan(0)
   })
 
-  it('includes filename, sheet name, and data in each chunk', () => {
+  it('includes sheet name and data in each chunk, but not the filename', () => {
     const chunks = chunkCsv(multiSheet, 'workbook.xlsx')
     const programsChunk = chunks.find((c) => c.includes('Sheet: Programs'))
     expect(programsChunk).toBeDefined()
-    expect(programsChunk).toContain('File: workbook.xlsx')
+    expect(programsChunk).not.toContain('File:')
     expect(programsChunk).toContain('Name,Duration')
   })
 
