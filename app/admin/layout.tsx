@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { formatRelativeTime } from '@/lib/format';
 import { navLinkStyle } from '@/lib/ui-styles';
+import { ThemeToggle } from '@/app/chat/components/ThemeToggle';
 import type { SessionMode } from '@/lib/types';
 
 interface AdminSession {
@@ -204,10 +205,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         style={{
           width: sidebarOpen ? 300 : 48,
           flexShrink: 0,
-          borderRight: '1px solid #e3e3e6',
+          borderRight: '1px solid var(--border)',
           display: 'flex',
           flexDirection: 'column',
-          background: '#f9fafb',
+          background: 'var(--bg-surface)',
           transition: 'width 0.2s ease',
           overflow: 'hidden',
         }}
@@ -221,11 +222,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             alignItems: 'center',
             justifyContent: sidebarOpen ? 'space-between' : 'center',
             padding: sidebarOpen ? '0 12px 0 14px' : '0',
-            borderBottom: '1px solid #e3e3e6',
+            borderBottom: '1px solid var(--border)',
           }}
         >
           {sidebarOpen && (
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap' }}>
               Admin
             </span>
           )}
@@ -238,11 +239,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               justifyContent: 'center',
               width: 28,
               height: 28,
-              border: '1px solid #e3e3e6',
+              border: '1px solid var(--border)',
               borderRadius: 6,
-              background: '#ffffff',
+              background: 'var(--bg)',
               cursor: 'pointer',
-              color: '#6b7280',
+              color: 'var(--text-3)',
               flexShrink: 0,
             }}
           >
@@ -261,7 +262,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   style={{
                     fontSize: 11,
                     fontWeight: 600,
-                    color: '#9ca3af',
+                    color: 'var(--text-4)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.06em',
                   }}
@@ -272,7 +273,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )}
             <div style={{ flex: 1, overflowY: 'auto', padding: '4px 8px 8px' }}>
               {guestGroups.length === 0 ? (
-                <div style={{ padding: '20px 8px', fontSize: 13, color: '#9ca3af', textAlign: 'center' }}>
+                <div style={{ padding: '20px 8px', fontSize: 13, color: 'var(--text-4)', textAlign: 'center' }}>
                   No sessions yet.
                 </div>
               ) : (
@@ -282,9 +283,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       key={group.guestId}
                       style={{
                         marginBottom: 10,
-                        border: '1px solid #e3e3e6',
+                        border: '1px solid var(--border)',
                         borderRadius: 9,
-                        background: '#ffffff',
+                        background: 'var(--bg)',
                         overflow: 'hidden',
                       }}
                     >
@@ -294,33 +295,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         style={{
                           display: 'flex', alignItems: 'center', gap: 7,
                           width: '100%', padding: '9px 12px',
-                          borderBottom: '1px solid #f0f0f1',
+                          borderBottom: '1px solid var(--border)',
                           background: 'none', border: 'none', cursor: 'pointer',
                           textAlign: 'left',
                         }}
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" style={{ flexShrink: 0 }}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" strokeWidth="2" style={{ flexShrink: 0 }}>
                           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                         </svg>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {group.name ? (
-                            <div style={{ fontSize: 12, color: '#111827', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: 12, color: 'var(--text)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {group.name}
                             </div>
                           ) : (
-                            <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#374151', fontWeight: 600 }}>
+                            <div style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-2)', fontWeight: 600 }}>
                               #{group.guestId === '__unknown__' ? 'unknown' : group.guestId.slice(0, 12)}
                             </div>
                           )}
                           {group.email ? (
-                            <div style={{ fontSize: 11, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
+                            <div style={{ fontSize: 11, color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
                               {group.email}
                             </div>
                           ) : (
-                            <div style={{ fontSize: 11, color: '#d1d5db', fontStyle: 'italic' }}>No lead info</div>
+                            <div style={{ fontSize: 11, color: 'var(--text-4)', fontStyle: 'italic' }}>No lead info</div>
                           )}
                         </div>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" strokeWidth="2.5" style={{ flexShrink: 0 }}>
                           <path d="M9 18l6-6-6-6" />
                         </svg>
                       </button>
@@ -341,8 +342,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 gap: 4,
                                 marginBottom: 2,
                                 borderRadius: 6,
-                                background: isRequested ? '#fffbeb' : isActive ? '#eff6ff' : 'transparent',
-                                border: isRequested ? '1px solid #fde68a' : isActive ? '1px solid #bfdbfe' : '1px solid transparent',
+                                background: isRequested ? '#fffbeb' : isActive ? 'var(--accent-bg)' : 'transparent',
+                                border: isRequested ? '1px solid #fde68a' : isActive ? '1px solid var(--accent-br)' : '1px solid transparent',
                               }}
                             >
                               <Link
@@ -366,17 +367,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 />
                                 <span
                                   style={{
-                                    fontSize: 10, fontWeight: 600,
-                                    padding: '1px 6px', borderRadius: 8,
-                                    ...modeBadgeStyle[s.mode], flexShrink: 0,
-                                  }}
-                                >
-                                  {modeLabel[s.mode]}
-                                </span>
-                                <span
-                                  style={{
                                     fontFamily: 'monospace', fontSize: 11,
-                                    color: isActive ? '#1d4ed8' : '#374151',
+                                    color: isActive ? 'var(--accent)' : 'var(--text-2)',
                                     flex: 1, overflow: 'hidden',
                                     textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                                   }}
@@ -385,9 +377,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 </span>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                                   {hasUnread && (
-                                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', flexShrink: 0 }} />
+                                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
                                   )}
-                                  {s.lastActiveAt && <span style={{ fontSize: 9, color: '#9ca3af' }}>{formatRelativeTime(s.lastActiveAt)}</span>}
+                                  {s.lastActiveAt && <span style={{ fontSize: 9, color: 'var(--text-4)' }}>{formatRelativeTime(s.lastActiveAt)}</span>}
                                 </div>
                               </Link>
                               {isRequested && (
@@ -437,24 +429,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             justifyContent: 'flex-end',
             padding: '0 20px',
             gap: 4,
-            borderBottom: '1px solid #e3e3e6',
+            borderBottom: '1px solid var(--border)',
+            background: 'var(--bg)',
           }}
         >
           <Link href={latestSessionId ? `/admin/sessions/${latestSessionId}` : '/admin'} style={navLinkStyle(isChats)}>💬 Chats</Link>
           <Link href="/admin/leads" style={navLinkStyle(isLeads)}>🎯 Leads</Link>
           <Link href="/admin/sources" style={navLinkStyle(isSources)}>📂 Sources</Link>
           <Link href="/admin/settings" style={navLinkStyle(isSettings)}>⚙ Settings</Link>
-          <div style={{ width: 1, height: 18, background: '#e3e3e6', margin: '0 8px' }} />
+          <ThemeToggle />
+          <div style={{ width: 1, height: 18, background: 'var(--border)', margin: '0 8px' }} />
           <button
             onClick={handleLogout}
             style={{
               padding: '6px 13px',
               fontSize: 13,
               background: 'transparent',
-              border: '1px solid #d1d5db',
+              border: '1px solid var(--border-md)',
               borderRadius: 6,
               cursor: 'pointer',
-              color: '#6b7280',
+              color: 'var(--text-3)',
               fontFamily: 'inherit',
             }}
           >

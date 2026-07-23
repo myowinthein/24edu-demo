@@ -20,6 +20,7 @@ vi.mock('@/lib/redis', () => ({
   },
   guestSessionsKey: (id: string) => `guest:${id}:sessions`,
   sessionMetaKey:   (id: string) => `session:${id}:meta`,
+  sessionModeKey:   (id: string) => `session:${id}:mode`,
 }))
 
 import { GET } from '@/app/api/guest/[guestId]/sessions/route'
@@ -54,8 +55,10 @@ describe('GET /api/guest/[guestId]/sessions', () => {
     sessionMocks.pipelineExec.mockResolvedValue([
       now,        // zscore for sess-1
       { title: 'Hello', createdAt: '2024-01-01T00:00:00Z' }, // meta for sess-1
+      'ai',       // mode for sess-1
       now - 1000, // zscore for sess-2
       null,       // meta for sess-2 (missing)
+      null,       // mode for sess-2 (missing → defaults to 'ai')
     ])
     const res = await GET(makeReq(), makeParams())
     const sessions = await res.json()
@@ -68,7 +71,7 @@ describe('GET /api/guest/[guestId]/sessions', () => {
 
   it('falls back to "Chat" title and a valid ISO time when meta is null', async () => {
     sessionMocks.zrange.mockResolvedValue(['sess-x'])
-    sessionMocks.pipelineExec.mockResolvedValue([null, null])
+    sessionMocks.pipelineExec.mockResolvedValue([null, null, null])
     const res = await GET(makeReq(), makeParams())
     const [session] = await res.json()
     expect(session.title).toBe('Chat')

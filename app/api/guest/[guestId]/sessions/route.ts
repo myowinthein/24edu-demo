@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis, guestSessionsKey, sessionMetaKey } from '@/lib/redis';
-import type { SessionMeta } from '@/lib/types';
+import { redis, guestSessionsKey, sessionMetaKey, sessionModeKey } from '@/lib/redis';
+import type { SessionMeta, SessionMode } from '@/lib/types';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -21,17 +21,20 @@ export async function GET(
   for (const id of ids) {
     p.zscore(guestSessionsKey(params.guestId), id);
     p.get<SessionMeta>(sessionMetaKey(id));
+    p.get<SessionMode>(sessionModeKey(id));
   }
   const results = await p.exec();
 
   const sessions = ids.map((id, i) => {
-    const score = results[i * 2] as number | null;
-    const meta = results[i * 2 + 1] as SessionMeta | null;
+    const score = results[i * 3] as number | null;
+    const meta = results[i * 3 + 1] as SessionMeta | null;
+    const mode = (results[i * 3 + 2] as SessionMode | null) ?? 'ai';
     return {
       id,
       title: meta?.title ?? 'Chat',
       createdAt: meta?.createdAt ?? new Date().toISOString(),
       lastActiveAt: score ? new Date(score).toISOString() : new Date().toISOString(),
+      mode,
     };
   });
 

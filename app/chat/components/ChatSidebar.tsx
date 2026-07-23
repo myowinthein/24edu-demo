@@ -2,6 +2,21 @@
 
 import { formatDate, formatRelativeTime } from '@/lib/format';
 import type { SessionRow } from '../constants';
+import type { SessionMode } from '@/lib/types';
+
+const modeDot: Record<SessionMode, string> = {
+  ai:        '#9ca3af',
+  requested: '#f59e0b',
+  human:     '#10b981',
+  ended:     '#e5e7eb',
+};
+
+const modeLabel: Record<SessionMode, string> = {
+  ai:        'Talking to AI',
+  requested: 'Human requested',
+  human:     'Talking to a person',
+  ended:     'Ended',
+};
 
 interface ChatSidebarProps {
   sidebarOpen: boolean;
@@ -16,11 +31,11 @@ interface ChatSidebarProps {
 
 function SkeletonSession() {
   return (
-    <div style={{ marginBottom: 6, border: '1px solid #e3e3e6', borderRadius: 9, background: '#ffffff', overflow: 'hidden' }}>
+    <div style={{ marginBottom: 6, border: '1px solid var(--border)', borderRadius: 9, background: 'var(--bg)', overflow: 'hidden' }}>
       <div style={{ padding: '9px 10px' }}>
-        <div style={{ width: 48, height: 9, borderRadius: 4, background: '#e5e7eb', marginBottom: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
-        <div style={{ width: '80%', height: 12, borderRadius: 4, background: '#e5e7eb', marginBottom: 5, animation: 'pulse 1.5s ease-in-out infinite' }} />
-        <div style={{ width: 72, height: 9, borderRadius: 4, background: '#f0f0f1', animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: 48, height: 9, borderRadius: 4, background: 'var(--border)', marginBottom: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: '80%', height: 12, borderRadius: 4, background: 'var(--border)', marginBottom: 5, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: 72, height: 9, borderRadius: 4, background: 'var(--bg-surface)', animation: 'pulse 1.5s ease-in-out infinite' }} />
       </div>
     </div>
   );
@@ -41,10 +56,10 @@ export function ChatSidebar({
       style={{
         width: sidebarOpen ? 260 : 48,
         flexShrink: 0,
-        borderRight: '1px solid #e3e3e6',
+        borderRight: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
-        background: '#f9fafb',
+        background: 'var(--bg-surface)',
         transition: 'width 0.2s ease',
         overflow: 'hidden',
       }}
@@ -57,11 +72,11 @@ export function ChatSidebar({
           padding: '0 12px',
           height: 56,
           flexShrink: 0,
-          borderBottom: '1px solid #e3e3e6',
+          borderBottom: '1px solid var(--border)',
         }}
       >
         {sidebarOpen && (
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }}>
+          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }}>
             {name ?? 'Student'}
           </span>
         )}
@@ -74,12 +89,12 @@ export function ChatSidebar({
             justifyContent: 'center',
             width: 28,
             height: 28,
-            border: '1px solid #e3e3e6',
+            border: '1px solid var(--border)',
             borderRadius: 6,
-            background: '#ffffff',
+            background: 'var(--bg)',
             cursor: 'pointer',
             flexShrink: 0,
-            color: '#6b7280',
+            color: 'var(--text-3)',
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -98,8 +113,8 @@ export function ChatSidebar({
                 padding: '8px 0',
                 fontSize: 13,
                 fontWeight: 500,
-                background: '#111827',
-                color: '#ffffff',
+                background: 'var(--text)',
+                color: 'var(--bg)',
                 border: 'none',
                 borderRadius: 7,
                 cursor: 'pointer',
@@ -123,9 +138,9 @@ export function ChatSidebar({
                   key={s.id}
                   style={{
                     marginBottom: 6,
-                    border: isActive ? '1px solid #bfdbfe' : '1px solid #e3e3e6',
+                    border: isActive ? '1px solid var(--accent-br)' : '1px solid var(--border)',
                     borderRadius: 9,
-                    background: isActive ? '#eff6ff' : '#ffffff',
+                    background: isActive ? 'var(--accent-bg)' : 'var(--bg)',
                     overflow: 'hidden',
                     animation: idx === 0 ? 'fadeIn 0.18s ease' : undefined,
                   }}
@@ -145,8 +160,14 @@ export function ChatSidebar({
                       fontFamily: 'inherit',
                     }}
                   >
-                    <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af', letterSpacing: '0.03em' }}>
-                      #{s.id.slice(0, 8)}
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span
+                        title={modeLabel[s.mode]}
+                        style={{ width: 6, height: 6, borderRadius: '50%', background: modeDot[s.mode], flexShrink: 0 }}
+                      />
+                      <span style={{ fontFamily: 'monospace', fontSize: 10, color: 'var(--text-4)', letterSpacing: '0.03em' }}>
+                        #{s.id.slice(0, 8)}
+                      </span>
                     </span>
                     <span
                       style={{
@@ -156,12 +177,12 @@ export function ChatSidebar({
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         display: 'block',
-                        color: isActive ? '#1d4ed8' : '#374151',
+                        color: isActive ? 'var(--accent)' : 'var(--text-2)',
                       }}
                     >
                       {s.title}
                     </span>
-                    <span style={{ fontSize: 11, color: '#9ca3af' }}>
+                    <span style={{ fontSize: 11, color: 'var(--text-4)' }}>
                       {formatDate(s.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })} · {formatRelativeTime(s.lastActiveAt)}
                     </span>
                   </button>
