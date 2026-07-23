@@ -65,16 +65,16 @@ export function ChatInput({
       <div
         style={{
           flexShrink: 0,
-          borderTop: '1px solid #e3e3e6',
+          borderTop: '1px solid var(--border)',
           padding: '20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: 12,
-          background: '#f9fafb',
+          background: 'var(--bg-surface)',
         }}
       >
-        <p style={{ margin: 0, fontSize: 13, color: '#9ca3af' }}>
+        <p style={{ margin: 0, fontSize: 13, color: 'var(--text-4)' }}>
           You&apos;ve ended this conversation.
         </p>
         <button
@@ -101,7 +101,7 @@ export function ChatInput({
     <div
       style={{
         flexShrink: 0,
-        borderTop: '1px solid #e3e3e6',
+        borderTop: '1px solid var(--border)',
         padding: '12px 20px 16px',
         display: 'flex',
         flexDirection: 'column',
@@ -126,7 +126,7 @@ export function ChatInput({
             flex: 1,
             padding: '10px 14px',
             fontSize: 15,
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--border-md)',
             borderRadius: 8,
             outline: 'none',
             resize: 'none',
@@ -135,8 +135,8 @@ export function ChatInput({
             minHeight: 42,
             maxHeight: 120,
             overflowY: 'auto',
-            color: '#14151a',
-            background: '#ffffff',
+            color: 'var(--text)',
+            background: 'var(--bg)',
           }}
         />
         <button
@@ -213,8 +213,8 @@ export function ChatInput({
                 position: 'absolute',
                 bottom: 'calc(100% + 8px)',
                 left: 0,
-                background: '#ffffff',
-                border: '1px solid #e3e3e6',
+                background: 'var(--bg)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
                 boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                 minWidth: 230,
@@ -227,7 +227,7 @@ export function ChatInput({
                   padding: '6px 12px 8px',
                   fontSize: 11,
                   fontWeight: 600,
-                  color: '#9ca3af',
+                  color: 'var(--text-4)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.06em',
                 }}
@@ -244,7 +244,7 @@ export function ChatInput({
                     alignItems: 'center',
                     gap: 8,
                     fontWeight: m === selectedModel ? 600 : 400,
-                    color: m === selectedModel ? '#2563eb' : '#14151a',
+                    color: m === selectedModel ? 'var(--accent)' : 'var(--text)',
                   }}
                 >
                   <span
@@ -252,8 +252,8 @@ export function ChatInput({
                       width: 14,
                       height: 14,
                       borderRadius: '50%',
-                      border: `2px solid ${m === selectedModel ? '#2563eb' : '#d1d5db'}`,
-                      background: m === selectedModel ? '#2563eb' : 'transparent',
+                      border: `2px solid ${m === selectedModel ? 'var(--accent)' : 'var(--border-md)'}`,
+                      background: m === selectedModel ? 'var(--accent)' : 'transparent',
                       flexShrink: 0,
                       display: 'flex',
                       alignItems: 'center',
@@ -273,8 +273,8 @@ export function ChatInput({
             onClick={() => setModelOpen((p) => !p)}
             style={{
               ...toolbarBtnStyle,
-              borderColor: modelOpen ? '#6b7280' : '#d1d5db',
-              color: modelOpen ? '#14151a' : '#6b7280',
+              borderColor: modelOpen ? 'var(--text-3)' : 'var(--border-md)',
+              color: modelOpen ? 'var(--text)' : 'var(--text-3)',
             }}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -38,14 +38,14 @@ export default function AdminLoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#f9fafb',
+        background: 'var(--bg)',
       }}
     >
       <form
         onSubmit={handleSubmit}
         style={{
-          background: '#ffffff',
-          border: '1px solid #e3e3e6',
+          background: 'var(--bg)',
+          border: '1px solid var(--border)',
           borderRadius: 10,
           padding: 32,
           width: 340,
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
           gap: 14,
         }}
       >
-        <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 4 }}>Admin login</div>
+        <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 4, color: 'var(--text)' }}>Admin login</div>
 
         {error && (
           <div
@@ -112,10 +112,10 @@ export default function AdminLoginPage() {
 const inputStyle: React.CSSProperties = {
   padding: '10px 12px',
   fontSize: 14,
-  border: '1px solid #d1d5db',
+  border: '1px solid var(--border-md)',
   borderRadius: 8,
   outline: 'none',
-  color: '#14151a',
+  color: 'var(--text)',
   fontFamily: 'inherit',
-  background: '#ffffff',
+  background: 'var(--bg-surface)',
 };

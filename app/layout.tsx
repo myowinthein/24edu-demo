@@ -8,14 +8,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}" }} />
+      </head>
       <body>
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             height: '100vh',
-            background: '#ffffff',
-            color: '#14151a',
+            background: 'var(--bg)',
+            color: 'var(--text)',
           }}
         >
           {children}

@@ -56,11 +56,11 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
         <div
           style={{
             flexShrink: 0,
-            background: '#f9fafb',
-            borderBottom: '1px solid #e3e3e6',
+            background: 'var(--bg-surface)',
+            borderBottom: '1px solid var(--border)',
             padding: '8px 20px',
             fontSize: 13,
-            color: '#9ca3af',
+            color: 'var(--text-4)',
             textAlign: 'center',
           }}
         >
@@ -91,17 +91,17 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
                 fontSize: 15,
                 lineHeight: 1.5,
                 background:
-                  msg.role === 'guest' ? '#f1f1f3'
-                  : msg.role === 'admin' ? '#eff6ff'
-                  : '#ffffff',
+                  msg.role === 'guest' ? 'var(--msg-self)'
+                  : msg.role === 'admin' ? 'var(--accent-bg)'
+                  : 'var(--bg)',
                 border:
                   msg.role === 'guest' ? 'none'
-                  : msg.role === 'admin' ? '1px solid #bfdbfe'
-                  : '1px solid #e3e3e6',
-                color: '#14151a',
+                  : msg.role === 'admin' ? '1px solid var(--accent-br)'
+                  : '1px solid var(--border)',
+                color: 'var(--text)',
               }}
             >
-              <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 4 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-4)', marginBottom: 4 }}>
                 {roleLabel[msg.role]}
               </div>
               {msg.role === 'ai' || msg.role === 'admin' ? (
@@ -122,12 +122,12 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
                 padding: '10px 14px',
                 borderRadius: 10,
                 fontSize: 15,
-                background: '#eff6ff',
-                border: '1px solid #bfdbfe',
-                color: '#9ca3af',
+                background: 'var(--accent-bg)',
+                border: '1px solid var(--accent-br)',
+                color: 'var(--text-4)',
               }}
             >
-              <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 6 }}>Support</div>
+              <div style={{ fontSize: 11, color: 'var(--text-4)', marginBottom: 6 }}>Support</div>
               <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                 {[0, 200, 400].map((delay) => (
                   <span
@@ -156,12 +156,12 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
                 padding: '10px 14px',
                 borderRadius: 10,
                 fontSize: 15,
-                background: '#ffffff',
-                border: '1px solid #e3e3e6',
-                color: '#9ca3af',
+                background: 'var(--bg)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-4)',
               }}
             >
-              <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 4 }}>AI</div>
+              <div style={{ fontSize: 11, color: 'var(--text-4)', marginBottom: 4 }}>AI</div>
               Thinking…
             </div>
           </div>

@@ -28,7 +28,7 @@ function SheetTable({ headers, rows }: { headers: string[]; rows: string[][] }) 
           <thead>
             <tr>
               {headers.map((h, i) => (
-                <th key={i} title={h} style={{ position: 'sticky', top: 0, background: '#f7f7f8', zIndex: 1, padding: '9px 12px', textAlign: 'left', fontWeight: 600, fontSize: 12, color: '#374151', borderBottom: '1px solid #e5e7eb', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <th key={i} title={h} style={{ position: 'sticky', top: 0, background: 'var(--bg-surface)', zIndex: 1, padding: '9px 12px', textAlign: 'left', fontWeight: 600, fontSize: 12, color: 'var(--text-2)', borderBottom: '1px solid var(--border)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {h}
                 </th>
               ))}
@@ -36,11 +36,11 @@ function SheetTable({ headers, rows }: { headers: string[]; rows: string[][] }) 
           </thead>
           <tbody>
             {pageRows.map((row, ri) => (
-              <tr key={ri} style={{ borderTop: '1px solid #f3f4f6', background: ri % 2 === 0 ? '#fff' : '#fafafa' }}>
+              <tr key={ri} style={{ borderTop: '1px solid var(--border)', background: ri % 2 === 0 ? 'var(--bg)' : 'var(--bg-hover)' }}>
                 {headers.map((_, ci) => {
                   const cell = row[ci] ?? '';
                   return (
-                    <td key={ci} title={cell} style={{ padding: '8px 12px', color: '#374151', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 0 }}>
+                    <td key={ci} title={cell} style={{ padding: '8px 12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 0 }}>
                       {cell}
                     </td>
                   );
@@ -51,12 +51,12 @@ function SheetTable({ headers, rows }: { headers: string[]; rows: string[][] }) 
         </table>
       </div>
       {totalPages > 1 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid #e5e7eb', flexShrink: 0, fontSize: 13 }}>
-          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #d1d5db', background: '#fff', cursor: page === 0 ? 'not-allowed' : 'pointer', color: page === 0 ? '#9ca3af' : '#374151' }}>← Prev</button>
-          <span style={{ color: '#6b7280', flex: 1, textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, fontSize: 13 }}>
+          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid var(--border-md)', background: 'var(--bg)', cursor: page === 0 ? 'not-allowed' : 'pointer', color: page === 0 ? 'var(--text-4)' : 'var(--text-2)' }}>← Prev</button>
+          <span style={{ color: 'var(--text-3)', flex: 1, textAlign: 'center' }}>
             Page {page + 1} of {totalPages} · rows {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, rows.length)} of {formatRows(rows.length)}
           </span>
-          <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid #d1d5db', background: '#fff', cursor: page === totalPages - 1 ? 'not-allowed' : 'pointer', color: page === totalPages - 1 ? '#9ca3af' : '#374151' }}>Next →</button>
+          <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} style={{ padding: '5px 12px', borderRadius: 6, border: '1px solid var(--border-md)', background: 'var(--bg)', cursor: page === totalPages - 1 ? 'not-allowed' : 'pointer', color: page === totalPages - 1 ? 'var(--text-4)' : 'var(--text-2)' }}>Next →</button>
         </div>
       )}
     </>
@@ -94,24 +94,24 @@ function SourceModal({ src, onClose }: { src: SourceEntry; onClose: () => void }
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 24 }}>
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ background: '#fff', borderRadius: 12, width: '100%', maxWidth: 1100, maxHeight: '90vh', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        style={{ background: 'var(--bg)', borderRadius: 12, width: '100%', maxWidth: 1100, maxHeight: '90vh', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
       >
         {/* header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #e5e7eb', flexShrink: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
           <div>
             <div style={{ fontSize: 15, fontWeight: 600 }}>{src.filename}</div>
             {!loading && !error && (
-              <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>
                 {formatRows(totalRows)} rows total · {sheets.length} sheet{sheets.length !== 1 ? 's' : ''}
               </div>
             )}
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 22, lineHeight: 1, padding: '0 4px' }}>×</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 22, lineHeight: 1, padding: '0 4px' }}>×</button>
         </div>
 
         {/* sheet tabs */}
         {!loading && !error && sheets.length > 1 && (
-          <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid #e5e7eb', flexShrink: 0, overflowX: 'auto' }}>
+          <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--border)', flexShrink: 0, overflowX: 'auto' }}>
             {sheets.map((sh, i) => (
               <button
                 key={i}
@@ -268,28 +268,28 @@ export default function SourcesPage() {
             Loading sources…
           </div>
         ) : sources.length > 0 ? (
-          <div style={{ border: '1px solid #e3e3e6', borderRadius: 10, overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', padding: '10px 16px', background: '#f7f7f8', fontSize: 12, color: '#6b7280', fontWeight: 500 }}>
+          <div style={{ border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', padding: '10px 16px', background: 'var(--bg-surface)', fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
               <div>Filename</div><div>Upload date</div><div>Rows</div><div />
             </div>
             {sources.map((src) => (
               <div
                 key={src.id}
-                style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', padding: '12px 16px', alignItems: 'center', borderTop: '1px solid #e3e3e6', fontSize: 14 }}
+                style={{ display: 'grid', gridTemplateColumns: '1fr 160px 110px 140px', padding: '12px 16px', alignItems: 'center', borderTop: '1px solid var(--border)', fontSize: 14 }}
               >
                 <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 12 }}>{src.filename}</div>
-                <div style={{ color: '#6b7280' }}>{formatDate(src.uploadedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</div>
-                <div style={{ color: '#6b7280' }}>{formatRows(src.rowCount)}</div>
+                <div style={{ color: 'var(--text-3)' }}>{formatDate(src.uploadedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                <div style={{ color: 'var(--text-3)' }}>{formatRows(src.rowCount)}</div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                  <button onClick={() => setViewSource(src)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>View</button>
+                  <button onClick={() => setViewSource(src)} style={{ padding: '6px 12px', fontSize: 13, background: 'var(--bg)', color: 'var(--text-2)', border: '1px solid var(--border-md)', borderRadius: 6, cursor: 'pointer' }}>View</button>
                   {pendingRemoveId === src.id ? (
                     <>
                       <span style={{ fontSize: 12, color: '#6b7280', alignSelf: 'center' }}>Sure?</span>
                       <button onClick={() => handleRemove(src.id)} style={{ padding: '6px 12px', fontSize: 13, background: '#b91c1c', color: '#ffffff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>Yes</button>
-                      <button onClick={() => setPendingRemoveId(null)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>No</button>
+                      <button onClick={() => setPendingRemoveId(null)} style={{ padding: '6px 12px', fontSize: 13, background: 'var(--bg)', color: 'var(--text-2)', border: '1px solid var(--border-md)', borderRadius: 6, cursor: 'pointer' }}>No</button>
                     </>
                   ) : (
-                    <button onClick={() => handleRemove(src.id)} style={{ padding: '6px 12px', fontSize: 13, background: '#ffffff', color: '#b91c1c', border: '1px solid #d1d5db', borderRadius: 6, cursor: 'pointer' }}>Remove</button>
+                    <button onClick={() => handleRemove(src.id)} style={{ padding: '6px 12px', fontSize: 13, background: 'var(--bg)', color: '#b91c1c', border: '1px solid var(--border-md)', borderRadius: 6, cursor: 'pointer' }}>Remove</button>
                   )}
                 </div>
               </div>

@@ -171,12 +171,12 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
               style={{
                 maxWidth: 520, padding: '9px 13px', borderRadius: 10,
                 fontSize: 14, lineHeight: 1.5,
-                background: msg.role === 'guest' ? '#f1f1f3' : msg.role === 'ai' ? '#ffffff' : '#eff6ff',
-                border: msg.role === 'guest' ? 'none' : msg.role === 'ai' ? '1px solid #e3e3e6' : '1px solid #bfdbfe',
-                color: '#14151a',
+                background: msg.role === 'guest' ? 'var(--msg-self)' : msg.role === 'ai' ? 'var(--bg)' : 'var(--accent-bg)',
+                border: msg.role === 'guest' ? 'none' : msg.role === 'ai' ? '1px solid var(--border)' : '1px solid var(--accent-br)',
+                color: 'var(--text)',
               }}
             >
-              <div style={{ fontSize: 11, marginBottom: 3, color: '#9ca3af' }}>
+              <div style={{ fontSize: 11, marginBottom: 3, color: 'var(--text-4)' }}>
                 {roleLabel[msg.role]}
               </div>
               {msg.role === 'ai' ? (
@@ -196,24 +196,24 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
           style={{
             flexShrink: 0,
             margin: '0 16px 4px',
-            background: '#f0f9ff',
-            border: '1px solid #bae6fd',
+            background: 'var(--info-bg)',
+            border: '1px solid var(--info-br)',
             borderRadius: 10,
             padding: '10px 14px 12px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--info-text)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Conversation Summary
             </span>
             <button
               onClick={() => setSummary(null)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
             >
               ×
             </button>
           </div>
-          <div className="md-body" style={{ fontSize: 13, color: '#0c4a6e' }}>
+          <div className="md-body" style={{ fontSize: 13, color: 'var(--info-body)' }}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
       {/* Input area */}
       <div
         style={{
-          flexShrink: 0, borderTop: '1px solid #e3e3e6',
+          flexShrink: 0, borderTop: '1px solid var(--border)',
           padding: '12px 20px 16px',
           display: 'flex', flexDirection: 'column', gap: 8,
         }}
@@ -241,10 +241,10 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
             rows={1}
             style={{
               flex: 1, padding: '10px 14px', fontSize: 14,
-              border: '1px solid #d1d5db', borderRadius: 8,
+              border: '1px solid var(--border-md)', borderRadius: 8,
               outline: 'none', resize: 'none', fontFamily: 'inherit',
               lineHeight: 1.5, minHeight: 42, maxHeight: 120, overflowY: 'auto',
-              color: '#14151a', background: mode !== 'human' ? '#f9fafb' : '#ffffff',
+              color: 'var(--text)', background: mode !== 'human' ? 'var(--bg-surface)' : 'var(--bg)',
             }}
           />
           <button

@@ -18,8 +18,8 @@ const COLUMNS: { key: keyof LeadData; label: string }[] = [
 ];
 
 const btnStyle: React.CSSProperties = {
-  padding: '6px 13px', fontSize: 12, fontWeight: 500, border: '1px solid #d1d5db',
-  borderRadius: 6, cursor: 'pointer', background: '#ffffff', color: '#374151',
+  padding: '6px 13px', fontSize: 12, fontWeight: 500, border: '1px solid var(--border-md)',
+  borderRadius: 6, cursor: 'pointer', background: 'var(--bg)', color: 'var(--text-2)',
   fontFamily: 'inherit', whiteSpace: 'nowrap',
 };
 
@@ -112,8 +112,8 @@ export default function LeadsPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#111827' }}>Leads</h1>
-          <p style={{ margin: '2px 0 0', fontSize: 13, color: '#6b7280' }}>
+          <h1 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Leads</h1>
+          <p style={{ margin: '2px 0 0', fontSize: 13, color: 'var(--text-3)' }}>
             {total} {total === 1 ? 'lead' : 'leads'} captured
           </p>
         </div>
@@ -133,8 +133,8 @@ export default function LeadsPage() {
           placeholder="Search by name, email, country or program…"
           style={{
             flex: 1, padding: '8px 12px', fontSize: 13,
-            border: '1px solid #d1d5db', borderRadius: 7, outline: 'none',
-            fontFamily: 'inherit', color: '#14151a',
+            border: '1px solid var(--border-md)', borderRadius: 7, outline: 'none',
+            fontFamily: 'inherit', color: 'var(--text)',
           }}
         />
         <button type="submit" style={{ ...btnStyle, background: '#2563eb', color: '#ffffff', border: 'none' }}>
@@ -160,17 +160,17 @@ export default function LeadsPage() {
           Loading leads…
         </div>
       ) : (
-        <div style={{ flex: 1, overflowX: 'auto', border: '1px solid #e3e3e6', borderRadius: 10, minHeight: 0 }}>
+        <div style={{ flex: 1, overflowX: 'auto', border: '1px solid var(--border)', borderRadius: 10, minHeight: 0 }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
-              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e3e3e6' }}>
+              <tr style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
                 {COLUMNS.map((col) => (
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
                     style={{
                       padding: '10px 14px', textAlign: 'left', fontWeight: 600,
-                      color: '#374151', cursor: 'pointer', whiteSpace: 'nowrap',
+                      color: 'var(--text-2)', cursor: 'pointer', whiteSpace: 'nowrap',
                       userSelect: 'none',
                     }}
                   >
@@ -181,16 +181,16 @@ export default function LeadsPage() {
             </thead>
             <tbody>
               {leads.length === 0 ? (
-                <tr><td colSpan={COLUMNS.length} style={{ padding: '32px', textAlign: 'center', color: '#9ca3af' }}>
+                <tr><td colSpan={COLUMNS.length} style={{ padding: '32px', textAlign: 'center', color: 'var(--text-4)' }}>
                   {search ? 'No leads match your search.' : 'No leads yet.'}
                 </td></tr>
               ) : leads.map((lead, i) => (
                 <tr
                   key={lead.guestId}
-                  style={{ borderBottom: '1px solid #f0f0f1', background: i % 2 === 0 ? '#ffffff' : '#fafafa' }}
+                  style={{ borderBottom: '1px solid var(--border)', background: i % 2 === 0 ? 'var(--bg)' : 'var(--bg-hover)' }}
                 >
                   {COLUMNS.map((col) => (
-                    <td key={col.key} style={{ padding: '10px 14px', color: '#14151a', whiteSpace: col.key === 'submittedAt' ? 'nowrap' : 'normal' }}>
+                    <td key={col.key} style={{ padding: '10px 14px', color: 'var(--text)', whiteSpace: col.key === 'submittedAt' ? 'nowrap' : 'normal' }}>
                       {col.key === 'submittedAt' ? formatDate(lead[col.key], { day: '2-digit', month: 'short', year: 'numeric' }) : lead[col.key]}
                     </td>
                   ))}
