@@ -30,7 +30,9 @@ const EDU_KEYWORDS = [
 
 function isEducationRelated(msg: string): boolean {
   const lower = msg.toLowerCase();
-  return EDU_KEYWORDS.some((kw) => lower.includes(kw));
+  // \buni\b catches "uni" as a standalone word (common shorthand for "university")
+  // without false-positives from words like "unique", "reunify", "unit".
+  return /\buni\b/.test(lower) || EDU_KEYWORDS.some((kw) => lower.includes(kw));
 }
 
 const genAI = process.env.GEMINI_API_KEY
@@ -107,8 +109,15 @@ export async function POST(req: NextRequest) {
 
   const relevantChunks = await queryRelevantChunks(message);
 
-  // Layer 1 gate: only ground when local data has no match AND topic is education-related.
-  const useGrounding = relevantChunks.length === 0 && isEducationRelated(message);
+  // Layer 1 gate: only ground when local data has no match AND the conversation is
+  // education-related. Check recent guest messages too so follow-up questions like
+  // "can you search online?" inherit the topic context from earlier in the session.
+  const recentContext = messages
+    .filter((m) => m.role === 'guest')
+    .slice(-4)
+    .map((m) => m.text)
+    .join(' ');
+  const useGrounding = relevantChunks.length === 0 && isEducationRelated(message + ' ' + recentContext);
 
   let systemInstruction: string;
 
@@ -135,7 +144,9 @@ export async function POST(req: NextRequest) {
         'If the specific detail requested (e.g. a specific fee, intake date, or program name) is not clearly present in the excerpts, say that this specific information is not available in the current data — do not infer, guess, or substitute with similar-looking data from other programs.';
     } else {
       systemInstruction +=
-        '\n\nNo data sources are currently loaded. Let the user know they should upload a CSV or Excel file in the Sources section.';
+        '\n\nNo relevant data was found for this query. ' +
+        'If the user is asking about a university topic, let them know it is not covered by the uploaded data and suggest they contact the university directly. ' +
+        'If the user is asking something unrelated to universities or education, politely explain that you can only assist with university and education program information.';
     }
   }
 
