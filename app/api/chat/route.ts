@@ -169,8 +169,13 @@ export async function POST(req: NextRequest) {
     }));
 
   const chat = geminiModel.startChat({ history: geminiHistory });
-  const result = await chat.sendMessage(message);
-  const text = result.response.text();
+  let text: string;
+  try {
+    const result = await chat.sendMessage(message);
+    text = result.response.text();
+  } catch {
+    return NextResponse.json({ error: 'AI temporarily unavailable, please try again' }, { status: 503 });
+  }
 
   messages.push({ role: 'ai', text, timestamp: new Date().toISOString() });
   await redis.set(sessionMessagesKey(sessionId), messages);

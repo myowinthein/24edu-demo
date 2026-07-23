@@ -124,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         data.forEach((s) => {
           if (s.mode === 'requested' && prevModesRef.current[s.id] !== 'requested') {
             new Notification('Support requested', {
-              body: `Guest #${s.guestId.slice(0, 8)} needs a human agent`,
+              body: `${s.name || `Guest #${s.guestId.slice(0, 8)}`} needs a human agent`,
               icon: '/favicon.ico',
             });
           }
@@ -164,14 +164,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => { active = false; es?.close(); };
   }, [isLogin, fetchSessions]);
 
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    router.push('/admin/login');
+  const handleLogout = () => {
+    fetch('/api/admin/logout', { method: 'POST' })
+      .catch(console.error)
+      .finally(() => router.push('/admin/login'));
   };
 
-  const handleAccept = async (sessionId: string) => {
-    await fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' });
-    router.push(`/admin/sessions/${sessionId}`);
+  const handleAccept = (sessionId: string) => {
+    fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' })
+      .catch(console.error)
+      .finally(() => router.push(`/admin/sessions/${sessionId}`));
   };
 
   const guestGroups = useMemo<GuestGroup[]>(() => {
