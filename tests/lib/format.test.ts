@@ -63,4 +63,14 @@ describe('formatDate', () => {
     const result = formatDate('2024-03-15T10:00:00Z', { year: 'numeric', month: 'long' })
     expect(result).toMatch(/2024/)
   })
+
+  it('returns empty string for an invalid date string', () => {
+    expect(formatDate('not-a-date')).toBe('')
+  })
+})
+
+describe('formatRelativeTime — invalid input', () => {
+  it('returns empty string for an invalid date string', () => {
+    expect(formatRelativeTime('not-a-date')).toBe('')
+  })
 })

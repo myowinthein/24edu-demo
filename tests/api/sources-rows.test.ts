@@ -4,6 +4,8 @@ import { NextRequest } from 'next/server'
 vi.mock('@/lib/admin-auth', () => ({
   verifyAdminToken: vi.fn().mockResolvedValue(true),
 }))
+import { verifyAdminToken } from '@/lib/admin-auth'
+const mockVerify = vi.mocked(verifyAdminToken)
 
 const mockFetch = vi.hoisted(() => vi.fn())
 vi.mock('@/lib/vector', () => ({
@@ -33,6 +35,15 @@ function makeParams(id = SOURCE_ID) {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mockVerify.mockResolvedValue(true)
+})
+
+describe('GET /api/sources/[id]/rows — auth guard', () => {
+  it('returns 401 when not authenticated', async () => {
+    mockVerify.mockResolvedValue(false)
+    const res = await GET(makeReq(), makeParams())
+    expect(res.status).toBe(401)
+  })
 })
 
 describe('GET /api/sources/[id]/rows — 404 for unknown source', () => {
@@ -49,7 +60,7 @@ describe('GET /api/sources/[id]/rows — flat CSV dispatch', () => {
     mockGet.mockResolvedValue([{ id: SOURCE_ID, chunkCount: 1 }])
     mockFetch.mockResolvedValue([{
       id: `${SOURCE_ID}_chunk_0`,
-      metadata: { text: 'File: test.csv\nName,Age\nAlice,30\nBob,25' },
+      metadata: { text: 'Name,Age\nAlice,30\nBob,25' },
     }])
     const res = await GET(makeReq(), makeParams())
     expect(res.status).toBe(200)
@@ -67,11 +78,11 @@ describe('GET /api/sources/[id]/rows — multi-sheet dispatch', () => {
     mockFetch.mockResolvedValue([
       {
         id: `${SOURCE_ID}_chunk_0`,
-        metadata: { text: 'File: wb.xlsx\nSheet: Programs\nName,Duration\nMBA,2 years' },
+        metadata: { text: 'Sheet: Programs\nName,Duration\nMBA,2 years' },
       },
       {
         id: `${SOURCE_ID}_chunk_1`,
-        metadata: { text: 'File: wb.xlsx\nSheet: Fees\nProgram,Cost\nMBA,50000' },
+        metadata: { text: 'Sheet: Fees\nProgram,Cost\nMBA,50000' },
       },
     ])
     const res = await GET(makeReq(), makeParams())
@@ -92,33 +103,33 @@ describe('GET /api/sources/[id]/rows — parseCSVLine (via flat CSV chunks)', ()
   }
 
   it('splits plain comma-separated fields', async () => {
-    setupSource('File: t.csv\nA,B,C\n1,2,3')
+    setupSource('A,B,C\n1,2,3')
     const body = await (await GET(makeReq(), makeParams())).json()
     expect(body.headers).toEqual(['A', 'B', 'C'])
     expect(body.rows[0]).toEqual(['1', '2', '3'])
   })
 
   it('handles quoted fields containing commas', async () => {
-    setupSource('File: t.csv\nName,Value\n"Smith, John",100')
+    setupSource('Name,Value\n"Smith, John",100')
     const body = await (await GET(makeReq(), makeParams())).json()
     expect(body.rows[0][0]).toBe('Smith, John')
     expect(body.rows[0][1]).toBe('100')
   })
 
   it('handles escaped double quotes (doubled quotes inside quoted field)', async () => {
-    setupSource('File: t.csv\nNote\n"say ""hello"""')
+    setupSource('Note\n"say ""hello"""')
     const body = await (await GET(makeReq(), makeParams())).json()
     expect(body.rows[0][0]).toBe('say "hello"')
   })
 
   it('handles empty cells', async () => {
-    setupSource('File: t.csv\nA,B,C\n1,,3')
+    setupSource('A,B,C\n1,,3')
     const body = await (await GET(makeReq(), makeParams())).json()
     expect(body.rows[0]).toEqual(['1', '', '3'])
   })
 
-  it('skips chunks with fewer than 3 lines', async () => {
-    setupSource('File: t.csv\nOnlyHeader')
+  it('skips chunks with fewer than 2 lines', async () => {
+    setupSource('OnlyHeader')
     const body = await (await GET(makeReq(), makeParams())).json()
     expect(body.rows).toHaveLength(0)
   })

@@ -50,4 +50,13 @@ describe('setSessionMode', () => {
     await setSessionMode('sess-4', 'ended')
     expect(mockPublishSessions).toHaveBeenCalledOnce()
   })
+
+  it('publishes to both session and sessions channels in a single call', async () => {
+    const messages = [{ role: 'guest' as const, text: 'hi', timestamp: '2024-01-01T00:00:00Z' }]
+    mockGet.mockResolvedValue(messages)
+    await setSessionMode('sess-5', 'human')
+    expect(mockPublishSession).toHaveBeenCalledOnce()
+    expect(mockPublishSessions).toHaveBeenCalledOnce()
+    expect(mockPublishSession).toHaveBeenCalledWith('sess-5', { messages, mode: 'human' })
+  })
 })

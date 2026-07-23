@@ -1,6 +1,8 @@
 export function formatRelativeTime(iso: string): string {
   if (!iso) return '';
-  const diff = Date.now() - new Date(iso).getTime();
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const diff = Date.now() - d.getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return 'Just now';
   if (mins < 60) return `${mins}m ago`;
@@ -17,5 +19,7 @@ export function formatDate(
   options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' },
 ): string {
   if (!iso) return '';
-  return new Date(iso).toLocaleDateString(undefined, options);
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString(undefined, options);
 }

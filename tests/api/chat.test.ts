@@ -102,9 +102,11 @@ describe('POST /api/chat — input validation', () => {
 
 describe('POST /api/chat — session mode', () => {
   it('returns { waiting: true } when mode is "human"', async () => {
-    redisMocks.get
-      .mockResolvedValueOnce([])       // stored messages
-      .mockResolvedValueOnce('human')  // stored mode
+    redisMocks.get.mockImplementation((key: string) => {
+      if (key.includes(':messages')) return Promise.resolve([])
+      if (key.includes(':mode')) return Promise.resolve('human')
+      return Promise.resolve(null)
+    })
     const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
     expect(res.status).toBe(200)
     const body = await res.json()
@@ -112,9 +114,11 @@ describe('POST /api/chat — session mode', () => {
   })
 
   it('returns { waiting: true } when mode is "requested"', async () => {
-    redisMocks.get
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce('requested')
+    redisMocks.get.mockImplementation((key: string) => {
+      if (key.includes(':messages')) return Promise.resolve([])
+      if (key.includes(':mode')) return Promise.resolve('requested')
+      return Promise.resolve(null)
+    })
     const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
     const body = await res.json()
     expect(body.waiting).toBe(true)
@@ -178,5 +182,24 @@ describe('POST /api/chat — Google Search grounding', () => {
     await POST(makeReq({ message: 'Tell me about MBA programs', sessionId: VALID_SESSION }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
     expect(callArgs?.tools).toBeUndefined()
+  })
+})
+
+describe('POST /api/chat — missing GEMINI_API_KEY', () => {
+  it('returns 500 when GEMINI_API_KEY is not configured', async () => {
+    const origKey = process.env.GEMINI_API_KEY
+    delete process.env.GEMINI_API_KEY
+    vi.resetModules()
+    try {
+      const { POST: freshPOST } = await import('@/app/api/chat/route')
+      const req = makeReq({ message: 'hello', sessionId: VALID_SESSION })
+      const res = await freshPOST(req)
+      expect(res.status).toBe(500)
+      const body = await res.json()
+      expect(body.error).toMatch(/GEMINI_API_KEY/i)
+    } finally {
+      process.env.GEMINI_API_KEY = origKey
+      vi.resetModules()
+    }
   })
 })

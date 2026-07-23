@@ -47,21 +47,20 @@ export async function GET(
     if (!item) continue;
     const text = (item.metadata as { text?: string })?.text ?? '';
     const lines = text.split('\n').filter((l) => l.trim());
-    if (lines.length < 3) continue;
+    if (lines.length < 2) continue;
 
-    // lines[0] = "File: ..."
-    // Multi-sheet: lines[1] = "Sheet: <name>", lines[2] = header, lines[3+] = data
-    // Flat CSV:    lines[1] = header, lines[2+] = data
-    if (lines[1].startsWith('Sheet:')) {
+    // Multi-sheet: lines[0] = "Sheet: <name>", lines[1] = header, lines[2+] = data
+    // Flat CSV:    lines[0] = header, lines[1+] = data
+    if (lines[0].startsWith('Sheet:')) {
       isMultiSheet = true;
-      const sheetName = lines[1].replace(/^Sheet:\s*/, '').trim();
-      const headers = parseCSVLine(lines[2]);
-      const dataRows = lines.slice(3).map(parseCSVLine);
+      const sheetName = lines[0].replace(/^Sheet:\s*/, '').trim();
+      const headers = parseCSVLine(lines[1]);
+      const dataRows = lines.slice(2).map(parseCSVLine);
       if (!sheetMap.has(sheetName)) sheetMap.set(sheetName, { headers, rows: [] });
       sheetMap.get(sheetName)!.rows.push(...dataRows);
     } else {
-      const headers = parseCSVLine(lines[1]);
-      const dataRows = lines.slice(2).map(parseCSVLine);
+      const headers = parseCSVLine(lines[0]);
+      const dataRows = lines.slice(1).map(parseCSVLine);
       if (!sheetMap.has('')) sheetMap.set('', { headers, rows: [] });
       sheetMap.get('')!.rows.push(...dataRows);
     }

@@ -7,7 +7,8 @@ const vectorMocks = vi.hoisted(() => ({
 }))
 
 vi.mock('@upstash/vector', () => ({
-  Index: vi.fn().mockImplementation(function () { return vectorMocks; }),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Index: vi.fn(function () { return vectorMocks as any }),
 }))
 
 import {
