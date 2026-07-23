@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { UserAreaProvider, useUserArea } from './UserAreaContext';
 import { ChatSidebar } from '@/app/chat/components/ChatSidebar';
+import { ThemeToggle } from '@/app/chat/components/ThemeToggle';
 import { navLinkStyle } from '@/lib/ui-styles';
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -56,9 +57,11 @@ function Shell({ children }: { children: React.ReactNode }) {
           alignItems: 'center',
           justifyContent: 'flex-end',
           padding: '0 20px',
-          borderBottom: '1px solid #e3e3e6',
+          borderBottom: '1px solid var(--border)',
+          background: 'var(--bg)',
         }}>
-          <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+            <ThemeToggle />
             <Link href="/chat" style={navLinkStyle(isChat)}>💬 Chat</Link>
             {leadSubmitted === true && (
               <Link href="/profile" style={navLinkStyle(isProfile)}>👤 Profile</Link>

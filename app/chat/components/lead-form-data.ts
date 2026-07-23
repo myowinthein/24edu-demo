@@ -194,21 +194,21 @@ export const inputStyle: CSSProperties = {
   width: '100%',
   padding: '10px 12px',
   fontSize: 14,
-  border: '1px solid #d1d5db',
+  border: '1px solid var(--border-md)',
   borderRadius: 8,
   outline: 'none',
   fontFamily: 'inherit',
-  color: '#14151a',
-  background: '#ffffff',
+  color: 'var(--text)',
+  background: 'var(--bg)',
   boxSizing: 'border-box',
 };
 
 export const labelStyle: CSSProperties = {
-  display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6,
+  display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-2)', marginBottom: 6,
 };
 
 export const errStyle: CSSProperties = { fontSize: 12, color: '#dc2626', marginTop: 4 };
 
 export function border(hasError: boolean): string {
-  return hasError ? '#dc2626' : '#d1d5db';
+  return hasError ? '#dc2626' : 'var(--border-md)';
 }

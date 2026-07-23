@@ -237,7 +237,7 @@ export default function ChatPage() {
     <>
       {!isReady ? (
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-3)', fontSize: 14 }}>
             <SpinnerIcon />
             Loading chat…
           </div>
@@ -255,7 +255,7 @@ export default function ChatPage() {
             padding: 24,
           }}
         >
-          <div style={{ fontSize: 15, color: '#6b7280', maxWidth: 340 }}>
+          <div style={{ fontSize: 15, color: 'var(--text-3)', maxWidth: 340 }}>
             No data sources have been uploaded yet. Add a source to start chatting.
           </div>
           <button
@@ -288,24 +288,24 @@ export default function ChatPage() {
               style={{
                 flexShrink: 0,
                 margin: '0 16px 4px',
-                background: '#f0f9ff',
-                border: '1px solid #bae6fd',
+                background: 'var(--info-bg)',
+                border: '1px solid var(--info-br)',
                 borderRadius: 10,
                 padding: '10px 14px 12px',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--info-text)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   Conversation Summary
                 </span>
                 <button
                   onClick={() => setSummary(null)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', padding: '0 2px', fontSize: 18, lineHeight: 1, fontFamily: 'inherit' }}
                 >
                   ×
                 </button>
               </div>
-              <div className="md-body" style={{ fontSize: 13, color: '#0c4a6e' }}>
+              <div className="md-body" style={{ fontSize: 13, color: 'var(--info-body)' }}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
               </div>
             </div>

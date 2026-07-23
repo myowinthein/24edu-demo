@@ -80,25 +80,25 @@ export function LeadForm({ guestId, onComplete }: LeadFormProps) {
         justifyContent: 'center',
         padding: '24px 16px',
         overflowY: 'auto',
-        background: '#f9fafb',
+        background: 'var(--bg-surface)',
       }}
     >
       <div
         style={{
           width: '100%',
           maxWidth: 500,
-          background: '#ffffff',
+          background: 'var(--bg)',
           borderRadius: 14,
-          border: '1px solid #e3e3e6',
+          border: '1px solid var(--border)',
           padding: '32px 32px 28px',
           boxShadow: '0 2px 16px rgba(0,0,0,0.06)',
         }}
       >
         <div style={{ marginBottom: 24 }}>
-          <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: '#111827' }}>
+          <h2 style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>
             Before we chat
           </h2>
-          <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>
+          <p style={{ margin: 0, fontSize: 14, color: 'var(--text-3)' }}>
             Help us personalise your experience by sharing a little about yourself.
           </p>
         </div>

@@ -99,16 +99,16 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px', background: '#ffffff' }}>
+    <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px', background: 'var(--bg)' }}>
       <div style={{ maxWidth: 780 }}>
 
         <div style={{ marginBottom: 24 }}>
-          <h2 style={{ margin: '0 0 4px', fontSize: 20, fontWeight: 700, color: '#111827' }}>👤 Profile</h2>
-          <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>Update your details below.</p>
+          <h2 style={{ margin: '0 0 4px', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>👤 Profile</h2>
+          <p style={{ margin: 0, fontSize: 14, color: 'var(--text-3)' }}>Update your details below.</p>
         </div>
 
         {status === 'loading' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6b7280', fontSize: 14, padding: '24px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--text-3)', fontSize: 14, padding: '24px 0' }}>
             <SpinnerIcon />
             Loading profile…
           </div>
@@ -116,7 +116,7 @@ export default function ProfilePage() {
 
         {status === 'no-data' && (
           <div style={{ padding: '24px 0' }}>
-            <p style={{ fontSize: 15, color: '#6b7280', margin: '0 0 16px' }}>No info found. Please start by chatting first.</p>
+            <p style={{ fontSize: 15, color: 'var(--text-3)', margin: '0 0 16px' }}>No info found. Please start by chatting first.</p>
             <Link href="/chat" style={{ display: 'inline-block', padding: '9px 20px', fontSize: 14, fontWeight: 500, background: '#2563eb', color: '#fff', borderRadius: 8, textDecoration: 'none' }}>
               Go to Chat
             </Link>
@@ -126,8 +126,8 @@ export default function ProfilePage() {
         {status === 'saved' && (
           <div style={{ padding: '24px 0' }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
-            <p style={{ fontSize: 16, fontWeight: 600, color: '#111827', margin: '0 0 4px' }}>Info updated!</p>
-            <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 20px' }}>Your details have been saved successfully.</p>
+            <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', margin: '0 0 4px' }}>Info updated!</p>
+            <p style={{ fontSize: 14, color: 'var(--text-3)', margin: '0 0 20px' }}>Your details have been saved successfully.</p>
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={() => setStatus('ready')} style={{ padding: '8px 16px', fontSize: 14, background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit' }}>
                 Edit again
