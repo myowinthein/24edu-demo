@@ -61,11 +61,11 @@ function Shell({ children }: { children: React.ReactNode }) {
           background: 'var(--bg)',
         }}>
           <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-            <ThemeToggle />
             <Link href="/chat" style={navLinkStyle(isChat)}>💬 Chat</Link>
             {leadSubmitted === true && (
               <Link href="/profile" style={navLinkStyle(isProfile)}>👤 Profile</Link>
             )}
+            <ThemeToggle />
           </div>
         </div>
         {children}
