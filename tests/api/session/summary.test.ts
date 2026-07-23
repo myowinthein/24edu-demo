@@ -99,3 +99,31 @@ describe('GET /api/session/[id]/summary — transcript builder', () => {
     expect(transcriptArg).toBe('User: Hello\nAI: Hi there')
   })
 })
+
+describe('GET /api/session/[id]/summary — Gemini error handling', () => {
+  it('returns 500 when generateContent throws', async () => {
+    mockGet.mockResolvedValue([{ role: 'guest', text: 'Hello', timestamp: '2024-01-01' }])
+    mockGenerateContent.mockRejectedValue(new Error('Gemini unavailable'))
+    const res = await GET(makeReq(VALID_ID), { params: { id: VALID_ID } })
+    expect(res.status).toBe(500)
+    const body = await res.json()
+    expect(body.error).toBeDefined()
+  })
+
+  it('returns 500 when GEMINI_API_KEY is not set', async () => {
+    const origKey = process.env.GEMINI_API_KEY
+    delete process.env.GEMINI_API_KEY
+    vi.resetModules()
+    try {
+      const { GET: freshGET } = await import('@/app/api/session/[id]/summary/route')
+      mockGet.mockResolvedValue([{ role: 'guest', text: 'Hello', timestamp: '2024-01-01' }])
+      const res = await freshGET(makeReq(VALID_ID), { params: { id: VALID_ID } })
+      expect(res.status).toBe(500)
+      const body = await res.json()
+      expect(body.error).toMatch(/GEMINI_API_KEY/i)
+    } finally {
+      process.env.GEMINI_API_KEY = origKey
+      vi.resetModules()
+    }
+  })
+})

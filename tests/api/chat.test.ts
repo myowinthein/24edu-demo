@@ -185,6 +185,62 @@ describe('POST /api/chat — Google Search grounding', () => {
   })
 })
 
+describe('POST /api/chat — grounding: uni shorthand and recentContext', () => {
+  it('triggers grounding when message contains "uni" as a standalone word', async () => {
+    mockQueryRelevantChunks.mockResolvedValue([])
+    await POST(makeReq({ message: 'What uni should I apply to?', sessionId: VALID_SESSION }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(JSON.stringify(callArgs?.tools)).toContain('googleSearchRetrieval')
+  })
+
+  it('does NOT trigger grounding for "unique" (not a word-boundary match)', async () => {
+    mockQueryRelevantChunks.mockResolvedValue([])
+    await POST(makeReq({ message: 'What is unique about this place?', sessionId: VALID_SESSION }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(callArgs?.tools).toBeUndefined()
+  })
+
+  it('triggers grounding on a follow-up with no edu keywords when prior session messages contain edu context', async () => {
+    mockQueryRelevantChunks.mockResolvedValue([])
+    redisMocks.get.mockImplementation((key: string) => {
+      if (key.includes(':messages'))
+        return Promise.resolve([{ role: 'guest', text: 'Tell me about MBA programs', timestamp: '2024-01-01' }])
+      return Promise.resolve(null)
+    })
+    await POST(makeReq({ message: 'can you search online?', sessionId: VALID_SESSION }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(JSON.stringify(callArgs?.tools)).toContain('googleSearchRetrieval')
+  })
+})
+
+describe('POST /api/chat — Gemini error handling', () => {
+  it('returns 503 when sendMessage throws', async () => {
+    mockGetGenerativeModel.mockReturnValue({
+      startChat: vi.fn().mockReturnValue({
+        sendMessage: vi.fn().mockRejectedValue(new Error('Gemini overloaded')),
+      }),
+    })
+    const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
+    expect(res.status).toBe(503)
+    const body = await res.json()
+    expect(body.error).toMatch(/temporarily unavailable/i)
+  })
+})
+
+describe('POST /api/chat — model validation', () => {
+  it('falls back to DEFAULT_MODEL when an unknown model name is provided', async () => {
+    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gpt-4-turbo' }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(callArgs?.model).toBe('gemini-3.5-flash-lite')
+  })
+
+  it('uses the provided model when it is a valid known model', async () => {
+    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.6-flash' }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(callArgs?.model).toBe('gemini-3.6-flash')
+  })
+})
+
 describe('POST /api/chat — missing GEMINI_API_KEY', () => {
   it('returns 500 when GEMINI_API_KEY is not configured', async () => {
     const origKey = process.env.GEMINI_API_KEY
