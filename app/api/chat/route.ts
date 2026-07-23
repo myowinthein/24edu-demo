@@ -109,19 +109,35 @@ export async function POST(req: NextRequest) {
 
   const relevantChunks = await queryRelevantChunks(message);
 
-  // Layer 1 gate: only ground when local data has no match AND the conversation is
-  // education-related. Check recent guest messages too so follow-up questions like
-  // "can you search online?" inherit the topic context from earlier in the session.
+  // Check recent guest messages too so follow-up questions ("can you search online?")
+  // inherit the education topic context from earlier in the session.
   const recentContext = messages
     .filter((m) => m.role === 'guest')
     .slice(-4)
     .map((m) => m.text)
     .join(' ');
-  const useGrounding = relevantChunks.length === 0 && isEducationRelated(message + ' ' + recentContext);
+  const eduRelated = isEducationRelated(message + ' ' + recentContext);
+
+  // Contact queries (email, phone, website) always need web search — program CSVs
+  // never contain this kind of detail, so grounding fires even when local chunks exist.
+  const isContactQuery = /\b(email|e-mail|phone|telephone|hotline|website|homepage|web address|contact)\b/i.test(message);
+
+  const useGrounding = eduRelated && (relevantChunks.length === 0 || isContactQuery);
 
   let systemInstruction: string;
 
-  if (useGrounding) {
+  if (useGrounding && relevantChunks.length > 0) {
+    // Chunks found but user wants contact info: provide program context + web search.
+    systemInstruction =
+      'You are a university program information assistant. ' +
+      'The data excerpts below describe programs at the university. ' +
+      'The user is asking for contact information (email, phone, website, etc.) that is not in the uploaded data. ' +
+      'Use your web search capability to find the requested contact details. ' +
+      'When citing web sources, include the source name in your response.\n\n' +
+      'Here are the relevant data excerpts for context:\n\n' +
+      relevantChunks.join('\n\n');
+  } else if (useGrounding) {
+    // No local match: web search is the primary source.
     // Layer 2: system prompt restricts the grounded search to education topics only.
     systemInstruction =
       'You are a university and higher education information assistant. ' +
