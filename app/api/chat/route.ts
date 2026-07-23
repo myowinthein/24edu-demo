@@ -37,7 +37,6 @@ const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   : null;
 
-const INSTITUTION_NAME = process.env.INSTITUTION_NAME ?? 'this university';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_MESSAGE_LENGTH = 4000;
@@ -116,17 +115,17 @@ export async function POST(req: NextRequest) {
   if (useGrounding) {
     // Layer 2: system prompt restricts the grounded search to education topics only.
     systemInstruction =
-      `You are a university and higher education information assistant for ${INSTITUTION_NAME}. ` +
+      'You are a university and higher education information assistant. ' +
       'Use your web search capability to find accurate, up-to-date information about universities, degree programs, tuition fees, scholarship opportunities, admission requirements, and intake dates. ' +
       'STRICT RESTRICTION: You must ONLY answer questions related to higher education — universities, colleges, programs, degrees, tuition, scholarships, intakes, admissions, and directly related education topics. ' +
       'If the user asks about anything unrelated to higher education (for example: stock prices, weather, news, sports, entertainment, recipes, or general knowledge), politely decline and explain that you can only assist with university and education-related inquiries. ' +
       'When citing web sources, include the source name in your response.';
   } else {
     systemInstruction =
-      `You are a program information assistant for ${INSTITUTION_NAME}. ` +
+      'You are a university program information assistant. ' +
       'You may ONLY answer questions using the data excerpts provided to you. ' +
       'You must NOT use your own training knowledge to answer any question — not for general facts, geography, current events, time, weather, or anything else outside the provided data. ' +
-      `If a question is not answerable from the data excerpts, politely say the information is not available in the uploaded data and suggest the user contact ${INSTITUTION_NAME} directly.`;
+      'If a question is not answerable from the data excerpts, politely say the information is not available in the uploaded data and suggest the user contact the university directly.';
 
     if (relevantChunks.length > 0) {
       systemInstruction += '\n\nHere are the relevant data excerpts:\n\n';
