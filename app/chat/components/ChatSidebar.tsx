@@ -16,10 +16,12 @@ interface ChatSidebarProps {
 
 function SkeletonSession() {
   return (
-    <div style={{ padding: '9px 10px', marginBottom: 3 }}>
-      <div style={{ width: 48, height: 9, borderRadius: 4, background: '#e5e7eb', marginBottom: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
-      <div style={{ width: '80%', height: 12, borderRadius: 4, background: '#e5e7eb', marginBottom: 5, animation: 'pulse 1.5s ease-in-out infinite' }} />
-      <div style={{ width: 72, height: 9, borderRadius: 4, background: '#f0f0f1', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ marginBottom: 6, border: '1px solid #e3e3e6', borderRadius: 9, background: '#ffffff', overflow: 'hidden' }}>
+      <div style={{ padding: '9px 10px' }}>
+        <div style={{ width: 48, height: 9, borderRadius: 4, background: '#e5e7eb', marginBottom: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: '80%', height: 12, borderRadius: 4, background: '#e5e7eb', marginBottom: 5, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ width: 72, height: 9, borderRadius: 4, background: '#f0f0f1', animation: 'pulse 1.5s ease-in-out infinite' }} />
+      </div>
     </div>
   );
 }
@@ -117,45 +119,53 @@ export function ChatSidebar({
             ) : sessions.map((s, idx) => {
               const isActive = s.id === sessionId;
               return (
-                <button
+                <div
                   key={s.id}
-                  onClick={() => onSwitchSession(s.id)}
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 3,
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '9px 10px',
-                    borderRadius: 7,
-                    border: isActive ? '1px solid #d1d5db' : '1px solid transparent',
-                    cursor: 'pointer',
-                    marginBottom: 3,
-                    background: isActive ? '#ffffff' : 'transparent',
-                    fontFamily: 'inherit',
+                    marginBottom: 6,
+                    border: isActive ? '1px solid #bfdbfe' : '1px solid #e3e3e6',
+                    borderRadius: 9,
+                    background: isActive ? '#eff6ff' : '#ffffff',
+                    overflow: 'hidden',
                     animation: idx === 0 ? 'fadeIn 0.18s ease' : undefined,
                   }}
                 >
-                  <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af', letterSpacing: '0.03em' }}>
-                    #{s.id.slice(0, 8)}
-                  </span>
-                  <span
+                  <button
+                    onClick={() => onSwitchSession(s.id)}
                     style={{
-                      fontWeight: 500,
-                      fontSize: 13,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      display: 'block',
-                      color: isActive ? '#111827' : '#374151',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 3,
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '9px 10px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
                     }}
                   >
-                    {s.title}
-                  </span>
-                  <span style={{ fontSize: 11, color: '#9ca3af' }}>
-                    {formatDate(s.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })} · {formatRelativeTime(s.lastActiveAt)}
-                  </span>
-                </button>
+                    <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9ca3af', letterSpacing: '0.03em' }}>
+                      #{s.id.slice(0, 8)}
+                    </span>
+                    <span
+                      style={{
+                        fontWeight: 500,
+                        fontSize: 13,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        display: 'block',
+                        color: isActive ? '#1d4ed8' : '#374151',
+                      }}
+                    >
+                      {s.title}
+                    </span>
+                    <span style={{ fontSize: 11, color: '#9ca3af' }}>
+                      {formatDate(s.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })} · {formatRelativeTime(s.lastActiveAt)}
+                    </span>
+                  </button>
+                </div>
               );
             })}
           </div>
