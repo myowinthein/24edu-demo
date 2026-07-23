@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import {
+  PROMPT_LOCAL_DATA,
+  PROMPT_LOCAL_DATA_SUFFIX_FOUND,
+  PROMPT_LOCAL_DATA_SUFFIX_EMPTY,
+  PROMPT_GROUNDING_ONLY,
+  PROMPT_GROUNDING_WITH_CONTEXT,
+} from '@/lib/prompts';
 
 interface SessionStats { total: number; ai: number; human: number; }
 interface SourceStats { total: number; }
@@ -172,6 +179,34 @@ export default function AdminSettingsPage() {
           />
         </SettingCard>
 
+        {/* AI Prompts — full width */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <SettingCard title="AI System Prompts" description="Read-only — prompts sent to Gemini depending on the query context">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <PromptBlock
+                label="Local data (no web search)"
+                hint="Used when vector search returns results. Chunks are appended at runtime."
+                value={PROMPT_LOCAL_DATA + PROMPT_LOCAL_DATA_SUFFIX_FOUND}
+              />
+              <PromptBlock
+                label="Local data — no results"
+                hint="Used when vector search returns nothing and grounding is not triggered."
+                value={PROMPT_LOCAL_DATA + PROMPT_LOCAL_DATA_SUFFIX_EMPTY}
+              />
+              <PromptBlock
+                label="Web search (grounding only)"
+                hint="Used when no local chunks exist but the question is education-related."
+                value={PROMPT_GROUNDING_ONLY}
+              />
+              <PromptBlock
+                label="Web search + local context"
+                hint="Used for contact-info queries when local chunks exist. Chunks are appended at runtime."
+                value={PROMPT_GROUNDING_WITH_CONTEXT}
+              />
+            </div>
+          </SettingCard>
+        </div>
+
       </div>
     </div>
   );
@@ -244,6 +279,27 @@ function StatCard({ label, value, icon, iconColor, bg }: { label: string; value:
         <div style={{ fontSize: 26, fontWeight: 700, color: '#111827', lineHeight: 1 }}>{value}</div>
         <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>{label}</div>
       </div>
+    </div>
+  );
+}
+
+function PromptBlock({ label, hint, value }: { label: string; hint: string; value: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 6 }}>{hint}</div>
+      <textarea
+        readOnly
+        value={value}
+        rows={4}
+        style={{
+          width: '100%', boxSizing: 'border-box', resize: 'vertical',
+          padding: '10px 12px', fontSize: 12, fontFamily: 'ui-monospace, monospace',
+          lineHeight: 1.6, color: '#374151', background: '#f9fafb',
+          border: '1px solid #e5e7eb', borderRadius: 7, outline: 'none',
+          cursor: 'default',
+        }}
+      />
     </div>
   );
 }
