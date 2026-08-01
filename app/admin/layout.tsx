@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { formatRelativeTime } from '@/lib/format';
 import { navLinkStyle } from '@/lib/ui-styles';
+import { useEventSource } from '@/lib/use-event-source';
 import { ThemeToggle } from '@/app/chat/components/ThemeToggle';
 import type { SessionMode } from '@/lib/types';
 
@@ -151,19 +152,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [activeSessionId]);
 
   useEffect(() => {
-    if (isLogin) return;
-    fetchSessions();
-    let active = true;
-    let es: EventSource | null = null;
-    const connect = () => {
-      if (!active) return;
-      es = new EventSource('/api/admin/sessions/stream');
-      es.onmessage = () => fetchSessions();
-      es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
-    };
-    connect();
-    return () => { active = false; es?.close(); };
+    if (!isLogin) fetchSessions();
   }, [isLogin, fetchSessions]);
+
+  useEventSource(isLogin ? null : '/api/admin/sessions/stream', () => fetchSessions());
 
   const handleLogout = () => {
     fetch('/api/admin/logout', { method: 'POST' })

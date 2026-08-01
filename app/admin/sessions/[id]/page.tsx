@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { toolbarBtnStyle } from '@/lib/ui-styles';
+import { useEventSource } from '@/lib/use-event-source';
 
 export default function AdminSessionPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -31,24 +32,16 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
 
   useEffect(() => {
     fetchSession();
-    let active = true;
-    let es: EventSource | null = null;
-    const connect = () => {
-      if (!active) return;
-      es = new EventSource(`/api/admin/sessions/${id}/stream`);
-      es.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          if (data.typing) return;
-          setMessages(data.messages);
-          setMode(data.mode);
-        } catch (e) { console.error('SSE parse error', e); }
-      };
-      es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
-    };
-    connect();
-    return () => { active = false; es?.close(); };
-  }, [id, fetchSession]);
+  }, [fetchSession]);
+
+  useEventSource(`/api/admin/sessions/${id}/stream`, (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      if (data.typing) return;
+      setMessages(data.messages);
+      setMode(data.mode);
+    } catch (err) { console.error('SSE parse error', err); }
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
