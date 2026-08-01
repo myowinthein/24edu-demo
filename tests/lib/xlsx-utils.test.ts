@@ -77,6 +77,22 @@ describe('xlsxToCSV — header detection (headerScore / findHeaderIdx)', () => {
   })
 })
 
+describe('xlsxToCSV — two-row header merging (buildHeader)', () => {
+  it('merges a parent label row with a sub-label row into "Parent: Sub"', () => {
+    const wb = makeWb({
+      Sheet1: [
+        ['Contact Info', '', 'Score'],
+        ['Name', 'Email', ''],
+        ['Alice', 'alice@example.com', '95'],
+        ['Bob', 'bob@example.com', '88'],
+      ],
+    })
+    const result = xlsxToCSV(XLSX, wb)
+    expect(result).toContain('Contact Info: Name,Contact Info: Email,Score')
+    expect(result).toContain('Alice,alice@example.com,95')
+  })
+})
+
 describe('xlsxToCSV — null column elimination', () => {
   it('drops columns where every row (including header) is empty', () => {
     // Column 1 is always empty

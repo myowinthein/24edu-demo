@@ -6,9 +6,13 @@ vi.mock('@/lib/redis', () => ({
   redis: { publish: mockPublish },
 }))
 
+const mockIoredisCtor = vi.hoisted(() => vi.fn())
+
 vi.mock('ioredis', () => ({
   default: class {
-    constructor() {}
+    constructor(...args: unknown[]) {
+      mockIoredisCtor(...args)
+    }
   },
 }))
 
@@ -23,6 +27,7 @@ import {
 
 beforeEach(() => {
   mockPublish.mockClear()
+  mockIoredisCtor.mockClear()
 })
 
 describe('sessionChannel', () => {
@@ -91,5 +96,10 @@ describe('createSubscriber', () => {
   it('returns an ioredis instance when REDIS_URL is set', () => {
     const sub = createSubscriber()
     expect(sub).toBeDefined()
+  })
+
+  it('passes REDIS_URL through to the ioredis constructor', () => {
+    createSubscriber()
+    expect(mockIoredisCtor).toHaveBeenCalledWith(process.env.REDIS_URL)
   })
 })
