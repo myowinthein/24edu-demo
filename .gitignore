@@ -4,6 +4,10 @@ node_modules/
 # Next.js
 .next/
 out/
+*.tsbuildinfo
+
+# testing
+coverage/
 
 # env files — .env.local.example is intentionally tracked
 .env
