@@ -2667,11 +2667,11 @@
       "file": "tests/lib/vector.test.ts",
       "line": 118,
       "description": "indexSource's multi-batch upsert path (BATCH=10) is never exercised with more than 10 chunks, so the parallel-batching/Promise.all behavior is untested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2e5f091",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-167",
@@ -2747,11 +2747,11 @@
       "file": "tests/lib/pubsub.test.ts",
       "line": 91,
       "description": "'returns an ioredis instance when REDIS_URL is set' only asserts the result is defined; combined with the bare-class ioredis mock that discards its constructor argument, nothing actually verifies createSubscriber passes REDIS_URL through to the Redis constructor.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2e5f091",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-172",
@@ -2795,11 +2795,11 @@
       "file": "tests/lib/format.test.ts",
       "line": 14,
       "description": "No test covers a future timestamp (negative diff), which formatRelativeTime silently coerces to 'Just now' via mins < 1 \u2014 this behavior is unverified.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2e5f091",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-175",
@@ -2811,11 +2811,11 @@
       "file": "tests/lib/xlsx-utils.test.ts",
       "line": 62,
       "description": "buildHeader()'s two-row header merging (parent label + sub-label combined into 'Label: sub') is never exercised by any test, despite being a distinct documented feature of the header-detection logic.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2e5f091",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-176",
