@@ -1943,11 +1943,11 @@
       "file": "app/api/admin/sessions/[id]/message/route.ts",
       "line": 26,
       "description": "No test exercises 'admin sends message on a session with no prior mode set' followed by a re-fetch of session state, which would catch the mode-persistence gap (f-120).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6da487a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-122",
@@ -1993,11 +1993,11 @@
       "file": "app/api/admin/login/route.ts",
       "line": 6,
       "description": "No coverage exists for the malformed-JSON-body / missing-field login path (f-123) \u2014 a regression here would only surface as a raw 500 in production.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6da487a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-125",
@@ -2619,11 +2619,11 @@
       "file": "tests/api/admin/login.test.ts",
       "line": 24,
       "description": "The 'ADMIN_USERNAME missing' test deletes process.env.ADMIN_USERNAME and restores it with no try/finally, so a failing assertion leaves the var deleted and cascades failures into every later test in the file \u2014 contrast with tests/api/chat.test.ts and tests/api/session/summary.test.ts which wrap the identical pattern in try/finally.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6da487a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-164",
@@ -2651,11 +2651,11 @@
       "file": "tests/api/admin/session-subroutes.test.ts",
       "line": 100,
       "description": "The message route explicitly rejects non-string text, but the suite only tests missing text and over-length text \u2014 no test sends a non-string payload (e.g. { text: 123 }) to cover that branch.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6da487a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-166",
