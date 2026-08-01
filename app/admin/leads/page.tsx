@@ -34,6 +34,7 @@ export default function LeadsPage() {
   const [sort, setSort] = useState<keyof LeadData>('submittedAt');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const limit = 20;
 
   const fetchLeads = useCallback(async () => {
@@ -69,9 +70,39 @@ export default function LeadsPage() {
     setPage(1);
   };
 
-  const exportCSV = () => {
+  const fetchAllLeadsForExport = async (): Promise<LeadData[]> => {
+    const exportLimit = 100;
+    const all: LeadData[] = [];
+    let exportPage = 1;
+    let pages = 1;
+    do {
+      const params = new URLSearchParams({
+        page: String(exportPage), limit: String(exportLimit), sort, order, search,
+      });
+      const res = await fetch(`/api/admin/leads?${params}`);
+      if (!res.ok) break;
+      const data = await res.json();
+      all.push(...data.leads);
+      pages = data.totalPages;
+      exportPage += 1;
+    } while (exportPage <= pages);
+    return all;
+  };
+
+  const withExportedLeads = async (run: (all: LeadData[]) => void) => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const all = total > leads.length ? await fetchAllLeadsForExport() : leads;
+      run(all);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportCSV = () => withExportedLeads((all) => {
     const header = COLUMNS.map((c) => c.label).join(',');
-    const rows = leads.map((l) =>
+    const rows = all.map((l) =>
       COLUMNS.map((c) => {
         const v = c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key];
         return `"${String(v ?? '').replace(/"/g, '""')}"`;
@@ -79,21 +110,21 @@ export default function LeadsPage() {
     );
     const csv = [header, ...rows].join('\n');
     download(new Blob([csv], { type: 'text/csv' }), 'leads.csv');
-  };
+  });
 
-  const exportJSON = () => {
-    download(new Blob([JSON.stringify(leads, null, 2)], { type: 'application/json' }), 'leads.json');
-  };
+  const exportJSON = () => withExportedLeads((all) => {
+    download(new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' }), 'leads.json');
+  });
 
-  const exportExcel = () => {
-    const rows = leads.map((l) =>
+  const exportExcel = () => withExportedLeads((all) => {
+    const rows = all.map((l) =>
       Object.fromEntries(COLUMNS.map((c) => [c.label, c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key]]))
     );
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Leads');
     XLSX.writeFile(wb, 'leads.xlsx');
-  };
+  });
 
   const download = (blob: Blob, filename: string) => {
     const url = URL.createObjectURL(blob);
@@ -118,9 +149,9 @@ export default function LeadsPage() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={exportCSV} style={btnStyle}>↓ CSV</button>
-          <button onClick={exportJSON} style={btnStyle}>↓ JSON</button>
-          <button onClick={exportExcel} style={btnStyle}>↓ Excel</button>
+          <button onClick={exportCSV} disabled={exporting} style={{ ...btnStyle, opacity: exporting ? 0.6 : 1 }}>↓ CSV</button>
+          <button onClick={exportJSON} disabled={exporting} style={{ ...btnStyle, opacity: exporting ? 0.6 : 1 }}>↓ JSON</button>
+          <button onClick={exportExcel} disabled={exporting} style={{ ...btnStyle, opacity: exporting ? 0.6 : 1 }}>↓ Excel</button>
         </div>
       </div>
 
