@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-vi.mock('@/lib/admin-auth', () => ({
-  verifyAdminToken: vi.fn().mockResolvedValue(true),
-}))
+import { mockAdminAuthModule } from '@/tests/helpers/mock-admin-auth'
+
+vi.mock('@/lib/admin-auth', () => mockAdminAuthModule())
 import { verifyAdminToken } from '@/lib/admin-auth'
 const mockVerify = vi.mocked(verifyAdminToken)
 
