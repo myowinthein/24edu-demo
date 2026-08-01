@@ -2877,11 +2877,11 @@
       "file": "package.json",
       "line": 16,
       "description": "@google/generative-ai is pinned to ^0.21.0 while a later 0.2x release (0.24.1) is available and reachable within the existing caret range \u2014 bump to pick up subsequent fixes.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "PENDING",
+      "resolved_date": "2026-08-01"
     }
   ]
 }
