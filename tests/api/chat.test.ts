@@ -183,6 +183,14 @@ describe('POST /api/chat — Google Search grounding', () => {
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
     expect(callArgs?.tools).toBeUndefined()
   })
+
+  it('uses grounding WITH local context for a contact query even when chunks exist', async () => {
+    mockQueryRelevantChunks.mockResolvedValue(['Some university data chunk'])
+    await POST(makeReq({ message: 'What is the email address for the MBA program?', sessionId: VALID_SESSION }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(JSON.stringify(callArgs?.tools)).toContain('googleSearchRetrieval')
+    expect(callArgs?.systemInstruction).toContain('Some university data chunk')
+  })
 })
 
 describe('POST /api/chat — grounding: uni shorthand and recentContext', () => {
