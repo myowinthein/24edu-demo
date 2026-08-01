@@ -101,6 +101,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Kick off the vector search alongside the Redis writes/publishes below —
+  // it only depends on `message`, not on anything they produce.
+  const relevantChunksPromise = mode === 'ai' ? queryRelevantChunks(message) : null;
+
   await Promise.all([
     redis.set(sessionMessagesKey(sessionId), messages),
     redis.zadd(SESSIONS_ACTIVE_KEY, { score: now, member: sessionId }),
@@ -114,7 +118,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ waiting: true });
   }
 
-  const relevantChunks = await queryRelevantChunks(message);
+  const relevantChunks = await relevantChunksPromise!;
 
   // Check recent guest messages too so follow-up questions ("can you search online?")
   // inherit the education topic context from earlier in the session.
