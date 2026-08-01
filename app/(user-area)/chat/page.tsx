@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getDeviceInfo } from '@/lib/device-info';
+import { useEventSource } from '@/lib/use-event-source';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { DEFAULT_MODEL, type ModelId, type SessionRow } from '@/app/chat/constants';
 import { MessageList } from '@/app/chat/components/MessageList';
@@ -112,36 +113,24 @@ export default function ChatPage() {
   }, [sessionId, fetchSession]);
 
   useEffect(() => {
-    if (!sessionId) return;
-    let active = true;
-    let es: EventSource | null = null;
-    const connect = () => {
-      if (!active) return;
-      es = new EventSource(`/api/session/${sessionId}/stream`);
-      es.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          if (data.typing) {
-            setAdminTyping(true);
-            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-            typingTimeoutRef.current = setTimeout(() => setAdminTyping(false), 3000);
-          } else {
-            setMessages(data.messages);
-            setMode(data.mode);
-            setAdminTyping(false);
-            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-          }
-        } catch (err) { console.error('SSE parse error', err); }
-      };
-      es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
-    };
-    connect();
-    return () => {
-      active = false;
-      es?.close();
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-    };
+    return () => { if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current); };
   }, [sessionId]);
+
+  useEventSource(sessionId ? `/api/session/${sessionId}/stream` : null, (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      if (data.typing) {
+        setAdminTyping(true);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setAdminTyping(false), 3000);
+      } else {
+        setMessages(data.messages);
+        setMode(data.mode);
+        setAdminTyping(false);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      }
+    } catch (err) { console.error('SSE parse error', err); }
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
