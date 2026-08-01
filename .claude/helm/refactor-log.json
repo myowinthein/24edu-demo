@@ -2187,11 +2187,11 @@
       "file": "app/api/sources/[id]/route.ts",
       "line": 7,
       "description": "DELETE /api/sources/[id] \u2014 a destructive route that also calls deleteSourceVectors \u2014 has no test coverage anywhere under tests/ (tests/api/sources.test.ts only exercises POST), leaving both the destructive path and the not-found/no-op behavior (f-135) unverified.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "aee6f85",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-137",
@@ -2587,11 +2587,11 @@
       "file": "tests/api/admin/leads.test.ts",
       "line": 5,
       "description": "GET /api/admin/leads calls verifyAdminToken and returns 401 when unauthenticated, but this suite mocks verifyAdminToken to always resolve true and never flips it to false, so the auth guard is completely untested here \u2014 unlike every sibling admin/*.test.ts file which does test the 401 path.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "aee6f85",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-162",
@@ -2603,11 +2603,11 @@
       "file": "tests/api/sources.test.ts",
       "line": 23,
       "description": "Only POST is imported and tested; GET /api/sources, which returns the persisted source list, has zero test coverage in this file.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "aee6f85",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-163",
