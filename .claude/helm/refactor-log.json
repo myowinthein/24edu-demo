@@ -2634,12 +2634,12 @@
       "depends_on": [],
       "file": "tests/api/admin/leads-clear.test.ts",
       "line": 4,
-      "description": "The verifyAdminToken vi.mock scaffolding and the near-identical redis pipeline mock (get/del/exec + mockReturnThis chaining) is duplicated near-verbatim across 8+ test files with no shared helper module in tests/, making it easy for one copy to drift from the others.",
-      "status": "open",
+      "description": "The identical verifyAdminToken vi.mock scaffolding across 8 test files was extracted into tests/helpers/mock-admin-auth.ts. The redis-pipeline mock (get/del/exec + mockReturnThis) was left as-is per file \u2014 it varies enough per route (different key helpers, different methods mocked) that a shared factory would obscure what each test actually exercises.",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "582d28d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-165",
