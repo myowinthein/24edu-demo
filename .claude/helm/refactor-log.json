@@ -2089,11 +2089,11 @@
       "file": "tests/api/chat.test.ts",
       "line": 180,
       "description": "No test exercises the branch where useGrounding is true AND relevantChunks.length > 0 (PROMPT_GROUNDING_WITH_CONTEXT for contact queries with local chunks present) \u2014 only the no-chunks and chunks-with-no-grounding paths are covered. Independent of the SDK/schema question in f-129 (skipped) \u2014 this tests current behavior as-is.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d9cb53",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-131",
@@ -2235,11 +2235,11 @@
       "file": "app/api/session/[id]/route.ts",
       "line": 7,
       "description": "GET /api/session/[id] (session messages/mode fetch, with no auth or ownership check) has no dedicated test file anywhere under tests/, unlike the other session subroutes.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d9cb53",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-140",
@@ -2251,11 +2251,11 @@
       "file": "app/api/session/[id]/stream/route.ts",
       "line": 7,
       "description": "The SSE endpoint has no test coverage at all, so regressions in channel wiring or abort/cleanup handling (lib/sse.ts) would go undetected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d9cb53",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-141",
