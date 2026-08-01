@@ -3,10 +3,15 @@ import { createHash, randomBytes } from 'crypto';
 import { redis, adminSessionKey } from '@/lib/redis';
 
 export async function POST(req: NextRequest) {
-  const { username, password } = (await req.json()) as {
-    username: string;
-    password: string;
-  };
+  let username: unknown, password: unknown;
+  try {
+    ({ username, password } = (await req.json()) as { username: unknown; password: unknown });
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+  }
 
   const expectedUsername = process.env.ADMIN_USERNAME;
   const expectedHash = process.env.ADMIN_PASSWORD_HASH;

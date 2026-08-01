@@ -9,8 +9,10 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
-  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20')));
+  const parsedPage = parseInt(searchParams.get('page') ?? '1');
+  const parsedLimit = parseInt(searchParams.get('limit') ?? '20');
+  const page = Math.max(1, isNaN(parsedPage) ? 1 : parsedPage);
+  const limit = Math.min(100, Math.max(1, isNaN(parsedLimit) ? 20 : parsedLimit));
   const VALID_SORT_KEYS: (keyof LeadData)[] = ['name', 'email', 'country', 'programOfInterest', 'intendedIntake', 'submittedAt'];
   const rawSort = searchParams.get('sort') ?? 'submittedAt';
   const sort: keyof LeadData = VALID_SORT_KEYS.includes(rawSort as keyof LeadData)

@@ -36,19 +36,24 @@ export async function GET(req: NextRequest) {
   });
 
   // Fetch lead info for each unique guestId
+  type LeadFields = Omit<LeadData, 'guestId' | 'submittedAt'>;
+  const EMPTY_LEAD_FIELDS: LeadFields = { name: '', email: '', phone: '', country: '', educationLevel: '', programOfInterest: '', intendedIntake: '' };
+  const pickLeadFields = (lead: LeadData): LeadFields =>
+    Object.fromEntries(Object.keys(EMPTY_LEAD_FIELDS).map((k) => [k, lead[k as keyof LeadFields]])) as LeadFields;
+
   const uniqueGuestIds = [...new Set(sessions.map((s) => s.guestId).filter(Boolean))];
   const leadPipeline = redis.pipeline();
   for (const gid of uniqueGuestIds) leadPipeline.get<LeadData>(leadKey(gid));
   const leadResults = await leadPipeline.exec();
-  const leadMap = new Map<string, Omit<LeadData, 'guestId' | 'submittedAt'>>();
+  const leadMap = new Map<string, LeadFields>();
   uniqueGuestIds.forEach((gid, i) => {
     const lead = leadResults[i] as LeadData | null;
-    if (lead) leadMap.set(gid, { name: lead.name, email: lead.email, phone: lead.phone, country: lead.country, educationLevel: lead.educationLevel, programOfInterest: lead.programOfInterest, intendedIntake: lead.intendedIntake });
+    if (lead) leadMap.set(gid, pickLeadFields(lead));
   });
 
   const enriched = sessions.map((s) => ({
     ...s,
-    ...(leadMap.get(s.guestId) ?? { name: '', email: '', phone: '', country: '', educationLevel: '', programOfInterest: '', intendedIntake: '' }),
+    ...(leadMap.get(s.guestId) ?? EMPTY_LEAD_FIELDS),
   }));
 
   return NextResponse.json(enriched);
