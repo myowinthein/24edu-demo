@@ -43,6 +43,6 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ summary: result.response.text() });
   } catch (err) {
     console.error('[summary] Gemini error:', err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to generate summary, please try again' }, { status: 500 });
   }
 }

@@ -73,6 +73,20 @@ describe('getDeviceInfo — OS detection', () => {
     expect(info.osVersion).toBe('7')
   })
 
+  it('detects Windows 8 (NT 6.2)', () => {
+    mockUA('Mozilla/5.0 (Windows NT 6.2; Win64; x64) Chrome/100.0.0.0')
+    const info = getDeviceInfo()
+    expect(info.os).toBe('Windows')
+    expect(info.osVersion).toBe('8')
+  })
+
+  it('detects Windows 8.1 (NT 6.3)', () => {
+    mockUA('Mozilla/5.0 (Windows NT 6.3; Win64; x64) Chrome/100.0.0.0')
+    const info = getDeviceInfo()
+    expect(info.os).toBe('Windows')
+    expect(info.osVersion).toBe('8.1')
+  })
+
   it('detects macOS and converts underscores to dots', () => {
     mockUA('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2_1) AppleWebKit/605.1.15 Safari/605.1.15')
     const info = getDeviceInfo()
@@ -118,6 +132,11 @@ describe('getDeviceInfo — device type', () => {
   it('Mobile for Android mobile UA', () => {
     mockUA('Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile Chrome/120')
     expect(getDeviceInfo().device).toBe('Mobile')
+  })
+
+  it('Tablet for a generic Android tablet UA (Tablet marker, no Mobile marker)', () => {
+    mockUA('Mozilla/5.0 (Linux; Android 10; SM-T510) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0 Safari/537.36 Tablet')
+    expect(getDeviceInfo().device).toBe('Tablet')
   })
 
   it('Tablet for iPad UA', () => {

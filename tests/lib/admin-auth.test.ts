@@ -1,20 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { NextRequest } from 'next/server'
+import { makeAdminReq } from '@/tests/helpers/make-admin-req'
 
 const mockGet = vi.hoisted(() => vi.fn())
 
-vi.mock('@/lib/redis', () => ({
-  redis: { get: mockGet },
-  adminSessionKey: (token: string) => `admin:session:${token}`,
-}))
+vi.mock('@/lib/redis', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/redis')>('@/lib/redis')
+  return {
+    redis: { get: mockGet },
+    adminSessionKey: actual.adminSessionKey,
+  }
+})
 
 import { verifyAdminToken } from '@/lib/admin-auth'
 
-function makeReq(cookie?: string) {
-  return new NextRequest('http://localhost/api/admin/test', {
-    headers: cookie ? { Cookie: `admin_token=${cookie}` } : {},
-  })
-}
+const makeReq = (cookie?: string) => makeAdminReq('/api/admin/test', cookie)
 
 beforeEach(() => mockGet.mockReset())
 

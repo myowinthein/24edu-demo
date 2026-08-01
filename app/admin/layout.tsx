@@ -5,35 +5,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { formatRelativeTime } from '@/lib/format';
 import { navLinkStyle } from '@/lib/ui-styles';
+import { useEventSource } from '@/lib/use-event-source';
 import { ThemeToggle } from '@/app/chat/components/ThemeToggle';
 import type { SessionMode } from '@/lib/types';
-
-interface AdminSession {
-  id: string;
-  mode: SessionMode;
-  guestId: string;
-  createdAt: string;
-  lastActiveAt: string;
-  name: string;
-  email: string;
-  phone: string;
-  country: string;
-  educationLevel: string;
-  programOfInterest: string;
-  intendedIntake: string;
-}
-
-interface GuestGroup {
-  guestId: string;
-  name: string;
-  email: string;
-  phone: string;
-  country: string;
-  educationLevel: string;
-  programOfInterest: string;
-  intendedIntake: string;
-  sessions: AdminSession[];
-}
+import { groupSessionsByGuest, type AdminSession, type GuestGroup } from '@/lib/group-sessions';
 
 
 const modeLabel: Record<SessionMode, string> = {
@@ -41,13 +16,6 @@ const modeLabel: Record<SessionMode, string> = {
   requested: 'Requested',
   human: 'Live',
   ended: 'Ended',
-};
-
-const modeBadgeStyle: Record<SessionMode, React.CSSProperties> = {
-  ai:        { background: '#f3f4f6', color: '#6b7280' },
-  requested: { background: '#fef3c7', color: '#b45309' },
-  human:     { background: '#d1fae5', color: '#065f46' },
-  ended:     { background: '#f3f4f6', color: '#d1d5db' },
 };
 
 const modeDot: Record<SessionMode, string> = {
@@ -109,6 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [readAt, setReadAt] = useState<Record<string, number>>({});
   const [viewGuest, setViewGuest] = useState<GuestGroup | null>(null);
+  const [acceptError, setAcceptError] = useState<string | null>(null);
   const prevModesRef = useRef<Record<string, SessionMode>>({});
   const isRefetchingRef = useRef(false);
 
@@ -133,6 +102,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
       prevModesRef.current = Object.fromEntries(data.map((s) => [s.id, s.mode]));
       setSessions(data);
+    } catch (err) {
+      console.error('Failed to fetch sessions', err);
     } finally {
       isRefetchingRef.current = false;
     }
@@ -151,19 +122,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [activeSessionId]);
 
   useEffect(() => {
-    if (isLogin) return;
-    fetchSessions();
-    let active = true;
-    let es: EventSource | null = null;
-    const connect = () => {
-      if (!active) return;
-      es = new EventSource('/api/admin/sessions/stream');
-      es.onmessage = () => fetchSessions();
-      es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
-    };
-    connect();
-    return () => { active = false; es?.close(); };
+    if (!isLogin) fetchSessions();
   }, [isLogin, fetchSessions]);
+
+  useEventSource(isLogin ? null : '/api/admin/sessions/stream', () => fetchSessions());
 
   const handleLogout = () => {
     fetch('/api/admin/logout', { method: 'POST' })
@@ -171,25 +133,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .finally(() => router.push('/admin/login'));
   };
 
-  const handleAccept = (sessionId: string) => {
-    fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' })
-      .catch(console.error)
-      .finally(() => router.push(`/admin/sessions/${sessionId}`));
+  const handleAccept = async (sessionId: string) => {
+    setAcceptError(null);
+    try {
+      const res = await fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' });
+      if (!res.ok) { setAcceptError('Failed to accept session. Please try again.'); return; }
+      router.push(`/admin/sessions/${sessionId}`);
+    } catch {
+      setAcceptError('Network error. Failed to accept session.');
+    }
   };
 
-  const guestGroups = useMemo<GuestGroup[]>(() => {
-    const map = new Map<string, GuestGroup>();
-    for (const s of sessions) {
-      const gid = s.guestId || '__unknown__';
-      if (!map.has(gid)) {
-        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, country: s.country, educationLevel: s.educationLevel, programOfInterest: s.programOfInterest, intendedIntake: s.intendedIntake, sessions: [] });
-      }
-      const group = map.get(gid)!;
-      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; group.country = s.country; group.educationLevel = s.educationLevel; group.programOfInterest = s.programOfInterest; group.intendedIntake = s.intendedIntake; }
-      group.sessions.push(s);
-    }
-    return Array.from(map.values());
-  }, [sessions]);
+  const guestGroups = useMemo<GuestGroup[]>(() => groupSessionsByGuest(sessions), [sessions]);
 
   const latestSessionId = sessions.length > 0
     ? [...sessions].sort((a, b) => new Date(b.lastActiveAt).getTime() - new Date(a.lastActiveAt).getTime())[0].id
@@ -256,6 +211,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Sessions list */}
         {sidebarOpen && (
           <>
+            {acceptError && (
+              <div
+                style={{
+                  margin: '8px 14px 0',
+                  padding: '8px 10px',
+                  fontSize: 12,
+                  color: '#dc2626',
+                  background: 'rgba(220,38,38,0.08)',
+                  borderRadius: 6,
+                }}
+              >
+                {acceptError}
+              </div>
+            )}
             {guestGroups.length > 0 && (
               <div style={{ padding: '10px 14px 4px' }}>
                 <span

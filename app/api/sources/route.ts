@@ -14,9 +14,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   const { filename, csv } = await req.json();
+  if (typeof filename !== 'string' || !filename.trim() || typeof csv !== 'string' || !csv.trim()) {
+    return NextResponse.json({ error: 'filename and csv are required' }, { status: 400 });
+  }
 
   // Multi-section CSVs (Excel) have "# Sheet:" markers and one header per section.
-  const csvStr = csv as string;
+  const csvStr = csv;
   let rowCount: number;
   if (csvStr.startsWith('# Sheet:') || csvStr.includes('\n# Sheet:')) {
     rowCount = csvStr.split(/(?=^# Sheet: )/m).filter((s) => s.trim()).reduce((sum, section) => {

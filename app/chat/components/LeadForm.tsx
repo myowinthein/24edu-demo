@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import {
   COUNTRY_CODES, COUNTRIES, EDUCATION_LEVELS, MONTHS, CURRENT_YEAR,
-  validate, inputStyle, labelStyle, errStyle, border,
-  type FormFields, type FieldKey, type FormErrors,
+  inputStyle, labelStyle, errStyle, border,
 } from './lead-form-data';
+import { useLeadForm } from './use-lead-form';
 
 interface LeadFormProps {
   guestId: string;
@@ -15,61 +14,8 @@ interface LeadFormProps {
 const req = <span style={{ color: '#dc2626' }}>*</span>;
 
 export function LeadForm({ guestId, onComplete }: LeadFormProps) {
-  const [fields, setFields] = useState<FormFields>({
-    name: '',
-    email: '',
-    phoneCountry: '+60',
-    phoneNumber: '',
-    country: '',
-    educationLevel: '',
-    programOfInterest: '',
-    intakeMonth: '',
-    intakeYear: '',
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [serverError, setServerError] = useState('');
-
-  const set = (key: FieldKey) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setFields((f) => ({ ...f, [key]: e.target.value }));
-      if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }));
-    };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errs = validate(fields);
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-
-    setSubmitting(true);
-    setServerError('');
-    try {
-      const res = await fetch('/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guestId,
-          name: fields.name.trim(),
-          email: fields.email.trim(),
-          phone: `${fields.phoneCountry} ${fields.phoneNumber.trim()}`,
-          country: fields.country,
-          educationLevel: fields.educationLevel,
-          programOfInterest: fields.programOfInterest.trim(),
-          intendedIntake: `${fields.intakeMonth} ${fields.intakeYear.trim()}`,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setServerError(data.error ?? 'Something went wrong. Please try again.');
-        return;
-      }
-      onComplete();
-    } catch {
-      setServerError('Network error. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { fields, errors, submitting, serverError, set, setPhoneNumber, handleSubmit } =
+    useLeadForm(guestId, onComplete);
 
   return (
     <div
@@ -153,10 +99,7 @@ export function LeadForm({ guestId, onComplete }: LeadFormProps) {
                 <input
                   style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }}
                   type="tel" value={fields.phoneNumber}
-                  onChange={e => {
-                    setFields(f => ({ ...f, phoneNumber: e.target.value.replace(/\D/g, '') }));
-                    if (errors.phoneNumber) setErrors(er => ({ ...er, phoneNumber: undefined }));
-                  }}
+                  onChange={setPhoneNumber}
                   placeholder="12 345 6789"
                 />
               </div>

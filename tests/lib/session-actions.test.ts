@@ -5,11 +5,14 @@ const mockGet = vi.hoisted(() => vi.fn().mockResolvedValue(null))
 const mockPublishSession = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockPublishSessions = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 
-vi.mock('@/lib/redis', () => ({
-  redis: { set: mockSet, get: mockGet },
-  sessionModeKey: (id: string) => `session:${id}:mode`,
-  sessionMessagesKey: (id: string) => `session:${id}:messages`,
-}))
+vi.mock('@/lib/redis', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/redis')>('@/lib/redis')
+  return {
+    redis: { set: mockSet, get: mockGet },
+    sessionModeKey: actual.sessionModeKey,
+    sessionMessagesKey: actual.sessionMessagesKey,
+  }
+})
 
 vi.mock('@/lib/pubsub', () => ({
   publishSession: mockPublishSession,

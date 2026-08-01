@@ -1,6 +1,6 @@
 'use client';
 
-import type { RefObject } from 'react';
+import { memo, type RefObject } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { SessionMessage, SessionMode } from '@/lib/types';
@@ -19,7 +19,7 @@ interface MessageListProps {
   messagesEndRef: RefObject<HTMLDivElement>;
 }
 
-export function MessageList({ messages, mode, isLoading, adminTyping, messagesEndRef }: MessageListProps) {
+export const MessageList = memo(function MessageList({ messages, mode, isLoading, adminTyping, messagesEndRef }: MessageListProps) {
   return (
     <>
       {mode === 'requested' && (
@@ -170,4 +170,4 @@ export function MessageList({ messages, mode, isLoading, adminTyping, messagesEn
       </div>
     </>
   );
-}
+});

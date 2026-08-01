@@ -11,7 +11,10 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules', '.next', '**/*.config.*', 'scripts'],
+      // Explicit include (replacing the removed `all: true` option) so files
+      // never imported by any test are reported as 0% instead of omitted.
+      include: ['app/**/*.{ts,tsx}', 'lib/**/*.ts', 'middleware.ts'],
+      exclude: ['node_modules', '.next', '**/*.config.*', 'scripts', '**/*.test.{ts,tsx}'],
     },
   },
   resolve: {

@@ -23,7 +23,7 @@ vi.mock('@/lib/pubsub', () => ({
 
 import { POST } from '@/app/api/session/[id]/request-human/route'
 
-const SESSION = 'sess-0001'
+const SESSION = '550e8400-e29b-41d4-a716-446655440000'
 
 function makeReq(body: unknown, sessionId = SESSION) {
   return new NextRequest(`http://localhost/api/session/${sessionId}/request-human`, {
@@ -39,6 +39,13 @@ function makeParams(id = SESSION) {
 beforeEach(() => {
   vi.clearAllMocks()
   redisMocks.get.mockResolvedValue(null)
+})
+
+describe('POST /api/session/[id]/request-human — input validation', () => {
+  it('returns 400 for a non-UUID session id', async () => {
+    const res = await POST(makeReq({}, 'sess-0001'), makeParams('sess-0001'))
+    expect(res.status).toBe(400)
+  })
 })
 
 describe('POST /api/session/[id]/request-human — ownership check', () => {

@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import type { LeadData } from '@/lib/types'
 
-vi.mock('@/lib/admin-auth', () => ({
-  verifyAdminToken: vi.fn().mockResolvedValue(true),
-}))
+import { mockAdminAuthModule } from '@/tests/helpers/mock-admin-auth'
+
+vi.mock('@/lib/admin-auth', () => mockAdminAuthModule())
 
 const mocks = vi.hoisted(() => {
   const pipelineExec = vi.fn()
@@ -24,6 +24,9 @@ vi.mock('@/lib/redis', () => ({
   leadKey: (id: string) => `lead:${id}`,
   LEADS_ALL_KEY: 'leads:all',
 }))
+
+import { verifyAdminToken } from '@/lib/admin-auth'
+const mockVerify = vi.mocked(verifyAdminToken)
 
 import { GET } from '@/app/api/admin/leads/route'
 
@@ -55,9 +58,18 @@ const leads: LeadData[] = [
 ]
 
 beforeEach(() => {
+  mockVerify.mockResolvedValue(true)
   mocks.zrange.mockResolvedValue(['g1', 'g2', 'g3'])
   mocks.pipelineExec.mockResolvedValue([leads[0], leads[1], leads[2]])
   mocks.pipelineGet.mockReturnThis()
+})
+
+describe('GET /api/admin/leads — auth', () => {
+  it('returns 401 when not authenticated', async () => {
+    mockVerify.mockResolvedValue(false)
+    const res = await GET(makeReq())
+    expect(res.status).toBe(401)
+  })
 })
 
 describe('GET /api/admin/leads — search filter', () => {

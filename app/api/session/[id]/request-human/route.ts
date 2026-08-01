@@ -3,10 +3,16 @@ import { redis, sessionModeKey, sessionMessagesKey, sessionMetaKey } from '@/lib
 import { publishSession, publishSessions } from '@/lib/pubsub';
 import type { SessionMessage, SessionMode, SessionMeta } from '@/lib/types';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!UUID_RE.test(params.id)) {
+    return NextResponse.json({ error: 'Invalid session id' }, { status: 400 });
+  }
+
   const body = await req.json().catch(() => ({})) as { guestId?: string };
 
   const [current, messages, meta] = await Promise.all([

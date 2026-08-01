@@ -13,8 +13,6 @@ const REDIS_TOKEN = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_
 const VECTOR_URL  = process.env.UPSTASH_VECTOR_REST_URL;
 const VECTOR_TOKEN= process.env.UPSTASH_VECTOR_REST_TOKEN;
 const SOURCES_KEY = 'sources:list';
-const CHUNK_SIZE    = 5;
-const MAX_ROW_CHARS = 1000; // truncate long rows before embedding
 const UPSERT_BATCH  = 10;
 const UPSERT_DELAY  = 200;  // ms between batches
 
@@ -22,6 +20,11 @@ if (!REDIS_URL || !REDIS_TOKEN || !VECTOR_URL || !VECTOR_TOKEN) {
   console.error('Missing env vars. Run with: node --env-file=.env.local scripts/reindex-sources.mjs');
   process.exit(1);
 }
+
+// Import the app's own chunker so reindexed sources produce identical chunk
+// text to sources uploaded through the admin UI (this also constructs a
+// vectorIndex client as a side effect, which is unused here but harmless).
+const { chunkCsv } = await import('../lib/vector.ts');
 
 // ── CSV helpers ───────────────────────────────────────────────────────────────
 
@@ -119,39 +122,6 @@ function xlsxToCSV(workbook) {
   return sections.join('\n');
 }
 
-// ── chunkCsv (mirrors lib/vector.ts) ─────────────────────────────────────────
-
-const truncateRow = (line) =>
-  line.length > MAX_ROW_CHARS ? line.slice(0, MAX_ROW_CHARS) + '…' : line;
-
-function chunkCsv(csv, filename) {
-  const chunks = [];
-  if (csv.startsWith('# Sheet:') || csv.includes('\n# Sheet:')) {
-    const sections = csv.split(/(?=^# Sheet: )/m).filter((s) => s.trim());
-    for (const section of sections) {
-      const lines = section.split('\n').filter((l) => l.trim());
-      if (lines.length < 3) continue;
-      const sheetName = lines[0].replace(/^# Sheet: /, '').trim();
-      const header    = lines[1];
-      const dataRows  = lines.slice(2).map(truncateRow);
-      for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
-        const rows = dataRows.slice(i, i + CHUNK_SIZE);
-        chunks.push(`File: ${filename}\nSheet: ${sheetName}\n${header}\n${rows.join('\n')}`);
-      }
-    }
-    return chunks;
-  }
-  const lines = csv.split('\n').filter((l) => l.trim());
-  if (lines.length < 2) return [];
-  const header   = lines[0];
-  const dataRows = lines.slice(1).map(truncateRow);
-  for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
-    const rows = dataRows.slice(i, i + CHUNK_SIZE);
-    chunks.push(`File: ${filename}\n${header}\n${rows.join('\n')}`);
-  }
-  return chunks;
-}
-
 function countDataRows(csv) {
   if (csv.startsWith('# Sheet:') || csv.includes('\n# Sheet:')) {
     return csv.split(/(?=^# Sheet: )/m).filter((s) => s.trim()).reduce((sum, section) => {
@@ -169,6 +139,7 @@ async function redisGet(key) {
   const res  = await fetch(`${REDIS_URL}/get/${encodeURIComponent(key)}`, {
     headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
   });
+  if (!res.ok) throw new Error(`Redis GET failed: ${await res.text()}`);
   const json = await res.json();
   return json.result ? JSON.parse(json.result) : null;
 }

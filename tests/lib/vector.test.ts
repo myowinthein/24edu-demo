@@ -132,6 +132,19 @@ describe('indexSource', () => {
     const count = await indexSource('src-4', 'big.csv', csv)
     expect(count).toBe(2)
   })
+
+  it('splits into multiple upsert batches of 10 when chunk count exceeds the batch size', async () => {
+    // 55 data rows / VECTOR_CHUNK_SIZE(5) = 11 chunks -> batches of [10, 1]
+    const rows = Array.from({ length: VECTOR_CHUNK_SIZE * 11 }, (_, i) => `R${i},${i}`)
+    const csv = ['Name,Num', ...rows].join('\n')
+    const count = await indexSource('src-5', 'huge.csv', csv)
+    expect(count).toBe(11)
+    expect(vectorMocks.upsert).toHaveBeenCalledTimes(2)
+    const [firstBatch] = vectorMocks.upsert.mock.calls[0] as [unknown[]]
+    const [secondBatch] = vectorMocks.upsert.mock.calls[1] as [unknown[]]
+    expect(firstBatch).toHaveLength(10)
+    expect(secondBatch).toHaveLength(1)
+  })
 })
 
 describe('deleteSourceVectors', () => {

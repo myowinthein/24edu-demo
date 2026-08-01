@@ -29,6 +29,31 @@ function useFetchStat<T>(url: string): [T | null, boolean, () => Promise<void>] 
   return [data, loading, load];
 }
 
+function useClearResource(url: string, reload: () => Promise<void>) {
+  const [confirming, setConfirming] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [cleared, setCleared] = useState<number | null>(null);
+
+  const onClear = async () => {
+    setClearing(true); setCleared(null);
+    try {
+      const res = await fetch(url, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        setCleared(data.cleared); setConfirming(false);
+        await reload();
+      }
+    } finally { setClearing(false); }
+  };
+
+  return {
+    confirming, clearing, cleared,
+    onConfirm: () => { setConfirming(true); setCleared(null); },
+    onClear,
+    onCancel: () => setConfirming(false),
+  };
+}
+
 const TABS = ['Data', 'Prompts'] as const;
 type Tab = typeof TABS[number];
 
@@ -39,53 +64,9 @@ export default function AdminSettingsPage() {
   const [sourceStats, sourceLoading, loadSourceStats] = useFetchStat<SourceStats>('/api/admin/sources/clear');
   const [leadStats, leadLoading, loadLeadStats] = useFetchStat<LeadStats>('/api/admin/leads/clear');
 
-  const [sessionConfirming, setSessionConfirming] = useState(false);
-  const [sessionClearing, setSessionClearing] = useState(false);
-  const [sessionCleared, setSessionCleared] = useState<number | null>(null);
-
-  const [sourceConfirming, setSourceConfirming] = useState(false);
-  const [sourceClearing, setSourceClearing] = useState(false);
-  const [sourceCleared, setSourceCleared] = useState<number | null>(null);
-
-  const [leadConfirming, setLeadConfirming] = useState(false);
-  const [leadClearing, setLeadClearing] = useState(false);
-  const [leadCleared, setLeadCleared] = useState<number | null>(null);
-
-  const handleClearSessions = async () => {
-    setSessionClearing(true); setSessionCleared(null);
-    try {
-      const res = await fetch('/api/admin/sessions/clear', { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setSessionCleared(data.cleared); setSessionConfirming(false);
-        await loadSessionStats();
-      }
-    } finally { setSessionClearing(false); }
-  };
-
-  const handleClearSources = async () => {
-    setSourceClearing(true); setSourceCleared(null);
-    try {
-      const res = await fetch('/api/admin/sources/clear', { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setSourceCleared(data.cleared); setSourceConfirming(false);
-        await loadSourceStats();
-      }
-    } finally { setSourceClearing(false); }
-  };
-
-  const handleClearLeads = async () => {
-    setLeadClearing(true); setLeadCleared(null);
-    try {
-      const res = await fetch('/api/admin/leads/clear', { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setLeadCleared(data.cleared); setLeadConfirming(false);
-        await loadLeadStats();
-      }
-    } finally { setLeadClearing(false); }
-  };
+  const sessionClear = useClearResource('/api/admin/sessions/clear', loadSessionStats);
+  const sourceClear = useClearResource('/api/admin/sources/clear', loadSourceStats);
+  const leadClear = useClearResource('/api/admin/leads/clear', loadLeadStats);
 
   return (
     <div style={{ flex: 1, padding: '24px 28px', overflowY: 'auto' }}>
@@ -141,13 +122,8 @@ export default function AdminSettingsPage() {
             label="Clear all sessions"
             count={sessionStats?.total ?? 0}
             loading={sessionLoading}
-            confirming={sessionConfirming}
-            clearing={sessionClearing}
-            cleared={sessionCleared}
             clearedLabel="session"
-            onConfirm={() => { setSessionConfirming(true); setSessionCleared(null); }}
-            onClear={handleClearSessions}
-            onCancel={() => setSessionConfirming(false)}
+            {...sessionClear}
           />
         </SettingCard>
 
@@ -167,13 +143,8 @@ export default function AdminSettingsPage() {
             label="Clear all sources"
             count={sourceStats?.total ?? 0}
             loading={sourceLoading}
-            confirming={sourceConfirming}
-            clearing={sourceClearing}
-            cleared={sourceCleared}
             clearedLabel="source"
-            onConfirm={() => { setSourceConfirming(true); setSourceCleared(null); }}
-            onClear={handleClearSources}
-            onCancel={() => setSourceConfirming(false)}
+            {...sourceClear}
           />
         </SettingCard>
 
@@ -193,13 +164,8 @@ export default function AdminSettingsPage() {
             label="Clear all leads"
             count={leadStats?.total ?? 0}
             loading={leadLoading}
-            confirming={leadConfirming}
-            clearing={leadClearing}
-            cleared={leadCleared}
             clearedLabel="lead"
-            onConfirm={() => { setLeadConfirming(true); setLeadCleared(null); }}
-            onClear={handleClearLeads}
-            onCancel={() => setLeadConfirming(false)}
+            {...leadClear}
           />
         </SettingCard>
 

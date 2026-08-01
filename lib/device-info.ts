@@ -1,4 +1,13 @@
-export function getDeviceInfo(): Record<string, string> {
+export interface DeviceInfo {
+  browser: string;
+  browserVersion: string;
+  os: string;
+  osVersion: string;
+  device: string;
+  timezone: string;
+}
+
+export function getDeviceInfo(): DeviceInfo {
   const ua = navigator.userAgent;
 
   let browser = 'Unknown', browserVersion = '';

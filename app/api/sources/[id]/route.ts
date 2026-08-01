@@ -14,11 +14,14 @@ export async function DELETE(
   const { id } = params;
   const sources = (await redis.get<SourceEntry[]>(SOURCES_KEY)) ?? [];
   const target = sources.find((s) => s.id === id);
+  if (!target) {
+    return NextResponse.json({ error: 'Source not found' }, { status: 404 });
+  }
   const updated = sources.filter((s) => s.id !== id);
 
   await Promise.all([
     redis.set(SOURCES_KEY, updated),
-    target ? deleteSourceVectors(id, target.chunkCount) : Promise.resolve(),
+    deleteSourceVectors(id, target.chunkCount),
   ]);
 
   return NextResponse.json(updated);
