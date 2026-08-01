@@ -8,33 +8,7 @@ import { navLinkStyle } from '@/lib/ui-styles';
 import { useEventSource } from '@/lib/use-event-source';
 import { ThemeToggle } from '@/app/chat/components/ThemeToggle';
 import type { SessionMode } from '@/lib/types';
-
-interface AdminSession {
-  id: string;
-  mode: SessionMode;
-  guestId: string;
-  createdAt: string;
-  lastActiveAt: string;
-  name: string;
-  email: string;
-  phone: string;
-  country: string;
-  educationLevel: string;
-  programOfInterest: string;
-  intendedIntake: string;
-}
-
-interface GuestGroup {
-  guestId: string;
-  name: string;
-  email: string;
-  phone: string;
-  country: string;
-  educationLevel: string;
-  programOfInterest: string;
-  intendedIntake: string;
-  sessions: AdminSession[];
-}
+import { groupSessionsByGuest, type AdminSession, type GuestGroup } from '@/lib/group-sessions';
 
 
 const modeLabel: Record<SessionMode, string> = {
@@ -170,19 +144,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
-  const guestGroups = useMemo<GuestGroup[]>(() => {
-    const map = new Map<string, GuestGroup>();
-    for (const s of sessions) {
-      const gid = s.guestId || '__unknown__';
-      if (!map.has(gid)) {
-        map.set(gid, { guestId: gid, name: s.name, email: s.email, phone: s.phone, country: s.country, educationLevel: s.educationLevel, programOfInterest: s.programOfInterest, intendedIntake: s.intendedIntake, sessions: [] });
-      }
-      const group = map.get(gid)!;
-      if (!group.name && s.name) { group.name = s.name; group.email = s.email; group.phone = s.phone; group.country = s.country; group.educationLevel = s.educationLevel; group.programOfInterest = s.programOfInterest; group.intendedIntake = s.intendedIntake; }
-      group.sessions.push(s);
-    }
-    return Array.from(map.values());
-  }, [sessions]);
+  const guestGroups = useMemo<GuestGroup[]>(() => groupSessionsByGuest(sessions), [sessions]);
 
   const latestSessionId = sessions.length > 0
     ? [...sessions].sort((a, b) => new Date(b.lastActiveAt).getTime() - new Date(a.lastActiveAt).getTime())[0].id
