@@ -2427,11 +2427,11 @@
       "file": "app/admin/layout.tsx",
       "line": 153,
       "description": "The EventSource connect/reconnect-with-3s-backoff logic is duplicated almost verbatim across app/admin/layout.tsx, app/admin/sessions/[id]/page.tsx, and app/(user-area)/chat/page.tsx \u2014 three independent implementations of the same reconnect pattern with no shared hook (e.g. useEventSource).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0f68998",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-152",
