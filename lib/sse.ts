@@ -13,7 +13,8 @@ export function createChannelSSE(channel: string, req: NextRequest): Response {
   const stream = new ReadableStream({
     start(controller) {
       const sub = createSubscriber();
-      sub.subscribe(channel);
+      sub.on('error', console.error);
+      sub.subscribe(channel).catch(console.error);
       sub.on('message', (_ch: string, message: string) => {
         controller.enqueue(encoder.encode(`data: ${message}\n\n`));
       });
