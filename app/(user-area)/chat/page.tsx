@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getDeviceInfo } from '@/lib/device-info';
+import { getDeviceInfo, type DeviceInfo } from '@/lib/device-info';
 import { useEventSource } from '@/lib/use-event-source';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { DEFAULT_MODEL, type ModelId, type SessionRow } from '@/app/chat/constants';
@@ -33,7 +33,7 @@ export default function ChatPage() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL);
-  const [deviceInfo, setDeviceInfo] = useState<Record<string, string>>({});
+  const [deviceInfo, setDeviceInfo] = useState<Partial<DeviceInfo>>({});
   const [adminTyping, setAdminTyping] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
@@ -47,10 +47,12 @@ export default function ChatPage() {
   // One-time setup
   useEffect(() => {
     setDeviceInfo(getDeviceInfo());
-    fetch('/api/sources')
+    const ac = new AbortController();
+    fetch('/api/sources', { signal: ac.signal })
       .then((r) => r.json())
       .then((s) => setHasSources(Array.isArray(s) && s.length > 0))
       .catch(() => setHasSources(false));
+    return () => ac.abort();
   }, []);
 
   // Session initialization + pendingSession handling
