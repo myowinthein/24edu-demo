@@ -2283,11 +2283,11 @@
       "file": "app/(user-area)/profile/page.tsx",
       "line": 14,
       "description": "parsePhone and parseIntake are pure functions with real branching (no-space fallback, parts.length < 2 fallback) exercised nowhere, with no coverage verifying the fallback paths.",
-      "status": "fixed",
+      "status": "open",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": "21b501b",
-      "resolved_date": "2026-08-01"
+      "resolved_commit": null,
+      "resolved_date": null
     },
     {
       "id": "f-143",
