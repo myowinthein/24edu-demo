@@ -2411,11 +2411,11 @@
       "file": "app/admin/layout.tsx",
       "line": 180,
       "description": "The guestGroups grouping/merge logic inside the useMemo (de-dupes sessions by guestId, backfills guest info once a name is found) is real branching pure logic embedded inline and untested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "bbbd4b4",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-151",
@@ -2491,11 +2491,11 @@
       "file": "app/admin/leads/page.tsx",
       "line": 72,
       "description": "The CSV row-building/escaping logic inside exportCSV (branching for the submittedAt column and quote-doubling) is un-exported inline logic with real edge cases and no coverage.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "bbbd4b4",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-156",
