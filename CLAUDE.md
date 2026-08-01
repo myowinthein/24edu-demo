@@ -15,6 +15,7 @@ Blast radius: demo/internal only — no user accounts, Redis data is ephemeral.
 ```
 git-strategy: solo
 git-auto-commit: true
+readme-style: standard
 ```
 
 ---
