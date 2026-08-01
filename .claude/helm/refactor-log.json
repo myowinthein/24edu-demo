@@ -2763,11 +2763,11 @@
       "file": "tests/lib/admin-auth.test.ts",
       "line": 13,
       "description": "The makeReq() NextRequest/admin_token-cookie builder is duplicated near-verbatim in tests/middleware.test.ts and could be extracted into a shared test helper.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "918ed62",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-173",
@@ -2779,11 +2779,11 @@
       "file": "tests/lib/session-actions.test.ts",
       "line": 10,
       "description": "The mocked sessionModeKey/sessionMessagesKey builders (and similarly adminSessionKey in tests/lib/admin-auth.test.ts) hand-duplicate the exact key-format strings from lib/redis.ts, so a real key-format change there could silently drift from what these tests assume rather than failing loudly.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "918ed62",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-174",
