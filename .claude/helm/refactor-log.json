@@ -2153,11 +2153,11 @@
       "file": "app/api/session/[id]/summary/route.ts",
       "line": 46,
       "description": "On Gemini failure the raw String(err) is returned to the client ({ error: String(err) }), leaking internal error detail, unlike app/api/chat/route.ts which sanitizes the equivalent failure message.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a6340d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-135",
@@ -2315,11 +2315,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 194,
       "description": "requestHuman, switchToAI, and endChat all fire POST requests with only .catch(console.error), so a failed request/switch/end leaves the UI silently out of sync with the server with no error shown to the user.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a6340d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-145",
@@ -2395,11 +2395,11 @@
       "file": "app/admin/layout.tsx",
       "line": 115,
       "description": "fetchSessions has a try/finally with no catch; it's invoked unawaited from a timer and from es.onmessage, so a network failure produces an unhandled promise rejection with no user-visible error state.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a6340d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-150",
@@ -2571,11 +2571,11 @@
       "file": "app/admin/sources/page.tsx",
       "line": 213,
       "description": "handleRemove silently no-ops on a failed DELETE (if (!resp.ok) return;) with no user-facing error, inconsistent with handleFileSelected which properly sets uploadError on failure.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a6340d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-161",
