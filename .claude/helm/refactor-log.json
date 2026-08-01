@@ -2683,11 +2683,11 @@
       "file": "tests/lib/device-info.test.ts",
       "line": 69,
       "description": "Windows 8.1 (NT 6.3) and Windows 8 (NT 6.2) entries in the version map are untested even though the sibling 10.0/6.1 entries are covered.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9613a4d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-168",
@@ -2699,11 +2699,11 @@
       "file": "tests/lib/device-info.test.ts",
       "line": 123,
       "description": "The generic non-iPad tablet branch (/Tablet/.test(ua) && !/Mobile/.test(ua)) is never exercised \u2014 only the iPad tablet path is tested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9613a4d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-169",
@@ -2715,11 +2715,11 @@
       "file": "tests/lib/lead-form-data.test.ts",
       "line": 48,
       "description": "No boundary tests exist for PHONE_NUM_RE's 6-15 character range (e.g. exactly-6 valid, or 16+ invalid) despite validate() enforcing that exact range.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9613a4d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-170",
@@ -2731,11 +2731,11 @@
       "file": "tests/lib/lead-form-data.test.ts",
       "line": 78,
       "description": "No test covers a non-4-digit intake year (e.g. '202' or '20255'), which validate() rejects via a distinct /^\\d{4}$/ check separate from the year-range bounds that are already tested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9613a4d",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-171",
