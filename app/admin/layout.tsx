@@ -135,6 +135,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
       prevModesRef.current = Object.fromEntries(data.map((s) => [s.id, s.mode]));
       setSessions(data);
+    } catch (err) {
+      console.error('Failed to fetch sessions', err);
     } finally {
       isRefetchingRef.current = false;
     }
