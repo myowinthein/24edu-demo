@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "documents": [
+    { "file": "app/legal/privacy-policy.mdx", "generated_at": "2026-08-01", "generated_at_commit": "9427b21" },
+    { "file": "app/legal/terms.mdx", "generated_at": "2026-08-01", "generated_at_commit": "9427b21" },
+    { "file": "app/legal/disclaimer.mdx", "generated_at": "2026-08-01", "generated_at_commit": "9427b21" }
+  ]
+}
