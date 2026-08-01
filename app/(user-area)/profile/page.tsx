@@ -10,18 +10,7 @@ import {
   inputStyle, labelStyle, errStyle, border,
 } from '@/app/chat/components/lead-form-data';
 import { useLeadForm } from '@/app/chat/components/use-lead-form';
-
-function parsePhone(phone: string): { phoneCountry: string; phoneNumber: string } {
-  const spaceIdx = phone.indexOf(' ');
-  if (spaceIdx === -1) return { phoneCountry: '+60', phoneNumber: phone };
-  return { phoneCountry: phone.slice(0, spaceIdx), phoneNumber: phone.slice(spaceIdx + 1) };
-}
-
-function parseIntake(intake: string): { intakeMonth: string; intakeYear: string } {
-  const parts = intake.split(' ');
-  if (parts.length < 2) return { intakeMonth: '', intakeYear: intake };
-  return { intakeMonth: parts[0], intakeYear: parts[parts.length - 1] };
-}
+import { parsePhone, parseIntake } from './parsers';
 
 const req = <span style={{ color: '#dc2626' }}>*</span>;
 
