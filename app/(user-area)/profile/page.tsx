@@ -7,9 +7,9 @@ import { useUserArea } from '../UserAreaContext';
 import { SpinnerIcon } from '@/app/chat/components/SpinnerIcon';
 import {
   COUNTRY_CODES, COUNTRIES, EDUCATION_LEVELS, MONTHS, CURRENT_YEAR,
-  validate, inputStyle, labelStyle, errStyle, border,
-  type FormFields, type FieldKey, type FormErrors,
+  inputStyle, labelStyle, errStyle, border,
 } from '@/app/chat/components/lead-form-data';
+import { useLeadForm } from '@/app/chat/components/use-lead-form';
 
 function parsePhone(phone: string): { phoneCountry: string; phoneNumber: string } {
   const spaceIdx = phone.indexOf(' ');
@@ -28,14 +28,8 @@ const req = <span style={{ color: '#dc2626' }}>*</span>;
 export default function ProfilePage() {
   const { guestId } = useUserArea();
   const [status, setStatus] = useState<'loading' | 'no-data' | 'ready' | 'saved'>('loading');
-  const [fields, setFields] = useState<FormFields>({
-    name: '', email: '', phoneCountry: '+60', phoneNumber: '',
-    country: '', educationLevel: '', programOfInterest: '',
-    intakeMonth: '', intakeYear: '',
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const { fields, setFields, errors, submitting, serverError, set, setPhoneNumber, handleSubmit } =
+    useLeadForm(guestId, () => setStatus('saved'));
 
   useEffect(() => {
     if (!guestId) return;
@@ -57,46 +51,6 @@ export default function ProfilePage() {
       })
       .catch(() => setStatus('no-data'));
   }, [guestId]);
-
-  const set = (key: FieldKey) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setFields((f) => ({ ...f, [key]: e.target.value }));
-      if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }));
-    };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errs = validate(fields);
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    setSubmitting(true);
-    setServerError('');
-    try {
-      const res = await fetch('/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guestId,
-          name: fields.name.trim(),
-          email: fields.email.trim(),
-          phone: `${fields.phoneCountry} ${fields.phoneNumber.trim()}`,
-          country: fields.country,
-          educationLevel: fields.educationLevel,
-          programOfInterest: fields.programOfInterest.trim(),
-          intendedIntake: `${fields.intakeMonth} ${fields.intakeYear.trim()}`,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setServerError(data.error ?? 'Something went wrong. Please try again.');
-        return;
-      }
-      setStatus('saved');
-    } catch {
-      setServerError('Network error. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px', background: 'var(--bg)' }}>
@@ -164,7 +118,7 @@ export default function ProfilePage() {
                     <option key={`${c.name}-${c.dial}`} value={c.dial}>{c.flag} {c.name} ({c.dial})</option>
                   ))}
                 </select>
-                <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={e => { setFields(f => ({ ...f, phoneNumber: e.target.value.replace(/\D/g, '') })); if (errors.phoneNumber) setErrors(er => ({ ...er, phoneNumber: undefined })); }} placeholder="12 345 6789" />
+                <input style={{ ...inputStyle, flex: 1, borderColor: border(!!errors.phoneNumber) }} type="tel" value={fields.phoneNumber} onChange={setPhoneNumber} placeholder="12 345 6789" />
               </div>
               {(errors.phoneCountry || errors.phoneNumber) && <p style={errStyle}>{errors.phoneCountry ?? errors.phoneNumber}</p>}
             </div>
