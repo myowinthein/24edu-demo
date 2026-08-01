@@ -13,7 +13,12 @@ export async function POST(
   }
 
   const { id } = params;
-  const { text } = (await req.json()) as { text: unknown };
+  let text: unknown;
+  try {
+    ({ text } = (await req.json()) as { text: unknown });
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
   if (!text || typeof text !== 'string' || text.length > 4000) {
     return NextResponse.json({ error: 'Invalid text' }, { status: 400 });
   }
