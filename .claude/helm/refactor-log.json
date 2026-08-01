@@ -2880,6 +2880,22 @@
       "first_found_date": "2026-08-01",
       "resolved_commit": "c095869",
       "resolved_date": "2026-08-01"
+    },
+    {
+      "id": "f-180",
+      "category": "security",
+      "priority": "high",
+      "risk": "needs-review",
+      "cluster_id": "c-126",
+      "depends_on": [],
+      "file": "app/chat/components/ChatInput.tsx",
+      "line": 197,
+      "description": "Guest-facing 'Switch to AI' button (shown when mode is 'requested' or 'human') calls POST /api/session/[id]/switch-ai directly, but that route requires admin auth (verifyAdminToken) per CLAUDE.md's Hard Safety Rules \u2014 so any guest clicking it always gets a 401 and the button silently does nothing (now surfaces as a visible error after f-144, but the underlying capability gap remains: guests have no way to self-cancel a human-mode session back to AI). Discovered while fixing f-144's fire-and-forget errors; not investigated or fixed as part of that finding.",
+      "status": "open",
+      "first_found_commit": "0a6340d",
+      "first_found_date": "2026-08-01",
+      "resolved_commit": null,
+      "resolved_date": null
     }
   ]
 }
