@@ -50,6 +50,21 @@ describe('validate()', () => {
     expect(errs.phoneNumber).toBeDefined()
   })
 
+  it('accepts phone number at the 6-char minimum', () => {
+    const errs = validate({ ...validFields(), phoneNumber: '123456' })
+    expect(errs.phoneNumber).toBeUndefined()
+  })
+
+  it('accepts phone number at the 15-char maximum', () => {
+    const errs = validate({ ...validFields(), phoneNumber: '123456789012345' })
+    expect(errs.phoneNumber).toBeUndefined()
+  })
+
+  it('errors on phone number over the 15-char maximum', () => {
+    const errs = validate({ ...validFields(), phoneNumber: '1234567890123456' })
+    expect(errs.phoneNumber).toBeDefined()
+  })
+
   it('errors on blank country', () => {
     const errs = validate({ ...validFields(), country: '' })
     expect(errs.country).toBeDefined()
@@ -95,5 +110,16 @@ describe('validate()', () => {
     const maxYear = String(new Date().getFullYear() + 6)
     const errs = validate({ ...validFields(), intakeYear: maxYear })
     expect(errs.intakeYear).toBeUndefined()
+  })
+
+  it('errors on a 3-digit intake year even if numerically in range', () => {
+    const errs = validate({ ...validFields(), intakeYear: '202' })
+    expect(errs.intakeYear).toBeDefined()
+  })
+
+  it('errors on a 5-digit intake year even when parseInt would put it in range', () => {
+    const paddedCurrentYear = `0${new Date().getFullYear()}`
+    const errs = validate({ ...validFields(), intakeYear: paddedCurrentYear })
+    expect(errs.intakeYear).toBeDefined()
   })
 })
