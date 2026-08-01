@@ -2085,12 +2085,10 @@
       "priority": "medium",
       "risk": "needs-review",
       "cluster_id": "c-091",
-      "depends_on": [
-        "f-129"
-      ],
+      "depends_on": [],
       "file": "tests/api/chat.test.ts",
       "line": 180,
-      "description": "No test exercises the branch where useGrounding is true AND relevantChunks.length > 0 (PROMPT_GROUNDING_WITH_CONTEXT for contact queries with local chunks present) \u2014 only the 'no chunks' and 'chunks with no grounding' paths are covered, and this is exactly the path affected by the possible schema mismatch in f-129.",
+      "description": "No test exercises the branch where useGrounding is true AND relevantChunks.length > 0 (PROMPT_GROUNDING_WITH_CONTEXT for contact queries with local chunks present) \u2014 only the no-chunks and chunks-with-no-grounding paths are covered. Independent of the SDK/schema question in f-129 (skipped) \u2014 this tests current behavior as-is.",
       "status": "open",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
