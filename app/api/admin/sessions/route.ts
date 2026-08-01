@@ -8,24 +8,33 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const sessionIds = (await redis.zrange(SESSIONS_ACTIVE_KEY, 0, -1, {
-    rev: true,
-  })) as string[];
+  // withScores avoids a redundant per-session zscore call below — the score
+  // is already known from this same zrange call.
+  const flatWithScores = (await redis.zrange(SESSIONS_ACTIVE_KEY, 0, -1, {
+    rev: true, withScores: true,
+  })) as (string | number)[];
 
-  if (sessionIds.length === 0) return NextResponse.json([]);
+  if (flatWithScores.length === 0) return NextResponse.json([]);
+
+  const sessionIds: string[] = [];
+  const scoreById = new Map<string, number>();
+  for (let i = 0; i < flatWithScores.length; i += 2) {
+    const id = flatWithScores[i] as string;
+    sessionIds.push(id);
+    scoreById.set(id, Number(flatWithScores[i + 1]));
+  }
 
   const p = redis.pipeline();
   for (const id of sessionIds) {
-    p.zscore(SESSIONS_ACTIVE_KEY, id);
     p.get<SessionMeta>(sessionMetaKey(id));
     p.get<SessionMode>(sessionModeKey(id));
   }
   const results = await p.exec();
 
   const sessions = sessionIds.map((id, i) => {
-    const score = results[i * 3] as number | null;
-    const meta = results[i * 3 + 1] as SessionMeta | null;
-    const mode = results[i * 3 + 2] as SessionMode | null;
+    const score = scoreById.get(id) ?? null;
+    const meta = results[i * 2] as SessionMeta | null;
+    const mode = results[i * 2 + 1] as SessionMode | null;
     return {
       id,
       mode: mode ?? 'ai',
