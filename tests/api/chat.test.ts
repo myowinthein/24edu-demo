@@ -152,7 +152,7 @@ describe('POST /api/chat — session title truncation', () => {
 })
 
 describe('POST /api/chat — happy path response shape', () => {
-  it('returns 200 with a reply field on success', async () => {
+  it('returns 200 with a text field on success', async () => {
     const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, guestId: VALID_GUEST }))
     expect(res.status).toBe(200)
     const body = await res.json()
