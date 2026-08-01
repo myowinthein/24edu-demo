@@ -25,6 +25,9 @@ vi.mock('@/lib/redis', () => ({
   LEADS_ALL_KEY: 'leads:all',
 }))
 
+import { verifyAdminToken } from '@/lib/admin-auth'
+const mockVerify = vi.mocked(verifyAdminToken)
+
 import { GET } from '@/app/api/admin/leads/route'
 
 const makeReq = (params: Record<string, string> = {}) => {
@@ -55,9 +58,18 @@ const leads: LeadData[] = [
 ]
 
 beforeEach(() => {
+  mockVerify.mockResolvedValue(true)
   mocks.zrange.mockResolvedValue(['g1', 'g2', 'g3'])
   mocks.pipelineExec.mockResolvedValue([leads[0], leads[1], leads[2]])
   mocks.pipelineGet.mockReturnThis()
+})
+
+describe('GET /api/admin/leads — auth', () => {
+  it('returns 401 when not authenticated', async () => {
+    mockVerify.mockResolvedValue(false)
+    const res = await GET(makeReq())
+    expect(res.status).toBe(401)
+  })
 })
 
 describe('GET /api/admin/leads — search filter', () => {
