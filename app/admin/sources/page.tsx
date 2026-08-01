@@ -213,10 +213,15 @@ export default function SourcesPage() {
   const handleRemove = async (id: string) => {
     if (pendingRemoveId !== id) { setPendingRemoveId(id); return; }
     setPendingRemoveId(null);
-    const resp = await fetch(`/api/sources/${id}`, { method: 'DELETE' });
-    if (!resp.ok) return;
-    const updated = await resp.json();
-    if (Array.isArray(updated)) setSources(updated);
+    setUploadError('');
+    try {
+      const resp = await fetch(`/api/sources/${id}`, { method: 'DELETE' });
+      if (!resp.ok) { setUploadError('Failed to remove source. Please try again.'); return; }
+      const updated = await resp.json();
+      if (Array.isArray(updated)) setSources(updated);
+    } catch {
+      setUploadError('Network error. Failed to remove source.');
+    }
   };
 
   const uploadLabel =

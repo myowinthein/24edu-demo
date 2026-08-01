@@ -37,6 +37,7 @@ export default function ChatPage() {
   const [adminTyping, setAdminTyping] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -180,23 +181,41 @@ export default function ChatPage() {
     }
   };
 
-  const requestHuman = () => {
+  const requestHuman = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/request-human`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guestId }),
-    }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/request-human`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guestId }),
+      });
+      if (!res.ok) setActionError('Failed to request a human agent. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to request a human agent.');
+    }
   };
 
-  const switchToAI = () => {
+  const switchToAI = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to switch back to AI. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to switch back to AI.');
+    }
   };
 
-  const endChat = () => {
+  const endChat = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/end`, { method: 'POST' }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/end`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to end the chat. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to end the chat.');
+    }
   };
 
   const summarize = async () => {
@@ -272,6 +291,21 @@ export default function ChatPage() {
             adminTyping={adminTyping}
             messagesEndRef={messagesEndRef}
           />
+          {actionError && (
+            <div
+              style={{
+                flexShrink: 0,
+                margin: '0 16px 4px',
+                padding: '8px 12px',
+                fontSize: 13,
+                color: '#dc2626',
+                background: 'rgba(220,38,38,0.08)',
+                borderRadius: 8,
+              }}
+            >
+              {actionError}
+            </div>
+          )}
           {summary !== null && (
             <div
               style={{
