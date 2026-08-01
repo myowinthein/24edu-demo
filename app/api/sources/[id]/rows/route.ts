@@ -57,12 +57,14 @@ export async function GET(
       const headers = parseCSVLine(lines[1]);
       const dataRows = lines.slice(2).map(parseCSVLine);
       if (!sheetMap.has(sheetName)) sheetMap.set(sheetName, { headers, rows: [] });
-      sheetMap.get(sheetName)!.rows.push(...dataRows);
+      const target = sheetMap.get(sheetName)!.rows;
+      for (const row of dataRows) target.push(row);
     } else {
       const headers = parseCSVLine(lines[0]);
       const dataRows = lines.slice(1).map(parseCSVLine);
       if (!sheetMap.has('')) sheetMap.set('', { headers, rows: [] });
-      sheetMap.get('')!.rows.push(...dataRows);
+      const target = sheetMap.get('')!.rows;
+      for (const row of dataRows) target.push(row);
     }
   }
 
