@@ -17,17 +17,22 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
   const [sending, setSending] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastTypingSentRef = useRef(0);
 
   const fetchSession = useCallback(async () => {
-    const res = await fetch(`/api/admin/sessions/${id}`);
-    if (res.status === 401) { router.push('/admin/login'); return; }
-    if (!res.ok) return;
-    const data = await res.json();
-    setMessages(data.messages);
-    setMode(data.mode);
+    try {
+      const res = await fetch(`/api/admin/sessions/${id}`);
+      if (res.status === 401) { router.push('/admin/login'); return; }
+      if (!res.ok) return;
+      const data = await res.json();
+      setMessages(data.messages);
+      setMode(data.mode);
+    } catch (err) {
+      console.error('Failed to fetch session', err);
+    }
   }, [id, router]);
 
   useEffect(() => {
@@ -66,24 +71,44 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
     if (!text || sending || mode !== 'human') return;
     setSending(true);
     setInputText('');
+    setActionError(null);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
     try {
-      await fetch(`/api/admin/sessions/${id}/message`, {
+      const res = await fetch(`/api/admin/sessions/${id}/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
+      if (!res.ok) {
+        setInputText(text);
+        setActionError('Failed to send message. Please try again.');
+      }
+    } catch {
+      setInputText(text);
+      setActionError('Network error. Failed to send message.');
     } finally {
       setSending(false);
     }
   };
 
   const takeOver = async () => {
-    await fetch(`/api/admin/sessions/${id}/join`, { method: 'POST' });
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/admin/sessions/${id}/join`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to take over session. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to take over session.');
+    }
   };
 
   const handBack = async () => {
-    await fetch(`/api/admin/sessions/${id}/leave`, { method: 'POST' });
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/admin/sessions/${id}/leave`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to hand back to AI. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to hand back to AI.');
+    }
   };
 
   const summarize = async () => {
@@ -220,6 +245,12 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
           display: 'flex', flexDirection: 'column', gap: 8,
         }}
       >
+        {actionError && (
+          <div style={{ fontSize: 12, color: '#dc2626', padding: '0 2px' }}>
+            {actionError}
+          </div>
+        )}
+
         {/* Textarea + Send */}
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
           <textarea

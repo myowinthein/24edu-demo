@@ -110,6 +110,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [readAt, setReadAt] = useState<Record<string, number>>({});
   const [viewGuest, setViewGuest] = useState<GuestGroup | null>(null);
+  const [acceptError, setAcceptError] = useState<string | null>(null);
   const prevModesRef = useRef<Record<string, SessionMode>>({});
   const isRefetchingRef = useRef(false);
 
@@ -163,10 +164,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .finally(() => router.push('/admin/login'));
   };
 
-  const handleAccept = (sessionId: string) => {
-    fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' })
-      .catch(console.error)
-      .finally(() => router.push(`/admin/sessions/${sessionId}`));
+  const handleAccept = async (sessionId: string) => {
+    setAcceptError(null);
+    try {
+      const res = await fetch(`/api/admin/sessions/${sessionId}/join`, { method: 'POST' });
+      if (!res.ok) { setAcceptError('Failed to accept session. Please try again.'); return; }
+      router.push(`/admin/sessions/${sessionId}`);
+    } catch {
+      setAcceptError('Network error. Failed to accept session.');
+    }
   };
 
   const guestGroups = useMemo<GuestGroup[]>(() => {
@@ -248,6 +254,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Sessions list */}
         {sidebarOpen && (
           <>
+            {acceptError && (
+              <div
+                style={{
+                  margin: '8px 14px 0',
+                  padding: '8px 10px',
+                  fontSize: 12,
+                  color: '#dc2626',
+                  background: 'rgba(220,38,38,0.08)',
+                  borderRadius: 6,
+                }}
+              >
+                {acceptError}
+              </div>
+            )}
             {guestGroups.length > 0 && (
               <div style={{ padding: '10px 14px 4px' }}>
                 <span
