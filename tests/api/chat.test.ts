@@ -225,6 +225,32 @@ describe('POST /api/chat — Gemini error handling', () => {
     const body = await res.json()
     expect(body.error).toMatch(/temporarily unavailable/i)
   })
+
+  it('returns a quota-specific message when the error mentions 429', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockGetGenerativeModel.mockReturnValue({
+      startChat: vi.fn().mockReturnValue({
+        sendMessage: vi.fn().mockRejectedValue(new Error('[429 Too Many Requests] quota exceeded')),
+      }),
+    })
+    const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
+    expect(res.status).toBe(503)
+    const body = await res.json()
+    expect(body.error).toMatch(/request limit reached/i)
+  })
+
+  it('returns a quota-specific message when the error mentions quota without a 429 code', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockGetGenerativeModel.mockReturnValue({
+      startChat: vi.fn().mockReturnValue({
+        sendMessage: vi.fn().mockRejectedValue(new Error('quota exceeded for this project')),
+      }),
+    })
+    const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
+    expect(res.status).toBe(503)
+    const body = await res.json()
+    expect(body.error).toMatch(/request limit reached/i)
+  })
 })
 
 describe('POST /api/chat — model validation', () => {
