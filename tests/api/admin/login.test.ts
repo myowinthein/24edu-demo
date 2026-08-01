@@ -24,9 +24,37 @@ describe('POST /api/admin/login', () => {
   it('returns 500 when ADMIN_USERNAME env var is missing', async () => {
     const saved = process.env.ADMIN_USERNAME
     delete process.env.ADMIN_USERNAME
-    const res = await POST(makeReq({ username: 'admin', password: 'password' }))
-    expect(res.status).toBe(500)
-    process.env.ADMIN_USERNAME = saved
+    try {
+      const res = await POST(makeReq({ username: 'admin', password: 'password' }))
+      expect(res.status).toBe(500)
+    } finally {
+      process.env.ADMIN_USERNAME = saved
+    }
+  })
+
+  it('returns 400 for a malformed JSON body', async () => {
+    const req = new NextRequest('http://localhost/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{not valid json',
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 401 when username is not a string', async () => {
+    const res = await POST(makeReq({ username: 123, password: 'password' }))
+    expect(res.status).toBe(401)
+  })
+
+  it('returns 401 when password is not a string', async () => {
+    const res = await POST(makeReq({ username: 'admin', password: 123 }))
+    expect(res.status).toBe(401)
+  })
+
+  it('returns 401 when password is missing entirely', async () => {
+    const res = await POST(makeReq({ username: 'admin' }))
+    expect(res.status).toBe(401)
   })
 
   it('returns 401 for wrong username', async () => {
