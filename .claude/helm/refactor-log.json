@@ -2859,11 +2859,11 @@
       "file": "vitest.config.ts",
       "line": 11,
       "description": "The coverage block has no all: true (and no explicit coverage.include), so v8 coverage only reports on files actually imported during test runs rather than the full source tree \u2014 untested files are omitted entirely rather than counted as 0%, inflating the reported coverage percentage.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4153f3e",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-179",
