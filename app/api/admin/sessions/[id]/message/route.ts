@@ -29,6 +29,7 @@ export async function POST(
 
   await Promise.all([
     redis.set(sessionMessagesKey(id), updated),
+    redis.set(sessionModeKey(id), mode),
     redis.zadd(SESSIONS_ACTIVE_KEY, { score: now, member: id }),
   ]);
   await Promise.all([publishSession(id, { messages: updated, mode }), publishSessions()]);
