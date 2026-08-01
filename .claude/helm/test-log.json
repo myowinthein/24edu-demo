@@ -1,16 +1,14 @@
 {
-  "last_test_run_commit": "169b4a1",
-  "last_full_scan_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f",
-  "findings": [
+  "schema_version": 2,
+  "last_run_commit": "319ee25d5816dad95d2c08a231fb134d7be75a40",
+  "full_scan_ever_run": true,
+  "consecutive_catchup_count": 1,
+  "files": [
     {
       "file": "lib/device-info.ts",
-      "status": "ambiguous",
-      "note": "iPhone/iPad UAs contain 'like Mac OS X' which triggers the macOS branch before iPhone/iPad branches are reached. Tests document actual behavior (os='macOS' for iPhone/iPad). The /iPhone/ and /iPad/ OS branches in device-info.ts are unreachable for real UA strings. Device type detection (Mobile/Tablet) is correct. Recommend fixing branch order in a refactor pass.",
-      "recorded_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f",
-      "recorded_date": "2026-07-23"
-    }
-  ],
-  "full_scan_findings": [
+      "priority": "high",
+      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
+    },
     {
       "file": "lib/format.ts",
       "priority": "high",
@@ -33,11 +31,6 @@
     },
     {
       "file": "lib/xlsx-utils.ts",
-      "priority": "high",
-      "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
-    },
-    {
-      "file": "lib/device-info.ts",
       "priority": "high",
       "last_judged_commit": "8b6cac74207ba0ca47265b64b2f917dec0d5fe6f"
     },
