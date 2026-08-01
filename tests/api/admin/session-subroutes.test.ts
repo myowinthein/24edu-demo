@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-vi.mock('@/lib/admin-auth', () => ({
-  verifyAdminToken: vi.fn().mockResolvedValue(true),
-}))
+import { mockAdminAuthModule } from '@/tests/helpers/mock-admin-auth'
+
+vi.mock('@/lib/admin-auth', () => mockAdminAuthModule())
 
 import { verifyAdminToken } from '@/lib/admin-auth'
 const mockVerify = vi.mocked(verifyAdminToken)
@@ -107,6 +107,21 @@ describe('POST /api/admin/sessions/[id]/message', () => {
     expect(res.status).toBe(400)
   })
 
+  it('returns 400 for a non-string text value', async () => {
+    const res = await messagePOST(makeReq('message', { text: 123 }), makeParams())
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 400 for a malformed JSON body', async () => {
+    const req = new NextRequest(`http://localhost/api/admin/sessions/${SESSION}/message`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Cookie: 'admin_token=tok' },
+      body: '{not valid json',
+    })
+    const res = await messagePOST(req, makeParams())
+    expect(res.status).toBe(400)
+  })
+
   it('appends message, publishes, and returns ok', async () => {
     const existing = [{ role: 'guest', text: 'Hello', timestamp: '2024-01-01T00:00:00Z' }]
     redisMocks.get
@@ -117,6 +132,21 @@ describe('POST /api/admin/sessions/[id]/message', () => {
     expect(await res.json()).toEqual({ ok: true })
     expect(mockPublish.publishSession).toHaveBeenCalledOnce()
     expect(mockPublish.publishSessions).toHaveBeenCalledOnce()
+  })
+
+  it('persists mode when a session had none, and a re-fetch reflects it', async () => {
+    const store = new Map<string, unknown>()
+    redisMocks.get.mockImplementation((key: string) => Promise.resolve(store.get(key) ?? null))
+    redisMocks.set.mockImplementation((key: string, value: unknown) => {
+      store.set(key, value)
+      return Promise.resolve('OK')
+    })
+
+    await messagePOST(makeReq('message', { text: 'First reply' }), makeParams())
+
+    const res = await sessionGET(makeReq(''), makeParams())
+    const body = await res.json()
+    expect(body.mode).toBe('human')
   })
 })
 

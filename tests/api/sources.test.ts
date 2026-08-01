@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-vi.mock('@/lib/admin-auth', () => ({
-  verifyAdminToken: vi.fn().mockResolvedValue(true),
-}))
+import { mockAdminAuthModule } from '@/tests/helpers/mock-admin-auth'
+
+vi.mock('@/lib/admin-auth', () => mockAdminAuthModule())
 import { verifyAdminToken } from '@/lib/admin-auth'
 const mockVerify = vi.mocked(verifyAdminToken)
 
@@ -20,7 +20,7 @@ vi.mock('@/lib/redis', () => ({
   SOURCES_KEY: 'sources:list',
 }))
 
-import { POST } from '@/app/api/sources/route'
+import { GET, POST } from '@/app/api/sources/route'
 
 function makeReq(csv: string, filename = 'test.csv') {
   return new NextRequest('http://localhost/api/sources', {
@@ -35,6 +35,24 @@ beforeEach(() => {
   mockVerify.mockResolvedValue(true)
   sourceMocks.get.mockResolvedValue([])
   mockIndexSource.mockResolvedValue(3)
+})
+
+describe('GET /api/sources', () => {
+  it('returns the persisted source list', async () => {
+    const sources = [{ id: 's1', filename: 'a.csv', rowCount: 2, uploadedAt: '2024-01-01T00:00:00Z', chunkCount: 1 }]
+    sourceMocks.get.mockResolvedValue(sources)
+    const res = await GET()
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body).toEqual(sources)
+  })
+
+  it('returns an empty array when no sources are stored', async () => {
+    sourceMocks.get.mockResolvedValue(null)
+    const res = await GET()
+    const body = await res.json()
+    expect(body).toEqual([])
+  })
 })
 
 describe('POST /api/sources — auth guard', () => {

@@ -39,6 +39,11 @@ describe('formatRelativeTime', () => {
     expect(formatRelativeTime(new Date(BASE.getTime() - 6 * 86_400_000).toISOString())).toBe('6d ago')
   })
 
+  it('coerces a future timestamp to "Just now" (negative diff)', () => {
+    vi.setSystemTime(BASE)
+    expect(formatRelativeTime(new Date(BASE.getTime() + 5 * 60_000).toISOString())).toBe('Just now')
+  })
+
   it('locale date — 7 or more days ago', () => {
     vi.setSystemTime(BASE)
     const result = formatRelativeTime(new Date(BASE.getTime() - 10 * 86_400_000).toISOString())

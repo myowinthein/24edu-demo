@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getDeviceInfo } from '@/lib/device-info';
+import { getDeviceInfo, type DeviceInfo } from '@/lib/device-info';
+import { useEventSource } from '@/lib/use-event-source';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { DEFAULT_MODEL, type ModelId, type SessionRow } from '@/app/chat/constants';
 import { MessageList } from '@/app/chat/components/MessageList';
@@ -32,10 +33,11 @@ export default function ChatPage() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<ModelId>(DEFAULT_MODEL);
-  const [deviceInfo, setDeviceInfo] = useState<Record<string, string>>({});
+  const [deviceInfo, setDeviceInfo] = useState<Partial<DeviceInfo>>({});
   const [adminTyping, setAdminTyping] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -45,10 +47,12 @@ export default function ChatPage() {
   // One-time setup
   useEffect(() => {
     setDeviceInfo(getDeviceInfo());
-    fetch('/api/sources')
+    const ac = new AbortController();
+    fetch('/api/sources', { signal: ac.signal })
       .then((r) => r.json())
       .then((s) => setHasSources(Array.isArray(s) && s.length > 0))
       .catch(() => setHasSources(false));
+    return () => ac.abort();
   }, []);
 
   // Session initialization + pendingSession handling
@@ -112,36 +116,24 @@ export default function ChatPage() {
   }, [sessionId, fetchSession]);
 
   useEffect(() => {
-    if (!sessionId) return;
-    let active = true;
-    let es: EventSource | null = null;
-    const connect = () => {
-      if (!active) return;
-      es = new EventSource(`/api/session/${sessionId}/stream`);
-      es.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          if (data.typing) {
-            setAdminTyping(true);
-            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-            typingTimeoutRef.current = setTimeout(() => setAdminTyping(false), 3000);
-          } else {
-            setMessages(data.messages);
-            setMode(data.mode);
-            setAdminTyping(false);
-            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-          }
-        } catch (err) { console.error('SSE parse error', err); }
-      };
-      es.onerror = () => { es?.close(); if (active) setTimeout(connect, 3000); };
-    };
-    connect();
-    return () => {
-      active = false;
-      es?.close();
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-    };
+    return () => { if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current); };
   }, [sessionId]);
+
+  useEventSource(sessionId ? `/api/session/${sessionId}/stream` : null, (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      if (data.typing) {
+        setAdminTyping(true);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setAdminTyping(false), 3000);
+      } else {
+        setMessages(data.messages);
+        setMode(data.mode);
+        setAdminTyping(false);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      }
+    } catch (err) { console.error('SSE parse error', err); }
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -191,23 +183,41 @@ export default function ChatPage() {
     }
   };
 
-  const requestHuman = () => {
+  const requestHuman = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/request-human`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guestId }),
-    }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/request-human`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guestId }),
+      });
+      if (!res.ok) setActionError('Failed to request a human agent. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to request a human agent.');
+    }
   };
 
-  const switchToAI = () => {
+  const switchToAI = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/switch-ai`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to switch back to AI. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to switch back to AI.');
+    }
   };
 
-  const endChat = () => {
+  const endChat = async () => {
     if (!sessionId) return;
-    fetch(`/api/session/${sessionId}/end`, { method: 'POST' }).catch(console.error);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/session/${sessionId}/end`, { method: 'POST' });
+      if (!res.ok) setActionError('Failed to end the chat. Please try again.');
+    } catch {
+      setActionError('Network error. Failed to end the chat.');
+    }
   };
 
   const summarize = async () => {
@@ -283,6 +293,21 @@ export default function ChatPage() {
             adminTyping={adminTyping}
             messagesEndRef={messagesEndRef}
           />
+          {actionError && (
+            <div
+              style={{
+                flexShrink: 0,
+                margin: '0 16px 4px',
+                padding: '8px 12px',
+                fontSize: 13,
+                color: '#dc2626',
+                background: 'rgba(220,38,38,0.08)',
+                borderRadius: 8,
+              }}
+            >
+              {actionError}
+            </div>
+          )}
           {summary !== null && (
             <div
               style={{

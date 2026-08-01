@@ -152,7 +152,7 @@ describe('POST /api/chat — session title truncation', () => {
 })
 
 describe('POST /api/chat — happy path response shape', () => {
-  it('returns 200 with a reply field on success', async () => {
+  it('returns 200 with a text field on success', async () => {
     const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, guestId: VALID_GUEST }))
     expect(res.status).toBe(200)
     const body = await res.json()
@@ -182,6 +182,14 @@ describe('POST /api/chat — Google Search grounding', () => {
     await POST(makeReq({ message: 'Tell me about MBA programs', sessionId: VALID_SESSION }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
     expect(callArgs?.tools).toBeUndefined()
+  })
+
+  it('uses grounding WITH local context for a contact query even when chunks exist', async () => {
+    mockQueryRelevantChunks.mockResolvedValue(['Some university data chunk'])
+    await POST(makeReq({ message: 'What is the email address for the MBA program?', sessionId: VALID_SESSION }))
+    const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
+    expect(JSON.stringify(callArgs?.tools)).toContain('googleSearchRetrieval')
+    expect(callArgs?.systemInstruction).toContain('Some university data chunk')
   })
 })
 
