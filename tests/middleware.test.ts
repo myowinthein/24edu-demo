@@ -1,13 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { NextRequest } from 'next/server'
 import { middleware } from '@/middleware'
-
-function makeReq(pathname: string, cookie?: string) {
-  const url = `http://localhost${pathname}`
-  return new NextRequest(url, {
-    headers: cookie ? { Cookie: `admin_token=${cookie}` } : {},
-  })
-}
+import { makeAdminReq as makeReq } from '@/tests/helpers/make-admin-req'
 
 describe('middleware', () => {
   it('redirects /sources to /admin/sources', () => {
