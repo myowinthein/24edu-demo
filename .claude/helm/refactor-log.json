@@ -2379,11 +2379,11 @@
       "file": "app/admin/layout.tsx",
       "line": 174,
       "description": "handleAccept navigates to the session page in .finally() regardless of whether the join POST succeeded, only console.error-ing failures, so an admin can land on a session believing they've accepted it when the join actually failed server-side.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7d52ba6",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-149",
@@ -2507,11 +2507,11 @@
       "file": "app/admin/sessions/[id]/page.tsx",
       "line": 71,
       "description": "sendMessage clears inputText immediately and only wraps the POST in try/finally (no catch), so if the send fails the admin's typed reply is silently lost with no error shown and no way to retry/restore the text.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7d52ba6",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-157",
@@ -2523,11 +2523,11 @@
       "file": "app/admin/sessions/[id]/page.tsx",
       "line": 88,
       "description": "takeOver and handBack call fetch with zero error handling; a failed request produces no feedback to the admin and relies entirely on the SSE stream to reflect the mode change.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7d52ba6",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-158",
@@ -2539,11 +2539,11 @@
       "file": "app/admin/sessions/[id]/page.tsx",
       "line": 23,
       "description": "fetchSession has no catch around the fetch/JSON parse and is called unawaited from useEffect, risking an unhandled promise rejection on network failure.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7d52ba6",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-159",
