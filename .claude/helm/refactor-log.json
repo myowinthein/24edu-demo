@@ -1893,11 +1893,11 @@
       "file": "lib/format.ts",
       "line": 14,
       "description": "formatRelativeTime parses iso into a Date once as d to validate it, then re-parses the same string with new Date(iso) again on the final return line instead of reusing d.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "55f7b48",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-119",
@@ -1909,11 +1909,11 @@
       "file": "lib/device-info.ts",
       "line": 1,
       "description": "getDeviceInfo is typed to return Record<string, string> even though it always returns a fixed field set mirroring optional device fields on SessionMeta \u2014 typing it against a shared/dedicated DeviceInfo type would let the compiler catch a rename/typo in either place.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "55f7b48",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-120",
@@ -1959,11 +1959,11 @@
       "file": "app/api/admin/sessions/[id]/message/route.ts",
       "line": 16,
       "description": "await req.json() is not wrapped in try/catch, so a malformed JSON body throws an unhandled exception (generic 500) instead of a clean 400 response.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-123",
@@ -1975,11 +1975,11 @@
       "file": "app/api/admin/login/route.ts",
       "line": 6,
       "description": "await req.json() is not wrapped in try/catch and username/password are not validated as strings before createHash().update(password), so a malformed/empty request body throws unhandled instead of returning a clean 400.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-124",
@@ -2025,11 +2025,11 @@
       "file": "app/api/admin/sessions/route.ts",
       "line": 46,
       "description": "The lead field allow-list (name, email, phone, country, educationLevel, programOfInterest, intendedIntake) is hand-duplicated between the leadMap.set(...) object literal and the fallback default object, so the two can silently diverge.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-127",
@@ -2041,11 +2041,11 @@
       "file": "app/api/admin/leads/route.ts",
       "line": 12,
       "description": "page/limit are parsed with parseInt and passed through Math.max/Math.min with no isNaN check, so a non-numeric page/limit query param propagates as NaN, producing an empty paginated slice instead of a 400 or sane default.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-128",
@@ -2105,11 +2105,11 @@
       "file": "tests/api/chat.test.ts",
       "line": 154,
       "description": "The describe block says 'returns 200 with a reply field on success' but the route actually returns a text field (correctly asserted) \u2014 the description doesn't match the field it verifies.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7b3498e",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-132",
@@ -2137,11 +2137,11 @@
       "file": "app/api/session/[id]/request-human/route.ts",
       "line": 9,
       "description": "Unlike the sibling end and switch-ai routes, this handler never validates params.id against UUID_RE before using it to build Redis keys.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-134",
@@ -2169,11 +2169,11 @@
       "file": "app/api/sources/[id]/route.ts",
       "line": 16,
       "description": "When id doesn't match any source, target is undefined and updated equals the original list, yet the handler still writes the unchanged list back to Redis and returns 200 instead of 404, masking a no-op delete.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-136",
@@ -2219,11 +2219,11 @@
       "file": "app/api/sources/route.ts",
       "line": 16,
       "description": "filename and csv are destructured from the request body with no type/presence validation before csvStr.startsWith(...)/.split(...) are called, so a malformed or missing csv field throws an unhandled TypeError instead of a clean 400.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d04148b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-139",
@@ -2299,11 +2299,11 @@
       "file": "app/chat/components/ChatInput.tsx",
       "line": 171,
       "description": "The summarizing-state spinner SVG is hand-copied inline instead of reusing the existing SpinnerIcon component already used elsewhere in the app.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "be0c6dc",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-144",
@@ -2331,11 +2331,11 @@
       "file": "app/(user-area)/chat/page.tsx",
       "line": 48,
       "description": "The /api/sources fetch in the one-time setup effect has no AbortController/cleanup unlike the other fetch effects in this file, so a fast unmount before the response resolves calls setState on an unmounted component.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "55f7b48",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-146",
@@ -2363,11 +2363,11 @@
       "file": "app/admin/layout.tsx",
       "line": 46,
       "description": "modeBadgeStyle is defined but never referenced anywhere in the file \u2014 dead code.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "be0c6dc",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-148",
@@ -2555,11 +2555,11 @@
       "file": "app/admin/settings/page.tsx",
       "line": 54,
       "description": "handleClearSessions, handleClearSources, and handleClearLeads, along with their nine backing useState calls, are near-identical copy-pasted logic that could be consolidated into one generic 'clear resource' handler/reducer parameterized by URL and clearedLabel.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "be0c6dc",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-160",
