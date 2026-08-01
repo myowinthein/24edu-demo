@@ -2072,12 +2072,12 @@
       "depends_on": [],
       "file": "app/api/chat/route.ts",
       "line": 163,
-      "description": "The Gemini grounding tool is configured with googleSearchRetrieval + dynamicRetrievalConfig (the Gemini 1.5-era grounding API) while MODELS/DEFAULT_MODEL point at gemini-3.x models, which use a different grounding tool schema \u2014 the search-grounding fallback path likely silently fails or errors for these model versions.",
-      "status": "open",
+      "description": "Gemini grounding tool uses googleSearchRetrieval (the only shape available in @google/generative-ai at any version, including the latest 0.24.1) while the newer googleSearch tool shape only exists in the separate, unmigrated @google/genai package. @google/generative-ai is officially deprecated (EOL 2025-08-31). Fixing this properly requires a full SDK migration, not a tool-config tweak \u2014 skipped as out of scope for this refactor pass, flagged for a dedicated migration task.",
+      "status": "skipped-by-user",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
       "resolved_commit": null,
-      "resolved_date": null
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-130",
