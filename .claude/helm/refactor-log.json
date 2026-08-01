@@ -2009,11 +2009,11 @@
       "file": "app/api/admin/sessions/route.ts",
       "line": 18,
       "description": "The pipeline issues a redundant p.zscore(SESSIONS_ACTIVE_KEY, id) per session even though the score is already retrievable from the initial redis.zrange(..., { rev: true }) call by passing withScores: true.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "e0a5cda",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-126",
@@ -2121,11 +2121,11 @@
       "file": "app/api/chat/route.ts",
       "line": 117,
       "description": "queryRelevantChunks(message) is only kicked off after all Redis writes and pubsub publishes complete instead of running concurrently with them, adding avoidable latency to every AI-mode chat turn.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "78caf9c",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-133",
@@ -2203,11 +2203,11 @@
       "file": "app/api/sources/[id]/rows/route.ts",
       "line": 60,
       "description": "sheetMap.get(...).rows.push(...dataRows) spreads the full per-chunk row array as call arguments, which can throw a stack-size RangeError once a source's combined row count for a sheet grows large.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "14151cc",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-138",
@@ -2347,11 +2347,11 @@
       "file": "app/chat/components/MessageList.tsx",
       "line": 22,
       "description": "MessageList is not wrapped in React.memo, so every keystroke in the chat input re-renders MessageList and re-parses every message through ReactMarkdown even though its own props haven't changed.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "e0a5cda",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-147",
@@ -2443,11 +2443,11 @@
       "file": "app/admin/leads/page.tsx",
       "line": 39,
       "description": "fetchLeads has no in-flight/stale-response guard, so if page/sort/order/search change quickly, a slower older response can resolve after a newer one and overwrite the table with stale data.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "e0a5cda",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-153",
@@ -2459,11 +2459,11 @@
       "file": "app/admin/leads/page.tsx",
       "line": 5,
       "description": "xlsx is statically imported at module top-level, bundling the whole library into the page even when the user never clicks 'Excel', unlike app/admin/sources/page.tsx which correctly lazy-loads it via await import('xlsx') inside the handler.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "a768aa171cec658ad674b58ffa26ef07446cca0d",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "e0a5cda",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-154",
