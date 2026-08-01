@@ -4,17 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import type { LeadData } from '@/lib/types';
 import { formatDate } from '@/lib/format';
-
-const COLUMNS: { key: keyof LeadData; label: string }[] = [
-  { key: 'name',              label: 'Name' },
-  { key: 'email',             label: 'Email' },
-  { key: 'phone',             label: 'Phone' },
-  { key: 'country',           label: 'Country' },
-  { key: 'educationLevel',    label: 'Education' },
-  { key: 'programOfInterest', label: 'Program' },
-  { key: 'intendedIntake',    label: 'Intake' },
-  { key: 'submittedAt',       label: 'Submitted' },
-];
+import { LEAD_COLUMNS as COLUMNS, leadsToCSV } from '@/lib/leads-csv';
 
 const btnStyle: React.CSSProperties = {
   padding: '6px 13px', fontSize: 12, fontWeight: 500, border: '1px solid var(--border-md)',
@@ -105,15 +95,7 @@ export default function LeadsPage() {
   };
 
   const exportCSV = () => withExportedLeads((all) => {
-    const header = COLUMNS.map((c) => c.label).join(',');
-    const rows = all.map((l) =>
-      COLUMNS.map((c) => {
-        const v = c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key];
-        return `"${String(v ?? '').replace(/"/g, '""')}"`;
-      }).join(',')
-    );
-    const csv = [header, ...rows].join('\n');
-    download(new Blob([csv], { type: 'text/csv' }), 'leads.csv');
+    download(new Blob([leadsToCSV(all)], { type: 'text/csv' }), 'leads.csv');
   });
 
   const exportJSON = () => withExportedLeads((all) => {
