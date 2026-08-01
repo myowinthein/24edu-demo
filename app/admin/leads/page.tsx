@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import * as XLSX from 'xlsx';
 import type { LeadData } from '@/lib/types';
 import { formatDate } from '@/lib/format';
 
@@ -37,7 +36,10 @@ export default function LeadsPage() {
   const [exporting, setExporting] = useState(false);
   const limit = 20;
 
+  const fetchIdRef = useRef(0);
+
   const fetchLeads = useCallback(async () => {
+    const requestId = ++fetchIdRef.current;
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -45,14 +47,16 @@ export default function LeadsPage() {
         sort, order, search,
       });
       const res = await fetch(`/api/admin/leads?${params}`);
+      if (requestId !== fetchIdRef.current) return; // a newer request has since started
       if (res.status === 401) { router.push('/admin/login'); return; }
       if (!res.ok) return;
       const data = await res.json();
+      if (requestId !== fetchIdRef.current) return;
       setLeads(data.leads);
       setTotal(data.total);
       setTotalPages(data.totalPages);
     } finally {
-      setLoading(false);
+      if (requestId === fetchIdRef.current) setLoading(false);
     }
   }, [page, sort, order, search, router]);
 
@@ -89,12 +93,12 @@ export default function LeadsPage() {
     return all;
   };
 
-  const withExportedLeads = async (run: (all: LeadData[]) => void) => {
+  const withExportedLeads = async (run: (all: LeadData[]) => void | Promise<void>) => {
     if (exporting) return;
     setExporting(true);
     try {
       const all = total > leads.length ? await fetchAllLeadsForExport() : leads;
-      run(all);
+      await run(all);
     } finally {
       setExporting(false);
     }
@@ -116,7 +120,8 @@ export default function LeadsPage() {
     download(new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' }), 'leads.json');
   });
 
-  const exportExcel = () => withExportedLeads((all) => {
+  const exportExcel = () => withExportedLeads(async (all) => {
+    const XLSX = await import('xlsx');
     const rows = all.map((l) =>
       Object.fromEntries(COLUMNS.map((c) => [c.label, c.key === 'submittedAt' ? formatDate(l[c.key], { day: '2-digit', month: 'short', year: 'numeric' }) : l[c.key]]))
     );
