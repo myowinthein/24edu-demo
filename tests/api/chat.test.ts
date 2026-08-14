@@ -265,13 +265,13 @@ describe('POST /api/chat — model validation', () => {
   it('falls back to DEFAULT_MODEL when an unknown model name is provided', async () => {
     await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gpt-4-turbo' }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
-    expect(callArgs?.model).toBe('gemini-3.5-flash-lite')
+    expect(callArgs?.model).toBe('gemini-3.7-flash')
   })
 
   it('uses the provided model when it is a valid known model', async () => {
-    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.6-flash' }))
+    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.7-flash' }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
-    expect(callArgs?.model).toBe('gemini-3.6-flash')
+    expect(callArgs?.model).toBe('gemini-3.7-flash')
   })
 })
 

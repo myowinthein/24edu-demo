@@ -71,7 +71,7 @@ ADMIN_PASSWORD_HASH                        # SHA-256 hex of the admin password
 | `app/api/chat/route.ts` | Main chat handler: vector search → Gemini → publish SSE; education-topic grounding fallback with follow-up context and contact-query override |
 | `app/api/lead/route.ts` | Lead capture: validates 8 fields (UUID, email regex, phone regex), normalises, stores in Redis |
 | `app/chat/components/lead-form-data.ts` | Shared lead-form field defs, regexes, and `validate()` — used by `LeadForm.tsx` and `app/(user-area)/profile/page.tsx` |
-| `app/chat/constants.ts` | `MODELS` list and `DEFAULT_MODEL` (`gemini-3.5-flash-lite`); re-exports `SessionRow` from `lib/types` |
+| `app/chat/constants.ts` | `MODELS` list and `DEFAULT_MODEL` (`gemini-3.7-flash`); re-exports `SessionRow` from `lib/types` |
 
 ---
 
