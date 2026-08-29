@@ -5,7 +5,7 @@ import { xlsxToCSV } from '@/lib/xlsx-utils'
 function makeWb(sheets: Record<string, unknown[][]>) {
   const wb = XLSX.utils.book_new()
   for (const [name, data] of Object.entries(sheets)) {
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data as XLSX.AOA), name)
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), name)
   }
   return wb
 }
