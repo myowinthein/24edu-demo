@@ -19,13 +19,13 @@ Admins monitor all sessions in real time, can type alongside the AI without taki
 
 Three surfaces:
 
-- **`/chat`** — lead form gate → chat interface with session history
-- **`/profile`** — guests can update their lead details after initial submission
-- **`/admin`** — password-protected panel for live sessions, sources, leads, and settings
+- **`/chat`**: lead form gate → chat interface with session history
+- **`/profile`**: guests can update their lead details after initial submission
+- **`/admin`**: password-protected panel for live sessions, sources, leads, and settings
 
 ## Architecture
 
-### Data flow — guest message
+### Data flow: guest message
 
 ```
 Guest types message
@@ -45,18 +45,18 @@ Guest types message
 
 ### Real-time layer
 
-Two Redis clients run side-by-side — a deliberate architectural decision:
+Two Redis clients run side-by-side, a deliberate architectural decision:
 
 | Client | Package | Used for |
 |---|---|---|
 | REST client | `@upstash/redis` | All reads/writes (sessions, leads, sources, tokens) |
-| TCP client | `ioredis` | Pub/sub only — REST cannot `subscribe` |
+| TCP client | `ioredis` | Pub/sub only; REST cannot `subscribe` |
 
 Admin and guest UIs both hold an open SSE connection. When a session changes (new message, mode switch, typing indicator), the API route publishes to Redis; `createChannelSSE` in `lib/sse.ts` fans the event out to all subscribers without polling.
 
-SSE routes export `runtime = 'nodejs'` — Edge runtime cannot use ioredis.
+SSE routes export `runtime = 'nodejs'`; Edge runtime cannot use ioredis.
 
-### Grounding — two-layer guard
+### Grounding: two-layer guard
 
 Google Search only fires when **both** conditions are true:
 
@@ -75,7 +75,7 @@ ai  ──(guest requests human)──▶  requested  ──(admin joins)──�
                               ended (terminal)
 ```
 
-Mode is stored as a Redis key. `setSessionMode()` in `lib/session-actions.ts` is the single function that reads messages, writes the new mode, and publishes both the session channel and the global sessions list — no other code touches mode directly.
+Mode is stored as a Redis key. `setSessionMode()` in `lib/session-actions.ts` is the single function that reads messages, writes the new mode, and publishes both the session channel and the global sessions list. No other code touches mode directly.
 
 ### Vector ingestion
 
@@ -86,7 +86,7 @@ Upload CSV / Excel
   → upsert()           Upstash Vector (chunk text + sourceId metadata)
 ```
 
-Deleting a source removes all vectors by sourceId filter — no orphaned embeddings.
+Deleting a source removes all vectors by sourceId filter, leaving no orphaned embeddings.
 
 ### Key files
 
@@ -97,7 +97,7 @@ Deleting a source removes all vectors by sourceId filter — no orphaned embeddi
 | `lib/pubsub.ts` | ioredis subscriber factory + publish helpers |
 | `lib/vector.ts` | CSV chunking, Upstash Vector upsert / delete / query |
 | `lib/sse.ts` | Shared SSE factory wrapping ioredis subscriber |
-| `lib/session-actions.ts` | `setSessionMode` — single source of truth for mode transitions |
+| `lib/session-actions.ts` | `setSessionMode`: single source of truth for mode transitions |
 | `lib/prompts.ts` | Gemini system prompt variants (imported by chat route + settings page) |
 | `lib/xlsx-utils.ts` | Excel → CSV conversion, header detection, multi-sheet support |
 | `middleware.ts` | Protects `/admin/*` and `/api/admin/*`, redirects to login |
@@ -125,7 +125,7 @@ Deleting a source removes all vectors by sourceId filter — no orphaned embeddi
 ```bash
 npm install
 cp .env.local.example .env.local
-# fill in all variables — see table below
+# fill in all variables (see table below)
 npm run dev
 ```
 
@@ -138,7 +138,7 @@ npm run dev
 | `GEMINI_API_KEY` | Google AI Studio API key |
 | `KV_REST_API_URL` | Upstash Redis REST URL |
 | `KV_REST_API_TOKEN` | Upstash Redis REST token |
-| `REDIS_URL` | Upstash Redis TCP URL — `rediss://default:<token>@<host>:<port>` |
+| `REDIS_URL` | Upstash Redis TCP URL: `rediss://default:<token>@<host>:<port>` |
 | `UPSTASH_VECTOR_REST_URL` | Upstash Vector REST URL |
 | `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector REST token |
 
@@ -164,11 +164,11 @@ Open `/profile`. Guests can update any lead details submitted during the initial
 
 Go to `/admin` and log in. From there:
 
-- **Sessions** — monitor active chats live, join a session to type alongside the AI, or take full control (`human` mode) and release back to AI when done. Request AI-generated summaries per session.
-- **Sources** — upload CSV or Excel files. Files are chunked into 5-row segments and indexed into Upstash Vector. View rows in a paginated table, delete individual sources to remove their vectors. Multi-sheet Excel is fully supported.
-- **Leads** — browse captured lead data with filtering, sorting, and pagination.
-- **Settings → Data** — clear sessions, leads, or sources independently with live counts.
-- **Settings → Prompts** — view the exact system prompts sent to Gemini for each query scenario (read-only).
+- **Sessions**: monitor active chats live, join a session to type alongside the AI, or take full control (`human` mode) and release back to AI when done. Request AI-generated summaries per session.
+- **Sources**: upload CSV or Excel files. Files are chunked into 5-row segments and indexed into Upstash Vector. View rows in a paginated table, delete individual sources to remove their vectors. Multi-sheet Excel is fully supported.
+- **Leads**: browse captured lead data with filtering, sorting, and pagination.
+- **Settings → Data**: clear sessions, leads, or sources independently with live counts.
+- **Settings → Prompts**: view the exact system prompts sent to Gemini for each query scenario (read-only).
 
 The UI supports light and dark mode, toggled from the navigation bar.
 
@@ -190,7 +190,7 @@ Provision Upstash Redis and Vector directly from the Vercel dashboard.
 
 ## Contributing
 
-Internal demo project — not open for external contributions.
+Internal demo project, not open for external contributions.
 
 ## License
 
