@@ -255,7 +255,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
           <textarea
             ref={textareaRef}
-            placeholder={mode === 'human' ? 'Reply as admin… (Enter to send)' : 'Observing — take over to reply'}
+            placeholder={mode === 'human' ? 'Reply as admin… (Enter to send)' : 'Observing: take over to reply'}
             value={inputText}
             onChange={handleTextareaChange}
             onKeyDown={(e) => {

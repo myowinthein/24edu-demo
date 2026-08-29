@@ -176,7 +176,7 @@ export default function AdminSettingsPage() {
           <SettingCard title="Local data (no web search)" description="Used when vector search returns results. Chunks are appended at runtime.">
             <PromptBlock value={PROMPT_LOCAL_DATA + PROMPT_LOCAL_DATA_SUFFIX_FOUND} />
           </SettingCard>
-          <SettingCard title="Local data — no results" description="Used when vector search returns nothing and grounding is not triggered.">
+          <SettingCard title="Local data (no results)" description="Used when vector search returns nothing and grounding is not triggered.">
             <PromptBlock value={PROMPT_LOCAL_DATA + PROMPT_LOCAL_DATA_SUFFIX_EMPTY} />
           </SettingCard>
           <SettingCard title="Web search (grounding only)" description="Used when no local chunks exist but the question is education-related.">
