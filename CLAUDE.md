@@ -71,7 +71,7 @@ ADMIN_PASSWORD_HASH                        # SHA-256 hex of the admin password
 | `app/api/chat/route.ts` | Main chat handler: vector search → Gemini → publish SSE; education-topic grounding fallback with follow-up context and contact-query override |
 | `app/api/lead/route.ts` | Lead capture: validates 8 fields (UUID, email regex, phone regex), normalises, stores in Redis |
 | `app/chat/components/lead-form-data.ts` | Shared lead-form field defs, regexes, and `validate()`; used by `LeadForm.tsx` and `app/(user-area)/profile/page.tsx` |
-| `app/chat/constants.ts` | `MODELS` list and `DEFAULT_MODEL` (`gemini-3.7-flash`); re-exports `SessionRow` from `lib/types` |
+| `app/chat/constants.ts` | `MODELS` list (`gemini-3.5-flash-lite`, `gemini-3.8-flash`) and `DEFAULT_MODEL` (`gemini-3.5-flash-lite`); re-exports `SessionRow` from `lib/types` |
 
 ---
 
@@ -125,6 +125,7 @@ ADMIN_PASSWORD_HASH                        # SHA-256 hex of the admin password
 - **Mode dot colors/labels are duplicated** between `app/chat/components/ChatSidebar.tsx` and `app/admin/layout.tsx` with no shared constant. A future palette change must be applied in both places.
 - **Quota (429) and generic Gemini errors both return HTTP 503.** They're only distinguishable by response body text (`isQuota` check in `app/api/chat/route.ts`), not status code.
 - **No ESLint config file exists** even though `npm run lint` is wired up. First invocation of `next lint` triggers Next's interactive setup prompt, which will hang in a non-interactive/CI context.
+- **Both Gemini call sites silently fall back across `MODELS` on failure.** `app/api/chat/route.ts` and the summary route each try the resolved model first, then the rest of `MODELS` in order, one attempt per model with no retries; only the existing error responses fire once every model has failed. There's no signal to the user or admin that a fallback model answered. The model actually resolved for a chat request is persisted via `sessionModelKey` right after resolution (not the one that ultimately succeeds if fallback occurs), and the summary route reads it back, falling to `DEFAULT_MODEL` if missing/invalid.
 
 ## Rules
 

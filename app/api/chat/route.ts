@@ -6,6 +6,7 @@ import {
   sessionMessagesKey,
   sessionModeKey,
   sessionMetaKey,
+  sessionModelKey,
   guestSessionsKey,
 } from '@/lib/redis';
 import { publishSession, publishSessions } from '@/lib/pubsub';
@@ -161,21 +162,7 @@ export async function POST(req: NextRequest) {
   const modelName = (typeof model === 'string' && (MODELS as readonly string[]).includes(model))
     ? model
     : DEFAULT_MODEL;
-  const geminiModel = genAI!.getGenerativeModel({
-    model: modelName,
-    systemInstruction,
-    ...(useGrounding
-      ? {
-          tools: [
-            {
-              googleSearchRetrieval: {
-                dynamicRetrievalConfig: { dynamicThreshold: 0 },
-              },
-            },
-          ],
-        }
-      : {}),
-  });
+  await redis.set(sessionModelKey(sessionId), modelName);
 
   // Build Gemini history from stored messages (exclude the message just sent)
   const geminiHistory = messages
@@ -187,14 +174,41 @@ export async function POST(req: NextRequest) {
       parts: [{ text: m.text }],
     }));
 
-  const chat = geminiModel.startChat({ history: geminiHistory });
-  let text: string;
-  try {
-    const result = await chat.sendMessage(message);
-    text = result.response.text();
-  } catch (err) {
-    console.error('[chat] Gemini error:', err);
-    const isQuota = String(err).includes('429') || String(err).includes('quota');
+  // Silently retry with the remaining models in order if the selected one fails,
+  // same one-attempt-per-model pattern as job-buddy's modelsToTry.
+  const modelsToTry = [modelName, ...MODELS.filter((m) => m !== modelName)];
+
+  let text: string | undefined;
+  let lastErr: unknown;
+  for (const tryModel of modelsToTry) {
+    const geminiModel = genAI!.getGenerativeModel({
+      model: tryModel,
+      systemInstruction,
+      ...(useGrounding
+        ? {
+            tools: [
+              {
+                googleSearchRetrieval: {
+                  dynamicRetrievalConfig: { dynamicThreshold: 0 },
+                },
+              },
+            ],
+          }
+        : {}),
+    });
+    const chat = geminiModel.startChat({ history: geminiHistory });
+    try {
+      const result = await chat.sendMessage(message);
+      text = result.response.text();
+      break;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  if (text === undefined) {
+    console.error('[chat] Gemini error:', lastErr);
+    const isQuota = String(lastErr).includes('429') || String(lastErr).includes('quota');
     const message = isQuota
       ? 'Request limit reached. Please wait a moment and try again.'
       : 'AI temporarily unavailable, please try again.';
