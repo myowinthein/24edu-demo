@@ -33,6 +33,7 @@ vi.mock('@/lib/redis', () => ({
   sessionMessagesKey: (id: string) => `session:${id}:messages`,
   sessionModeKey:    (id: string) => `session:${id}:mode`,
   sessionMetaKey:    (id: string) => `session:${id}:meta`,
+  sessionModelKey:   (id: string) => `session:${id}:model`,
   guestSessionsKey:  (id: string) => `guest:${id}:sessions`,
   SESSIONS_ACTIVE_KEY: 'sessions:active',
 }))
@@ -43,6 +44,7 @@ vi.mock('@/lib/pubsub', () => ({
 }))
 
 import { POST } from '@/app/api/chat/route'
+import { MODELS, DEFAULT_MODEL } from '@/app/chat/constants'
 
 const VALID_SESSION = '550e8400-e29b-41d4-a716-446655440000'
 const VALID_GUEST   = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
@@ -222,7 +224,8 @@ describe('POST /api/chat — grounding: uni shorthand and recentContext', () => 
 })
 
 describe('POST /api/chat — Gemini error handling', () => {
-  it('returns 503 when sendMessage throws', async () => {
+  it('returns 503 only after every model in MODELS has failed', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockGetGenerativeModel.mockReturnValue({
       startChat: vi.fn().mockReturnValue({
         sendMessage: vi.fn().mockRejectedValue(new Error('Gemini overloaded')),
@@ -232,6 +235,7 @@ describe('POST /api/chat — Gemini error handling', () => {
     expect(res.status).toBe(503)
     const body = await res.json()
     expect(body.error).toMatch(/temporarily unavailable/i)
+    expect(mockGetGenerativeModel).toHaveBeenCalledTimes(MODELS.length)
   })
 
   it('returns a quota-specific message when the error mentions 429', async () => {
@@ -259,19 +263,43 @@ describe('POST /api/chat — Gemini error handling', () => {
     const body = await res.json()
     expect(body.error).toMatch(/request limit reached/i)
   })
+
+  it('falls through to the next model in MODELS when the first attempt fails', async () => {
+    mockGetGenerativeModel.mockImplementation((opts: { model: string }) => ({
+      startChat: vi.fn().mockReturnValue({
+        sendMessage: opts.model === DEFAULT_MODEL
+          ? vi.fn().mockRejectedValue(new Error('Gemini overloaded'))
+          : vi.fn().mockResolvedValue({ response: { text: () => 'fallback response' } }),
+      }),
+    }))
+    const res = await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION }))
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.text).toBe('fallback response')
+    expect(mockGetGenerativeModel).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('POST /api/chat — model validation', () => {
   it('falls back to DEFAULT_MODEL when an unknown model name is provided', async () => {
     await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gpt-4-turbo' }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
-    expect(callArgs?.model).toBe('gemini-3.7-flash')
+    expect(callArgs?.model).toBe(DEFAULT_MODEL)
   })
 
   it('uses the provided model when it is a valid known model', async () => {
-    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.7-flash' }))
+    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.8-flash' }))
     const callArgs = mockGetGenerativeModel.mock.calls[0]?.[0]
-    expect(callArgs?.model).toBe('gemini-3.7-flash')
+    expect(callArgs?.model).toBe('gemini-3.8-flash')
+  })
+
+  it('writes the resolved model to Redis under sessionModelKey', async () => {
+    await POST(makeReq({ message: 'hello', sessionId: VALID_SESSION, model: 'gemini-3.8-flash' }))
+    const modelSetCall = redisMocks.set.mock.calls.find(
+      (args) => (args[0] as string) === `session:${VALID_SESSION}:model`
+    )
+    expect(modelSetCall).toBeDefined()
+    expect(modelSetCall![1]).toBe('gemini-3.8-flash')
   })
 })
 
