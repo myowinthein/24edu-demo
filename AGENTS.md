@@ -10,6 +10,7 @@ Stack: Next.js 14 App Router, React 18, TypeScript, Google Gemini, Upstash Redis
 - ship-method: direct
 - git-auto-commit: true
 - git-merge-strategy: squash
+- readme-style: standard
 
 ## Dev Commands
 
