@@ -121,6 +121,6 @@ Pull requests are welcome. For questions or to discuss proposed changes, open an
 
 ## License
 
-UNLICENSED at present. The owner plans to apply the MIT License, but no `LICENSE` file or software license grant is currently included.
+Licensed under the [MIT License](LICENSE).
 
 <!-- last-reviewed: 26c2f6a12b4534b0e8e2da9c2d2812bdfd4450d3 -->
