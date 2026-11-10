@@ -1,8 +1,7 @@
 'use client';
 
 import { memo, type RefObject } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { ReferenceMarkdown } from '@/app/components/ReferenceMarkdown';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 
 const roleLabel: Record<SessionMessage['role'], string> = {
@@ -106,7 +105,7 @@ export const MessageList = memo(function MessageList({ messages, mode, isLoading
               </div>
               {msg.role === 'ai' || msg.role === 'admin' ? (
                 <div className="md-body">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                  <ReferenceMarkdown>{msg.text}</ReferenceMarkdown>
                 </div>
               ) : (
                 msg.text

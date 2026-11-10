@@ -79,6 +79,8 @@ Required environment keys: `GEMINI_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_H
 
 ## Rules
 
+- Follow [.github/links.md](.github/links.md) when editing references, documentation or interface links.
+
 Read and follow the existing local rules before relevant actions:
 
 - `.claude/rules/git.md`

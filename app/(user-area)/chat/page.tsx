@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { ReferenceMarkdown } from '@/app/components/ReferenceMarkdown';
 import { getDeviceInfo, type DeviceInfo } from '@/lib/device-info';
 import { useEventSource } from '@/lib/use-event-source';
 import type { SessionMessage, SessionMode } from '@/lib/types';
@@ -331,7 +330,7 @@ export default function ChatPage() {
                 </button>
               </div>
               <div className="md-body" style={{ fontSize: 13, color: 'var(--info-body)' }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
+                <ReferenceMarkdown>{summary}</ReferenceMarkdown>
               </div>
             </div>
           )}

@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { ReferenceMarkdown } from '@/app/components/ReferenceMarkdown';
 import type { SessionMessage, SessionMode } from '@/lib/types';
 import { toolbarBtnStyle } from '@/lib/ui-styles';
 import { useEventSource } from '@/lib/use-event-source';
@@ -199,7 +198,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
               </div>
               {msg.role === 'ai' ? (
                 <div className="md-body">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                  <ReferenceMarkdown>{msg.text}</ReferenceMarkdown>
                 </div>
               ) : msg.text}
             </div>
@@ -232,7 +231,7 @@ export default function AdminSessionPage({ params }: { params: { id: string } })
             </button>
           </div>
           <div className="md-body" style={{ fontSize: 13, color: 'var(--info-body)' }}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
+            <ReferenceMarkdown>{summary}</ReferenceMarkdown>
           </div>
         </div>
       )}
