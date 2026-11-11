@@ -121,6 +121,6 @@ Pull requests are welcome. For questions or to discuss proposed changes, open an
 
 ## License
 
-Licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](LICENSE). Copyright © 2026 Myo Win Thein (Martin).
 
 <!-- last-reviewed: 26c2f6a12b4534b0e8e2da9c2d2812bdfd4450d3 -->
