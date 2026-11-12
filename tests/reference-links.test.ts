@@ -26,12 +26,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ReferenceMarkdown } from '../app/components/ReferenceMarkdown';
 
-it('renders safe external warnings while preserving internal/protocol links and escaping HTML', () => {
+it('renders safe external indicators without opening notices while preserving internal/protocol links and escaping HTML', () => {
   const html = renderToStaticMarkup(createElement(ReferenceMarkdown, {
     children: '[source](https://university.example/course) [profile](/profile) [email](mailto:team@example.com) [unsafe](javascript:alert) <script>bad()</script>',
   }));
   expect(html).toContain('href="https://university.example/course" target="_blank" rel="noopener noreferrer"');
-  expect(html).toContain('(opens in new tab)');
+  expect(html).not.toMatch(/opens? in (?:a )?new (?:tab|window)/i);
   expect(html).toContain('aria-hidden="true"');
   expect(html).toContain('<a href="/profile">profile</a>');
   expect(html).toContain('<a href="mailto:team@example.com">email</a>');
