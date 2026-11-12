@@ -1,0 +1,55 @@
+name: Report a problem
+description: Report a problem with guest chat, the admin panel, setup or a guide.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports are public. Remove credentials, student details, private conversations and confidential source data from text, links and attachments.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe what you expected and what happened instead. Include any error message.
+      placeholder: |
+        Expected: an admin reply would appear in guest chat immediately.
+        Actual: the reply appeared only after refreshing the guest page.
+    validations:
+      required: true
+  - type: input
+    id: context
+    attributes:
+      label: Where did it happen?
+      description: Name the page or feature and whether you were using guest chat or the admin panel.
+      placeholder: /chat as a guest, while an admin replies
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Share the steps or a small example we can follow. If it happens intermittently, describe what led up to it and how often it occurs.
+      placeholder: |
+        1. Start a guest chat with sample contact details.
+        2. Open the conversation in the admin panel and take over.
+        3. Send a sample reply; guest chat updates only after refreshing.
+    validations:
+      required: false
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions and environment
+      description: Include browser/device details and whether this was hosted or local. For setup or AI problems, add the app revision, Node.js version or selected model if known.
+      placeholder: |
+        Browser/device: Chrome on Windows
+        Environment: hosted demo or local development
+        App version or commit: <if known>
+        Selected model: <for AI answer problems>
+    validations:
+      required: false
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or extra details
+      description: Share a relevant error message or screenshot. For an AI answer problem, include a non-sensitive question and the source excerpt it should use.
+    validations:
+      required: false
