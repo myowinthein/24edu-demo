@@ -117,7 +117,7 @@ npm run type-check
 
 ## Contributing
 
-Pull requests are welcome. For questions or to discuss a change, [open an issue](https://github.com/myowinthein/24edu-demo/issues) with a short description of what you want to do and why.
+Pull requests are welcome. To report a problem, ask a question or suggest an improvement, [open an issue](https://github.com/myowinthein/24edu-demo/issues/new/choose).
 
 ## License
 
